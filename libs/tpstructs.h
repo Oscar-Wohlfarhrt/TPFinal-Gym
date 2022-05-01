@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <ctype.h>
+#include <../libs/cmenus.h>
 
 typedef struct Clientes{
     char nombre[50];
