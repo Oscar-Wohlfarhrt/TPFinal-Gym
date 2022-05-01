@@ -1,3 +1,4 @@
 *.ini
 joaTest/
 oscar/
+.vscode/
