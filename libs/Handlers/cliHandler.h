@@ -205,7 +205,7 @@ void ClientesPrintList(){
         Clientes *cli = GetClient(page*entries, clientes);
 
         printf("\e[48;5;237m");
-        printf("Clientes\e[K\n");
+        printf("Clientes: Pagina %i\e[K\n", page + 1);
         printf("%-5s | %-10s | %-50s | %-50s | %-20s | %-15s\e[K\n\e[0m", "Index", "DNI", "NOMBRE", "APELLIDO", "TELEFONO", "FECHA NACIMIENTO");
         for (int i = 0; i < entries; i++)
         {
