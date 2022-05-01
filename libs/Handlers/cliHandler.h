@@ -2,7 +2,18 @@
 #include <string.h>
 #include "../tpstructs.h"
 
+//Lista de clientes
+Clientes *clientes;
+
+/*
+* Protoripos
+*/
+#pragma region Prototipos
+void InsertClient(Clientes **node, Clientes **list);
 Clientes *FindLastClient(Clientes node, Clientes *list);
+Clientes *FindClient(int dni, Clientes *list);
+#pragma endregion
+
 void InsertClient(Clientes **node, Clientes **list)
 {
     (*node)->next = NULL;
@@ -61,14 +72,64 @@ Clientes *FindClient(int dni, Clientes *list)
     return fNode;
 }
 
-int ReplaceClient(int dni,Clientes newClient,Clientes *list){
-    Clientes *cli=FindClient(dni,list);
+Clientes *GetClient(int index, Clientes *list)
+{
+    while (list && index > 0)
+    {
+        list = list->next;
+        index--;
+    }
 
-    cli->dni=newClient.dni;
-    strcpy(cli->nombre,newClient.nombre);
-    strcpy(cli->apellido,newClient.apellido);
-    strcpy(cli->telefono,newClient.telefono);
-    cli->fechaNacimiento=newClient.fechaNacimiento;
-    cli->ultimaActividad=newClient.ultimaActividad;
-    cli->fechaBaja=newClient.fechaBaja;
+    return list;
+}
+
+
+void BuscarBorrarCliente(Clientes value, Clientes** bor, Clientes** ant);
+int BorrarCliente(Clientes value, Clientes** list)
+{
+    int err = 1;
+    Clientes* ant = NULL, * bor = *list;
+    BuscarBorrarCliente(value, &bor, &ant);
+
+    if (bor)
+    {
+        if (ant)
+        {
+            ant->next = bor->next;
+        }
+        else
+        {
+            *list = (*list)->next;
+        }
+        bor->next = NULL;
+        free(bor);
+        err = 0;
+    }
+    return err;
+}
+void BuscarBorrarCliente(Clientes value, Clientes** bor, Clientes** ant)
+{
+    int found = 0;
+    while (bor && !found)
+    {
+        if (value.dni == (*bor)->dni)
+        {
+            found = 1;
+        }
+        else
+        {
+            *ant = *bor;
+            *bor = (*bor)->next;
+        }
+    }
+}
+
+int ReplaceClient(int dni,Clientes *newClient,Clientes *list){
+    int err = 1;
+    if(!BorrarCliente(*newClient,&list)){
+        InsertClient(&newClient,&list);
+        err=0;
+    }
+
+    return err;
 }
