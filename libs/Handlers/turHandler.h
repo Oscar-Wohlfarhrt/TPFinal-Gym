@@ -117,7 +117,9 @@ void BuscarBorrarTurn(Turnos value, Turnos **bor, Turnos **ant)
     int found = 0;
     while (bor && !found)
     {
-        if (value.dni == (*bor)->dni)
+        if (value.dias == (*bor)->dias && 
+            !difftime( mktime( &value.horarioFin) , mktime( &(*bor)->horarioFin)) && 
+            !difftime( mktime( &value.horarioInicio) , mktime( &(*bor)->horarioInicio)))
         {
             found = 1;
         }
@@ -157,12 +159,12 @@ void LoadTurnos(Turnos **list)
 
     if (f = fopen("clientes.bin", "rb"))
     {
-        Turnos *node = malloc(sizeof(Turnos));
+        Turnos *node = (Turnos*)malloc(sizeof(Turnos));
         fread(node, sizeof(Turnos), 1, f);
         while (!feof(f))
         {
             InsertTurn(&node, list);
-            node = malloc(sizeof(Turnos));
+            node = (Turnos*)malloc(sizeof(Turnos));
             fread(node, sizeof(Turnos), 1, f);
         }
         free(node);
