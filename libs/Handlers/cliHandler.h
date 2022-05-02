@@ -367,7 +367,6 @@ void ClientesPromptRestore(int index, Clientes *client)
         break;
     }
 }
-
 void ClientesPrintList()
 {
     const int entries = 10; // entradas por pagina
