@@ -5,7 +5,7 @@ Turnos *turnos;
 
 void InsertTurn(Turnos **node, Turnos **list);
 Turnos *FindLastTurn(Turnos node, Turnos *list);
-Turnos *FindTurn(Turnos tur, Turnos *list);
+Turnos *FindTurn(struct tm time, Turnos *list);
 Turnos *GetTurn(int index, Turnos *list);
 int BorrarTurn(Turnos value, Turnos **list);
 void BuscarBorrarTurn(Turnos value, Turnos **bor, Turnos **ant);
