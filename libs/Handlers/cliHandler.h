@@ -31,7 +31,7 @@ void SaveClientes(Clientes *list);
 
 // interfaz
 Clientes ClientesPrompt(Clientes *client);
-void ClientesPromptRestore(Clientes *client);
+void ClientesPromptRestore(int index, Clientes *client);
 void ClientesPrintList();
 #pragma endregion
 
@@ -174,15 +174,15 @@ void LoadClientes(Clientes **list)
 
     if (f = fopen("clientes.bin", "rb"))
     {
-        //BorrarListaClientes(&clientes);
-        //*list = NULL;
+        Clientes *node = malloc(sizeof(Clientes));
+        fread(node, sizeof(Clientes), 1, f);
         while (!feof(f))
         {
-            Clientes *node = malloc(sizeof(Clientes));
-            fread(node, sizeof(Clientes), 1, f);
-            //printf("%p\n", node);
             InsertClient(&node, list);
+            node = malloc(sizeof(Clientes));
+            fread(node, sizeof(Clientes), 1, f);
         }
+        free(node);
         fclose(f);
     }
 }
@@ -208,6 +208,9 @@ Clientes ClientesPrompt(Clientes *client)
 
     Clientes cli;
 
+    if(client)
+        cli=*client;
+
     char op = '\0';
     int index = 0;
 
@@ -232,14 +235,15 @@ Clientes ClientesPrompt(Clientes *client)
         else
             printf("\e[48;5;235m");
 
-        printf("%i. %25s: \e[K\e[0m\n", i + 1, options[i]);
+        printf("%i. %25s: ", i + 1, options[i]);
+        if (client)
+            ClientesPromptRestore(i,client);
+        printf("\e[K\e[0m\n");
     }
     printf("\e[48;5;237mcancelar edicion - c | finalizar edicion - e\e[K\e[0m\n");
     printf("\e[s"); // se guarda el cursor
 
-    if (client)
-        ClientesPromptRestore(client);
-    else
+    if (!client)
         client = &cli;
 
     printf("\e[u"); // se resetea el cursor
@@ -252,6 +256,10 @@ Clientes ClientesPrompt(Clientes *client)
 
         if (op == 'e')
         {
+            err = 0;
+        }
+        else if(op=='c'){
+            *client=cli;
             err = 0;
         }
         else if (op >= '1' && op <= '7')
@@ -297,8 +305,7 @@ Clientes ClientesPrompt(Clientes *client)
                     switch (index)
                     {
                     case 0:
-                        if (!TryToInt64(input, &client->dni))
-                            ;
+                        TryToInt64(input, &client->dni);
                         break;
                     case 1:
                         strcpy(client->nombre, input);
@@ -320,47 +327,44 @@ Clientes ClientesPrompt(Clientes *client)
                     }
                 }
             }
-            ClientesPromptRestore(client);
-            printf("\e[u\e[K\e[0m");
+            ClientesPromptRestore(index,client);
+            printf("\e[u\e[J\e[0m");
         }
     }
 
     return *client;
 }
-void ClientesPromptRestore(Clientes *client)
+void ClientesPromptRestore(int index, Clientes *client)
 {
-    for (int i = 0; i < 7; i++)
+    SetCurPos(30, index + 2);
+    if (index % 2)
+        printf("\e[48;5;236m");
+    else
+        printf("\e[48;5;235m");
+    printf("\e[K");
+    switch (index)
     {
-        SetCurPos(30, i + 2);
-        if (i % 2)
-            printf("\e[48;5;236m");
-        else
-            printf("\e[48;5;235m");
-        printf("\e[K");
-        switch (i)
-        {
-        case 0:
-            printf("%i", client->dni);
-            break;
-        case 1:
-            printf("%s", client->nombre);
-            break;
-        case 2:
-            printf("%s", client->apellido);
-            break;
-        case 3:
-            printf("%s", client->telefono);
-            break;
-        case 4:
-            printf("%02i/%02i/%04i", client->fechaNacimiento.tm_mday, client->fechaNacimiento.tm_mon + 1, client->fechaNacimiento.tm_year + 1900);
-            break;
-        case 5:
-            printf("%02i/%02i/%04i", client->ultimaActividad.tm_mday, client->ultimaActividad.tm_mon + 1, client->ultimaActividad.tm_year + 1900);
-            break;
-        case 6:
-            printf("%02i/%02i/%04i", client->fechaBaja.tm_mday, client->fechaBaja.tm_mon + 1, client->fechaBaja.tm_year + 1900);
-            break;
-        }
+    case 0:
+        printf("%i", client->dni);
+        break;
+    case 1:
+        printf("%s", client->nombre);
+        break;
+    case 2:
+        printf("%s", client->apellido);
+        break;
+    case 3:
+        printf("%s", client->telefono);
+        break;
+    case 4:
+        printf("%02i/%02i/%04i", client->fechaNacimiento.tm_mday, client->fechaNacimiento.tm_mon + 1, client->fechaNacimiento.tm_year + 1900);
+        break;
+    case 5:
+        printf("%02i/%02i/%04i", client->ultimaActividad.tm_mday, client->ultimaActividad.tm_mon + 1, client->ultimaActividad.tm_year + 1900);
+        break;
+    case 6:
+        printf("%02i/%02i/%04i", client->fechaBaja.tm_mday, client->fechaBaja.tm_mon + 1, client->fechaBaja.tm_year + 1900);
+        break;
     }
 }
 
@@ -379,7 +383,6 @@ void ClientesPrintList()
 
         // se obtiene el primer cliente de la lista
         Clientes *cli = GetClient(page * entries, clientes);
-        printf("%p\n", cli);
 
         printf("\e[48;5;237m");
         printf("Clientes: Pagina %i\e[K\n", page + 1);
@@ -433,32 +436,32 @@ void ClientesPrintList()
         fseek(stdin, 0, SEEK_END); // se limpia el buffer de entrada
 
         strlwr(op);
-        if (!strncmp(op, "a", 1) && page) //decremento de pagina
+        if (!strncmp(op, "a", 1) && page) // decremento de pagina
             page--;
-        else if (!strncmp(op, "d", 1) && err != 2) //incremento de pagina
+        else if (!strncmp(op, "d", 1) && err != 2) // incremento de pagina
             page++;
-        else if (!strncmp(op, "s", 1)) //salir
+        else if (!strncmp(op, "s", 1)) // salir
             err = 0;
-        else if (!strncmp(op, "w", 1)) //anadir
+        else if (!strncmp(op, "w", 1)) // anadir
         {
             Clientes *newCli = malloc(sizeof(Clientes));
             *newCli = ClientesPrompt(NULL);
             newCli->next = NULL;
             InsertClient(&newCli, &clientes);
         }
-        else if (!strncmp(op, "e", 1)) //editar
+        else if (!strncmp(op, "e", 1)) // editar
         {
             strtok(op, " ");
             char *ind = strtok(NULL, " ");
             int editIndex = 0;
             if (TryToInt32(ind, &editIndex))
             {
-                Clientes *editCli=NULL;
-                if(editCli=GetClient(editIndex - 1, clientes))
+                Clientes *editCli = NULL;
+                if (editCli = GetClient(editIndex - 1, clientes))
                     ClientesPrompt(editCli);
             }
         }
-        else if (!strncmp(op, "x", 1)) //eliminar
+        else if (!strncmp(op, "x", 1)) // eliminar
         {
             strtok(op, " ");
             char *ind = strtok(NULL, " ");
