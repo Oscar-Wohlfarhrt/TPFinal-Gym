@@ -62,7 +62,8 @@ int promptMenu(int type, int err)
     system(cls);
 #endif
     showMenu(type, err);
-    scanf("%i%*c", &option);
+    scanf("%i", &option);
+    fseek(stdin, 0, SEEK_END); // se limpia el buffer de entrada
     printf("\n");
     return option;
 }
