@@ -89,6 +89,9 @@ int fullMenu(int type, int *err, void (*funcs[])(void), int count)
 }
 int TryToInt32(char *str, int *out)
 {
+    if(!str)
+        return 0;
+    
     int length=strlen(str);
     for (int i = 1; i < 256; i++)
     {
