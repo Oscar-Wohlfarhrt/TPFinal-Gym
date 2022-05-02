@@ -24,21 +24,21 @@ typedef struct Profesores{
     struct Profesores *next;
 }Profesores;
 
-typedef struct Actividades{
-    char nombre[50];
-    int cupo;
-    int sucursal;
-    int turno;
-    long profesorDNI;
-    struct Actividades *next;
-}Actividades;
-
 typedef struct Turnos{
-    int dias[7];
+    char dias;
     struct tm horarioInicio;
     struct tm horarioFin;
     struct Turnos *next;
 }Turnos;
+
+typedef struct Actividades{
+    char nombre[50];
+    int cupo;
+    int sucursal;
+    Turnos turno;
+    long profesorDNI;
+    struct Actividades *next;
+}Actividades;
 
 typedef struct ClientesActivTurno{
     long dni;
