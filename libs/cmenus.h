@@ -2,6 +2,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #ifdef __unix__
 #define cls "clear"
@@ -85,4 +86,25 @@ int fullMenu(int type, int *err, void (*funcs[])(void), int count)
     }
 
     return run;
+}
+int TryToInt32(char *str, int *out)
+{
+    int length=strlen(str);
+    for (int i = 1; i < 256; i++)
+    {
+        if ((((char)i) >= 48 && ((char)i) <= 57) || ((char)i) == '-')
+        {
+        } //rango ascii de numeros enteros
+        else
+        {
+            for (int j = 0; j < length; j++)
+            {
+                if (str[j] == (char)i)
+                    return 0;
+            }
+        }
+    }
+
+    *out = atoi(str);
+    return 1;
 }
