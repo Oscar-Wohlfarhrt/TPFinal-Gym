@@ -297,7 +297,7 @@ Clientes ClientesPrompt(Clientes *client)
                     switch (index)
                     {
                     case 0:
-                        if (!TryToInt32(input, &client->dni))
+                        if (!TryToInt64(input, &client->dni))
                             ;
                         break;
                     case 1:
