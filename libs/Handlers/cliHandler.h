@@ -369,7 +369,7 @@ void ClientesPromptRestore(int index, Clientes *client)
 }
 void ClientesPrintList()
 {
-    const int entries = 5; // entradas por pagina
+    const int entries = 10; // entradas por pagina
 
     // variables auxiliares
     int err = 1, page = 0;
@@ -385,8 +385,8 @@ void ClientesPrintList()
 
         printf("\e[48;5;237m");
         printf("Clientes: Pagina %i\e[K\n", page + 1);
-        printf("%-5s | %-10s | %-50s | %-20s | %-15s\e[K\n", "Index", "DNI", "NOMBRE", "TELEFONO", "ULTIMA ACTIVIDAD");
-        printf("%-5s | %-10s | %-50s | %-20s | %-15s\e[K\n\e[0m", "", "", "APELLIDO","FECHA NACIMIENTO", "FECHA DE BAJA");
+        printf("%-5s | %-10s | %-50s | %-20s | %-20s\e[K\n", "Index", "DNI", "NOMBRE", "TELEFONO", "ULTIMA ACTIVIDAD");
+        printf("%-5s | %-10s | %-50s | %-20s | %-20s\e[K\n\e[0m", "", "", "APELLIDO","FECHA NACIMIENTO", "FECHA DE BAJA");
         for (int i = 0; i < entries; i++)
         {
             int index = i + 1 + (page * entries);
@@ -400,12 +400,12 @@ void ClientesPrintList()
                 // se genera la fecha de nacimiento
                 char date1[17],date2[17],date3[17];
                 sprintf(date1, "%02i/%02i/%04i", cli->fechaNacimiento.tm_mday, cli->fechaNacimiento.tm_mon + 1, cli->fechaNacimiento.tm_year + 1900);
-                sprintf(date2, "%02i/%02i/%04i", cli->fechaNacimiento.tm_mday, cli->fechaNacimiento.tm_mon + 1, cli->fechaNacimiento.tm_year + 1900);
-                sprintf(date3, "%02i/%02i/%04i", cli->fechaNacimiento.tm_mday, cli->fechaNacimiento.tm_mon + 1, cli->fechaNacimiento.tm_year + 1900);
+                sprintf(date2, "%02i/%02i/%04i", cli->ultimaActividad.tm_mday, cli->ultimaActividad.tm_mon + 1, cli->ultimaActividad.tm_year + 1900);
+                sprintf(date3, "%02i/%02i/%04i", cli->fechaBaja.tm_mday, cli->fechaBaja.tm_mon + 1, cli->fechaBaja.tm_year + 1900);
 
                 // se imprime la fila
-                printf("%5i | %-10i | %-50s | %-20s | %-15s\e[K\n", index, cli->dni, cli->nombre, cli->telefono, date2);
-                printf("%5s | %-10s | %-50s | %-20s | %-15s\e[K\e[0m\n", "", "", cli->apellido, date1, date3);
+                printf("%5i | %-10i | %-50s | %-20s | %-20s\e[K\n", index, cli->dni, cli->nombre, cli->telefono, date2);
+                printf("%5s | %-10s | %-50s | %-20s | %-20s\e[K\e[0m\n", "", "", cli->apellido, date1, date3);
 
                 cli = cli->next;
             }
@@ -449,7 +449,6 @@ void ClientesPrintList()
         {
             Clientes *newCli = malloc(sizeof(Clientes));
             *newCli = ClientesPrompt(NULL);
-            newCli->next = NULL;
             InsertClient(&newCli, &clientes);
         }
         else if (!strncmp(op, "e", 1)) // editar
