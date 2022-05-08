@@ -411,7 +411,7 @@ void ClientesPrintList()
             }
             else // si no existen mas registros
             {
-                printf("%5i\e[K\e[0m\n", index);
+                printf("%5i\e[K\n\e[K\e[0m\n", index);
                 err = 2;
             }
         }
