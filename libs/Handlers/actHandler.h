@@ -1,12 +1,15 @@
 #pragma once
 #include "../tpstructs.h"
 
-FILE *f;
-
 #define true 1
 #define false 0
 
-char cabeceras[5][16] = {"Actividad", "Cupo", "Sucursal", "Turno", "Profesor"};
+#define esc 27
+#define enter 13
+#define up 72
+#define down 80
+#define left 75
+#define right 77
 
 
 typedef struct actividad{
@@ -17,23 +20,17 @@ typedef struct actividad{
     long profesorDNI;
     struct actividad *sgte;
 }nActividad;
-
 _Bool vacio(void **top);
 _Bool isNumber(char *text);
+_Bool eliminar_dato(nActividad **dato,nActividad **top);
+nActividad *buscar_dato(nActividad **top,char *act);
+nActividad *buscar_ant(nActividad **top,char *act);
+int selector(int max, int acum);
 
-void insertarActividad(nActividad **top){
+/*void insertarActividad(nActividad **top){
     Actividades act;
     nActividad *n;
     struct tm horaInicio, horaFin;
-    int i;
-    char dias[7][10] = {
-    "domingo",
-    "lunes",
-    "martes",
-    "miercoles",
-    "jueves",
-    "viernes",
-    "sabado"};
     char diaIngresado[10], aux[5], *a,*b,*c;
     n = *top;
     fflush(stdin);
@@ -60,15 +57,9 @@ void insertarActividad(nActividad **top){
     fflush(stdin);
     scanf("%s", diaIngresado);
     fflush(stdin);
-    tolower(diaIngresado);
+    tolower(&diaIngresado);
     while(strcmp(diaIngresado,"c") != 0){ //mientras no se ingrese un 0 en pantalla
-        if(strcmp(diaIngresado,dias[0])==0 || 
-        strcmp(diaIngresado,dias[1])==0 || 
-        strcmp(diaIngresado,dias[2])==0 || 
-        strcmp(diaIngresado,dias[3])==0 || 
-        strcmp(diaIngresado,dias[4])==0 || 
-        strcmp(diaIngresado,dias[5])==0 || 
-        strcmp(diaIngresado,dias[6])==0){
+        if(dia_a_num(diaIngresado) >= 0 && dia_a_num(diaIngresado) <= 6){
             printf("\nHorario de inicio(HH:MM): ");
             fflush(stdin);
             fgets(aux, sizeof(aux),stdin);
@@ -103,73 +94,60 @@ void insertarActividad(nActividad **top){
     strcmp(aux,"c") == 0){
         return;
     }    
-
+}*/
+void insertar_actividad(nActividad **top){
+    nActividad *nuevo;
+    nuevo = (nActividad *)malloc(sizeof(nActividad));
+    printf("Ingrese el nombre de la actividad: ");
+    fgets(nuevo->nombre, sizeof(nuevo->nombre),stdin);
+    strtok(nuevo->nombre,"\n");
+    printf("\nIngrese el cupo: ");
+    fflush(stdin);
+    scanf("%d", &nuevo->cupo);
+    printf("\nIngrese la sucursal: ");
+    fflush(stdin);
+    scanf("%d", &(nuevo->sucursal));
+    if(nuevo->sucursal > 2) return;
+    printf("\nHorario de ingreso: ");
 }
-
-/*void cargarAct(){
-    Actividades act;
-    int i = 0;
-    char actividades[4][16] = {"Complementos", "Ciclismo int.", "Funcional", "Crossfit"};
-    f = fopen("actividades.dat", "ab");
-    if(f != NULL){
-
-
-    }
-    fclose(f);
-    printf("terminado");
-}*/
-
-/*void altaAct(Clientes usuario, Actividades actividad){
-    Actividades act;
-    nActividad *p,*aux,*aux2;
-    f = fopen("actividades.dat", "rb");
-    if(f != NULL){
-        fread(&act, sizeof(Actividades), 1, f);
-        pasaje(&p, &act,sizeof(act));
-        apilar(&p,&aux);
-    }else{
-        system("cls");
-        system("color 04");
-        printf("ERROR.NO SE ENCUENTRA EL ARCHIVO\n\n");
-        system("pause");
-        system("color F");
-        fclose(f);
-        return;
-    }
-    if(ftell(f) == 0) return;
-    fclose(f);
-    while(vacio(aux) != true){
-        desapilar2(&p,&aux);
-        if(strcmp(p->nombre,actividad.nombre)==0 && p->sucursal == actividad.sucursal && p->turno == actividad.turno && p->cupo > 0){
-            f = fopen("clientActTurn.dat", "rb+");
-            if(f != NULL){
-                fread(&act, sizeof(Actividades), 1, f);
-                pasaje(&p, &act,sizeof(act));
-                apilar(&p,&aux2);
-            }
-        }
-        apilar2(&p,&aux2);
-    }
-    fclose(f);
-}*/
-
 void ABMACTA(){
-    int in;
+    char menu[4][24] = {"ABM ACTIVIDADES\n",
+    "  Insertar actividad\n",
+    "  Eliminar actividad\n",
+    "  Modificar actividad\n"},menucpy[4][24];
+    char ch;
+    int aux = 1,ant = 1;
+    memcpy(&menucpy[0],&menu[0],sizeof(menu));
     while(1 == 1){
-        system("cls");
-        printf("Configurar las actividades\n");//Aca tendria que estar la parte de la interfaz grafica;
-        printf("1. Modificar actividad\n");
-        printf("2. Ver actividades\n");
-        printf("3. Volver\n");
-        fflush(stdin);
-        scanf("%d",&in);
-        switch(in){
+        system(cls);
+        do{
+            menu[aux][0] = '>';
+            fputs(strcat(strcat(strcat(menu[0],menu[1]),menu[2]),menu[3]),stdout);
+            ant = aux;
+            aux = selector(3,aux);
+            memcpy(&menu[0],&menucpy[0],sizeof(menu));
+            fflush(stdout);
+            system("cls");
+            //printf("%i",aux);
+        }while(aux != 4 && aux != -1);
+        if(aux == -1) return;
+        switch(ant){
             case 1:
-                //modificarAct();
+                system(cls);
+                printf("1");     
+                system("pause");       
             break;
 
             case 2:
-                verAct();
+                system(cls);
+                printf("2");    
+                system("pause");
+            break;
+
+            case 3:
+                system(cls);
+                printf("3");
+                system("pause");
             break;
 
             default:
@@ -177,73 +155,28 @@ void ABMACTA(){
             break;
         }
     }
-    printf("\nSe salio de la ejecucion del programa");
 }
-
-void verAct(){
-    _Bool empty;
-    nActividad *p,*aux;
-    int select = 0,iC = 0;
-    Actividades act;
-    p = NULL;
-    aux = NULL;
-    empty = false;
-    system("cls");
-    f = fopen("actividades.dat","rb+");
-    printf("\e[48;5;237m\t\t\t ACTIVIDADES\e\n");//Esto hay que sacar
-    if(f != NULL){
-        printf(" %.12s|%.5s|%.8s|%.5s|%.10s\n", cabeceras[0], cabeceras[1], cabeceras[2], cabeceras[3], cabeceras[4]);//esto hay que sacar
-        while(!feof(f)){
-            fread(&act, sizeof(Actividades), 1, f);
-            if(feof(f)) break;
-            if(ftell(f)==0) empty = true;
-            (iC%2==0)?printf("\e[48;5;236m"):printf("\e[48;5;235m");
-            if(empty == false){
-                pasaje(&p,&act,sizeof(Actividades));
-                apilar2(&p,&aux);
-                printf("%.12s|%i|%1i|%1i|%ld\n",aux->nombre, aux->cupo, aux->sucursal,aux->turno,aux->profesorDNI);
-                iC = iC + 1;
-            }
-        }
-        printf("\e[0m");
-    }else{
-        printf("No se pudo abrir el archivo\n");
-        system("pause");
-        return;
-    }
-    desapilar2(&p,&aux);
-    printf("%.12s|%i|%1i|%1i|%ld\n",p->nombre, p->cupo, p->sucursal,p->turno,p->profesorDNI);
-    desapilar2(&p,&aux);
-    printf("%.12s|%i|%1i|%1i|%ld\n",p->nombre, p->cupo, p->sucursal,p->turno,p->profesorDNI);
-    system("pause");
-}
-
-
 void apilar2(nActividad **dato, nActividad **top){
     (*dato)->sgte = *top;
     *top = *dato;
+    *dato = NULL;
 }
-
-void desapilar2(nActividad **top, nActividad **dato){
+void desapilar2(nActividad **dato, nActividad **top){
     *dato = *top;
     *top = (*top)->sgte;
 }
-
-
 _Bool vacio(void **top){
     if ((*top) == NULL){
         return true;
     }
     return false;
 }
-
 void pasaje(void **p, void *rc, size_t tam){
     nActividad *nuevo = (nActividad*)malloc(sizeof(nActividad));
     memcpy(nuevo,rc,tam);
     nuevo->sgte = NULL;
     *p = nuevo;
 }
-
 _Bool isNumber(char *text){
     int j;
     j = strlen(text);
@@ -253,18 +186,113 @@ _Bool isNumber(char *text){
     }
     return true;
 }
-
 int dia_a_num(char *texto){
-    int ndia;
-    if(strcmp(texto,"domingo")==0) ndia = 0;
-    else if(strcmp(texto,"lunes")==0) ndia = 1;
-    else if(strcmp(texto,"martes")==0) ndia = 2;
-    else if(strcmp(texto,"miercoles")==0) ndia = 3;
-    else if(strcmp(texto,"jueves")==0) ndia = 4;
-    else if(strcmp(texto,"viernes")==0) ndia = 5;
-    else if(strcmp(texto,"sabado")==0) ndia = 6;
-    return ndia;
+    if(strcmp(texto,"domingo")==0) return 0;
+    else if(strcmp(texto,"lunes")==0) return 1;
+    else if(strcmp(texto,"martes")==0) return 2;
+    else if(strcmp(texto,"miercoles")==0) return 3;
+    else if(strcmp(texto,"jueves")==0) return 4;
+    else if(strcmp(texto,"viernes")==0) return 5;
+    else if(strcmp(texto,"sabado")==0) return 6;
+    return -1;
 }
-
-
+void imprimir_actividades(nActividad **top){
+    nActividad *aux;
+    aux = *top;
+    while(aux != NULL){
+        printf("%s %i %i %i %i %i %i\n",aux->nombre,aux->cupo,aux->sucursal,aux->turno.horarioInicio.tm_hour,aux->turno.horarioInicio.tm_min,aux->turno.horarioFin.tm_hour,aux->turno.horarioFin.tm_min);
+        aux = aux->sgte;
+    }
+}
+void apilar_de_fichero(nActividad **top, size_t *tamano, char *nombre_fichero){
+    FILE *fichero;
+    fichero = fopen(nombre_fichero, "rb");
+    if(fichero == NULL){
+        while(!feof(fichero)){
+            nActividad  *nodo = (nActividad  *)malloc(sizeof(nActividad));
+            fread(nodo, (size_t)tamano, 1, fichero);
+            if(feof(fichero))break;
+            nodo->sgte = *top;
+            *top = nodo;
+            nodo = NULL;
+        }
+    }
+    fclose(fichero);
+}
+void escribir_en_fichero(nActividad **top, size_t *tamano, char *nombre_fichero){
+    nActividad *aux = NULL,*tp2 = NULL,*tope = *top;
+    FILE *fichero;
+    fichero = fopen(nombre_fichero, "wb");
+    if(fichero == NULL){
+        fclose(fichero);
+        return;
+    }
+    while(!vacio(&tope)){
+        desapilar2(&aux,&tope);
+        apilar2(&aux,&tp2);
+    }
+    while(!vacio(&tp2)){
+        desapilar2(&aux,&tp2);
+        fwrite(aux, (size_t)tamano, 1, fichero);
+        apilar2(&aux,&tope);
+    }
+    fclose(fichero);
+}
+nActividad *buscar_dato(nActividad **top,char *act){
+    nActividad *aux = *top;
+    while(aux != NULL){
+        if(strcmp(aux->nombre,act)==0) return aux;
+        aux = aux->sgte;
+    }
+    return NULL;
+}
+nActividad *buscar_ant(nActividad **top,char *act){
+    nActividad *aux = *top,*ant;
+    while(aux != NULL){
+        if(strcmp(aux->nombre,act)==0) return ant;
+        ant = aux;
+        aux = aux->sgte;
+    }
+    return NULL;
+}
+_Bool eliminar_dato(nActividad **dato,nActividad **top){
+    nActividad *aux = *top,*ant = NULL;
+    while(vacio(&aux) != true){
+        if(*dato == *top && aux == *top && ant == NULL){
+            *top = aux->sgte;
+            free(aux);
+            return true;
+        }
+        else if(aux == *dato){
+            ant->sgte = aux->sgte;
+            free(aux);
+            return true;
+        }
+        ant = aux;
+        aux = aux->sgte;
+    }
+    return false;
+}
+int selector(int max, int acum){
+    int i = acum;
+    fflush(stdin);
+    _sleep(10);
+    switch(getch()){
+        case up:
+            i--;
+        break;
+        case down:
+            i++;
+        break;
+        case enter:
+            return (max+1);
+        break;
+        case esc:
+            return -1;
+        break;
+    }
+    if(i == 0) i = max;
+    if(i > max) i = 1;
+    return i;
+}
 #pragma endregion
