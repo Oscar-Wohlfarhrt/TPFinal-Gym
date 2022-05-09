@@ -11,37 +11,28 @@
 #define left 75
 #define right 77
 
-
-typedef struct actividad{
-    char nombre[50];
-    int cupo;
-    int sucursal;
-    Turnos turno;
-    long profesorDNI;
-    struct actividad *sgte;
-}nActividad;
 _Bool vacio(void **top);
 _Bool isNumber(char *text);
-_Bool eliminar_dato(nActividad **dato,nActividad **top);
-nActividad *buscar_dato(nActividad **top,char *act);
-nActividad *buscar_ant(nActividad **top,char *act);
+_Bool eliminar_dato(Actividades **dato,Actividades **top);
+Actividades *buscar_dato(Actividades **top,char *act);
+Actividades *buscar_ant(Actividades **top,char *act);
 int selector(int max, int acum);
 
-/*void insertarActividad(nActividad **top){
+/*void insertarActividad(Actividades **top){
     Actividades act;
-    nActividad *n;
+    Actividades *n;
     struct tm horaInicio, horaFin;
     char diaIngresado[10], aux[5], *a,*b,*c;
     n = *top;
     fflush(stdin);
     scanf("%s", act.nombre);
     while((strcmp(act.nombre,(n)->nombre) != 0) && (n != NULL)){
-        n = n->sgte; 
+        n = n->next; 
     }
     if(strcmp(act.nombre,(n)->nombre) == 0){
         //borrar
         system("cls");
-        printf("\nActividad ya existente, puede modificarla pero no sobreescribirla\n");
+        printf("\Actividades ya existente, puede modificarla pero no sobreescribirla\n");
         system("pause");
         return;
     }
@@ -95,9 +86,9 @@ int selector(int max, int acum);
         return;
     }    
 }*/
-void insertar_actividad(nActividad **top){
-    nActividad *nuevo;
-    nuevo = (nActividad *)malloc(sizeof(nActividad));
+void insertar_actividad(Actividades **top){
+    Actividades *nuevo;
+    nuevo = (Actividades *)malloc(sizeof(Actividades));
     printf("Ingrese el nombre de la actividad: ");
     fgets(nuevo->nombre, sizeof(nuevo->nombre),stdin);
     strtok(nuevo->nombre,"\n");
@@ -118,8 +109,10 @@ void ABMACTA(){
     char ch;
     int aux = 1,ant = 1;
     memcpy(&menucpy[0],&menu[0],sizeof(menu));
-    while(1 == 1){
+    while(1){
         system(cls);
+        ant = aux;
+        aux=1;
         do{
             menu[aux][0] = '>';
             fputs(strcat(strcat(strcat(menu[0],menu[1]),menu[2]),menu[3]),stdout);
@@ -134,19 +127,19 @@ void ABMACTA(){
         switch(ant){
             case 1:
                 system(cls);
-                printf("1");     
+                printf("1\n");     
                 system("pause");       
             break;
 
             case 2:
                 system(cls);
-                printf("2");    
+                printf("2\n");    
                 system("pause");
             break;
 
             case 3:
                 system(cls);
-                printf("3");
+                printf("3\n");
                 system("pause");
             break;
 
@@ -156,26 +149,20 @@ void ABMACTA(){
         }
     }
 }
-void apilar2(nActividad **dato, nActividad **top){
-    (*dato)->sgte = *top;
+void apilar(Actividades **dato, Actividades **top){
+    (*dato)->next = *top;
     *top = *dato;
     *dato = NULL;
 }
-void desapilar2(nActividad **dato, nActividad **top){
+void desapilar(Actividades **dato, Actividades **top){
     *dato = *top;
-    *top = (*top)->sgte;
+    *top = (*top)->next;
 }
 _Bool vacio(void **top){
     if ((*top) == NULL){
         return true;
     }
     return false;
-}
-void pasaje(void **p, void *rc, size_t tam){
-    nActividad *nuevo = (nActividad*)malloc(sizeof(nActividad));
-    memcpy(nuevo,rc,tam);
-    nuevo->sgte = NULL;
-    *p = nuevo;
 }
 _Bool isNumber(char *text){
     int j;
@@ -196,31 +183,31 @@ int dia_a_num(char *texto){
     else if(strcmp(texto,"sabado")==0) return 6;
     return -1;
 }
-void imprimir_actividades(nActividad **top){
-    nActividad *aux;
+void imprimir_actividades(Actividades **top){
+    Actividades *aux;
     aux = *top;
     while(aux != NULL){
         printf("%s %i %i %i %i %i %i\n",aux->nombre,aux->cupo,aux->sucursal,aux->turno.horarioInicio.tm_hour,aux->turno.horarioInicio.tm_min,aux->turno.horarioFin.tm_hour,aux->turno.horarioFin.tm_min);
-        aux = aux->sgte;
+        aux = aux->next;
     }
 }
-void apilar_de_fichero(nActividad **top, size_t *tamano, char *nombre_fichero){
+void apilar_de_fichero(Actividades **top, size_t *tamano, char *nombre_fichero){
     FILE *fichero;
     fichero = fopen(nombre_fichero, "rb");
     if(fichero == NULL){
         while(!feof(fichero)){
-            nActividad  *nodo = (nActividad  *)malloc(sizeof(nActividad));
+            Actividades  *nodo = (Actividades  *)malloc(sizeof(Actividades));
             fread(nodo, (size_t)tamano, 1, fichero);
             if(feof(fichero))break;
-            nodo->sgte = *top;
+            nodo->next = *top;
             *top = nodo;
             nodo = NULL;
         }
     }
     fclose(fichero);
 }
-void escribir_en_fichero(nActividad **top, size_t *tamano, char *nombre_fichero){
-    nActividad *aux = NULL,*tp2 = NULL,*tope = *top;
+void escribir_en_fichero(Actividades **top, size_t *tamano, char *nombre_fichero){
+    Actividades *aux = NULL,*tp2 = NULL,*tope = *top;
     FILE *fichero;
     fichero = fopen(nombre_fichero, "wb");
     if(fichero == NULL){
@@ -228,53 +215,54 @@ void escribir_en_fichero(nActividad **top, size_t *tamano, char *nombre_fichero)
         return;
     }
     while(!vacio(&tope)){
-        desapilar2(&aux,&tope);
-        apilar2(&aux,&tp2);
+        desapilar(&aux,&tope);
+        apilar(&aux,&tp2);
     }
     while(!vacio(&tp2)){
-        desapilar2(&aux,&tp2);
+        desapilar(&aux,&tp2);
         fwrite(aux, (size_t)tamano, 1, fichero);
-        apilar2(&aux,&tope);
+        apilar(&aux,&tope);
     }
     fclose(fichero);
 }
-nActividad *buscar_dato(nActividad **top,char *act){
-    nActividad *aux = *top;
+Actividades *buscar_dato(Actividades **top,char *act){
+    Actividades *aux = *top;
     while(aux != NULL){
         if(strcmp(aux->nombre,act)==0) return aux;
-        aux = aux->sgte;
+        aux = aux->next;
     }
     return NULL;
 }
-nActividad *buscar_ant(nActividad **top,char *act){
-    nActividad *aux = *top,*ant;
+Actividades *buscar_ant(Actividades **top,char *act){
+    Actividades *aux = *top,*ant;
     while(aux != NULL){
         if(strcmp(aux->nombre,act)==0) return ant;
         ant = aux;
-        aux = aux->sgte;
+        aux = aux->next;
     }
     return NULL;
 }
-_Bool eliminar_dato(nActividad **dato,nActividad **top){
-    nActividad *aux = *top,*ant = NULL;
+_Bool eliminar_dato(Actividades **dato,Actividades **top){
+    Actividades *aux = *top,*ant = NULL;
     while(vacio(&aux) != true){
         if(*dato == *top && aux == *top && ant == NULL){
-            *top = aux->sgte;
+            *top = aux->next;
             free(aux);
             return true;
         }
         else if(aux == *dato){
-            ant->sgte = aux->sgte;
+            ant->next = aux->next;
             free(aux);
             return true;
         }
         ant = aux;
-        aux = aux->sgte;
+        aux = aux->next;
     }
     return false;
 }
 int selector(int max, int acum){
     int i = acum;
+    printf("%d",i);
     fflush(stdin);
     _sleep(10);
     switch(getch()){

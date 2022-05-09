@@ -6,7 +6,7 @@
 
 int main(int argc, char **args)
 {
-    nActividad *L;
+    Actividades *L;
     ABMACTA(&L);
     printf("Trabajo en progreso...\n");
     printf("Primer commit");
