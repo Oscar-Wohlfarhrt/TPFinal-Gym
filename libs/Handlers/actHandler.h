@@ -13,10 +13,11 @@
 
 _Bool vacio(void **top);
 _Bool isNumber(char *text);
-_Bool eliminar_dato(Actividades **dato,Actividades **top);
+_Bool remove_actividad(Actividades **dato,Actividades **top);
 Actividades *buscar_dato(Actividades **top,char *act);
 Actividades *buscar_ant(Actividades **top,char *act);
 int selector(int max, int acum);
+void load_actividades(Actividades **top);
 
 /*void insertarActividad(Actividades **top){
     Actividades act;
@@ -111,7 +112,6 @@ void ABMACTA(){
     memcpy(&menucpy[0],&menu[0],sizeof(menu));
     while(1){
         system(cls);
-        ant = aux;
         aux=1;
         do{
             menu[aux][0] = '>';
@@ -191,13 +191,13 @@ void imprimir_actividades(Actividades **top){
         aux = aux->next;
     }
 }
-void apilar_de_fichero(Actividades **top, size_t *tamano, char *nombre_fichero){
+void load_actividades(Actividades **top){
     FILE *fichero;
-    fichero = fopen(nombre_fichero, "rb");
+    fichero = fopen("actividades.dat", "rb");
     if(fichero == NULL){
         while(!feof(fichero)){
             Actividades  *nodo = (Actividades  *)malloc(sizeof(Actividades));
-            fread(nodo, (size_t)tamano, 1, fichero);
+            fread(nodo, sizeof(Actividades), 1, fichero);
             if(feof(fichero))break;
             nodo->next = *top;
             *top = nodo;
@@ -206,11 +206,11 @@ void apilar_de_fichero(Actividades **top, size_t *tamano, char *nombre_fichero){
     }
     fclose(fichero);
 }
-void escribir_en_fichero(Actividades **top, size_t *tamano, char *nombre_fichero){
+void save_actividades(Actividades **top){
     Actividades *aux = NULL,*tp2 = NULL,*tope = *top;
     FILE *fichero;
-    fichero = fopen(nombre_fichero, "wb");
-    if(fichero == NULL){
+    fichero = fopen("actividades.dat", "wb");
+    if(fichero == NULL || *top == NULL){
         fclose(fichero);
         return;
     }
@@ -220,7 +220,7 @@ void escribir_en_fichero(Actividades **top, size_t *tamano, char *nombre_fichero
     }
     while(!vacio(&tp2)){
         desapilar(&aux,&tp2);
-        fwrite(aux, (size_t)tamano, 1, fichero);
+        fwrite(aux, sizeof(Actividades), 1, fichero);
         apilar(&aux,&tope);
     }
     fclose(fichero);
@@ -242,7 +242,7 @@ Actividades *buscar_ant(Actividades **top,char *act){
     }
     return NULL;
 }
-_Bool eliminar_dato(Actividades **dato,Actividades **top){
+_Bool remove_actividad(Actividades **dato,Actividades **top){
     Actividades *aux = *top,*ant = NULL;
     while(vacio(&aux) != true){
         if(*dato == *top && aux == *top && ant == NULL){
