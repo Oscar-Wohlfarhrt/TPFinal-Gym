@@ -13,8 +13,8 @@ struct Turnos;
 typedef struct Turnos Turnos;
 struct Actividades;
 typedef struct Actividades Actividades;
-struct ClientesActivTurno;
-typedef struct ClientesActivTurno ClientesActivTurno;
+struct ActTurno;
+typedef struct ActTurno ActTurno;
 struct ClientesPagos;
 typedef struct ClientesPagos ClientesPagos;
 struct Reservas;
@@ -40,25 +40,26 @@ struct Profesores{
 };
 
 struct Turnos{
-    char dias;
+    int actividad;
+    int dias;
     struct tm horarioInicio;
     struct tm horarioFin;
+    long prof;
+    int cupo;
     struct Turnos *next;
 };
 
 struct Actividades{
     char nombre[50];
-    int cupo;
     int sucursal;
-    Turnos turno;
-    long profesorDNI;
     struct Actividades *next;
 };
 
-struct ClientesActivTurno{
+struct ActTurno{
     long dni;
-    char actividad[50];
-    struct ClientesActivTurno *next;
+    int turno;
+    long cliente;
+    struct ActTurno *next;
 };
 
 struct ClientesPagos{
