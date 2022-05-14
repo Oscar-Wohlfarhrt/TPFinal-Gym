@@ -17,6 +17,7 @@ void Insert([struct] **node, [struct] **list)
 int Remove([tipo] value, [struct] **list) 
 [struct] *Find([tipo] value,[struct] *list)
 int Replace([tipo] value,[struct] *new,[struct] **list)
+[struct] *GetByIndex(int index,[struct] *list)
 
 
 */
