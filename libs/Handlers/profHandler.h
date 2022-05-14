@@ -13,7 +13,7 @@
 Profesores insterProf(Profesores**node,Profesores**ini);//Inster at the end
 void PrintList(Profesores*ini);//aux text
 Profesores ModificarProf(long dato,Profesores **ini);
-Profesores *buscarAnterior(long dato,Profesores *ini);	
+Profesores *buscarAnterior(long dato,Profesores *ini);
 Profesores elminarProf(long dato,Profesores **ini);
 
 

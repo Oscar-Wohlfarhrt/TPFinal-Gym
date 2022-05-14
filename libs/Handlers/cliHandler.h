@@ -375,6 +375,11 @@ void ClientesPrintList()
     int err = 1, page = 0;
     char op[20] = "";
 
+    /*
+    * err=0 salir
+    * err=1 seguir
+    * err=2 no hay mas registros en la lista
+    */
     while (err)
     {
         system(cls);
@@ -402,7 +407,7 @@ void ClientesPrintList()
                 sprintf(date1, "%02i/%02i/%04i", cli->fechaNacimiento.tm_mday, cli->fechaNacimiento.tm_mon + 1, cli->fechaNacimiento.tm_year + 1900);
                 sprintf(date2, "%02i/%02i/%04i", cli->ultimaActividad.tm_mday, cli->ultimaActividad.tm_mon + 1, cli->ultimaActividad.tm_year + 1900);
                 sprintf(date3, "%02i/%02i/%04i", cli->fechaBaja.tm_mday, cli->fechaBaja.tm_mon + 1, cli->fechaBaja.tm_year + 1900);
-
+                
                 // se imprime la fila
                 printf("%5i | %-10i | %-50s | %-20s | %-20s\e[K\n", index, cli->dni, cli->nombre, cli->telefono, date2);
                 printf("%5s | %-10s | %-50s | %-20s | %-20s\e[K\e[0m\n", "", "", cli->apellido, date1, date3);
@@ -456,9 +461,11 @@ void ClientesPrintList()
             strtok(op, " ");
             char *ind = strtok(NULL, " ");
             int editIndex = 0;
+            //se intenta convertir el indice a entero
             if (TryToInt32(ind, &editIndex))
             {
                 Clientes *editCli = NULL;
+                //se verifica que el cliente no sea NULL
                 if (editCli = GetClient(editIndex - 1, clientes))
                     ClientesPrompt(editCli);
             }
@@ -468,9 +475,13 @@ void ClientesPrintList()
             strtok(op, " ");
             char *ind = strtok(NULL, " ");
             int editIndex = 0;
+            //se intenta convertir el indice a entero
             if (TryToInt32(ind, &editIndex))
             {
-                BorrarCliente(*GetClient(editIndex - 1, clientes), &clientes);
+                Clientes *editCli = NULL;
+                //se verifica que el cliente no sea NULL
+                if (editCli = GetClient(editIndex - 1, clientes))
+                    BorrarCliente(*editCli, &clientes);
             }
         }
     }
