@@ -14,79 +14,11 @@
 _Bool vacio(void **top);
 _Bool isNumber(char *text);
 _Bool remove_actividad(Actividades **dato,Actividades **top);
-Actividades *buscar_dato(Actividades **top,char *act);
-Actividades *buscar_ant(Actividades **top,char *act);
+Actividades *FindActividad(Actividades **dato,Actividades **top);
+Actividades *FindActividad_ant(Actividades **dato,Actividades **top);
 int selector(int max, int acum);
 void load_actividades(Actividades **top);
 
-/*void insertarActividad(Actividades **top){
-    Actividades act;
-    Actividades *n;
-    struct tm horaInicio, horaFin;
-    char diaIngresado[10], aux[5], *a,*b,*c;
-    n = *top;
-    fflush(stdin);
-    scanf("%s", act.nombre);
-    while((strcmp(act.nombre,(n)->nombre) != 0) && (n != NULL)){
-        n = n->next; 
-    }
-    if(strcmp(act.nombre,(n)->nombre) == 0){
-        //borrar
-        system("cls");
-        printf("\Actividades ya existente, puede modificarla pero no sobreescribirla\n");
-        system("pause");
-        return;
-    }
-    //borrar
-    fflush(stdin);
-    printf("\nIngrese el cupo: \n");
-    scanf("%d", &act.cupo);
-    fflush(stdin);
-    printf("\nIngrese la sucursal: \n");
-    scanf("%d", &act.sucursal);
-    fflush(stdin);
-    printf("\nPrimer turno:\n Dia:\n");
-    fflush(stdin);
-    scanf("%s", diaIngresado);
-    fflush(stdin);
-    tolower(&diaIngresado);
-    while(strcmp(diaIngresado,"c") != 0){ //mientras no se ingrese un 0 en pantalla
-        if(dia_a_num(diaIngresado) >= 0 && dia_a_num(diaIngresado) <= 6){
-            printf("\nHorario de inicio(HH:MM): ");
-            fflush(stdin);
-            fgets(aux, sizeof(aux),stdin);
-            a = strtok(aux,":");
-            b = strtok(NULL, "");
-            c = strtok(NULL, "");
-            horaInicio.tm_hour = atoi(a);
-            horaInicio.tm_min = atoi(b);
-            printf("\nHorario de finalizado(HH:MM): ");
-            fflush(stdin);
-            fgets(aux, sizeof(aux),stdin);
-            a = strtok(aux,":");
-            b = strtok(NULL, "");
-            c = strtok(NULL, "");
-            horaFin.tm_hour = atoi(a);
-            horaFin.tm_min = atoi(b);
-            if(isNumber(&a) == false && isNumber(&b) == false) break;
-            if(horaInicio.tm_hour >= horaFin.tm_hour){
-                printf("\nHorario de inicio no puede ser mayor a horario de finalizacion\n");
-                system("pause");
-                continue;
-            }
-        }
-        else{
-            printf("\nDia invalido, ingrese un dia valido:\n");
-        }
-        //Turnos *FindTurn(struct tm time, Turnos *list); para pasarle el tiempo y la lista de turnos
-        printf("\n");
-        scanf("%s", diaIngresado);
-    }
-    if(strcmp(diaIngresado,"c") == 0 || 
-    strcmp(aux,"c") == 0){
-        return;
-    }    
-}*/
 void ABMACTA(){
     char menu[4][24] = {"ABM ACTIVIDADES\n",
     "  Insertar actividad\n",
@@ -171,11 +103,14 @@ int dia_a_num(char *texto){
 void load_actividades(Actividades **top){
     FILE *fichero;
     fichero = fopen("actividades.dat", "rb");
-    if(fichero == NULL){
+    if(fichero != NULL){
         while(!feof(fichero)){
             Actividades  *nodo = (Actividades  *)malloc(sizeof(Actividades));
             fread(nodo, sizeof(Actividades), 1, fichero);
-            if(feof(fichero))break;
+            if(feof(fichero)){
+                fclose(fichero);
+                break;
+            }
             nodo->next = *top;
             *top = nodo;
             nodo = NULL;
@@ -202,33 +137,43 @@ void save_actividades(Actividades **top){
     }
     fclose(fichero);
 }
-Actividades *buscar_dato(Actividades **top,char *act){
+Actividades *FindActividad(Actividades **dato,Actividades **top){
     Actividades *aux = *top;
-    while(aux != NULL){
-        if(strcmp(aux->nombre,act)==0) return aux;
+    while(!vacio(&aux)){
+        if(strcmp((*dato)->nombre,aux->nombre)==0 && (*dato)->sucursal == aux->sucursal) return aux;
         aux = aux->next;
     }
     return NULL;
 }
-Actividades *buscar_ant(Actividades **top,char *act){
+Actividades *FindActividad_ant(Actividades **dato,Actividades **top){
     Actividades *aux = *top,*ant;
-    while(aux != NULL){
-        if(strcmp(aux->nombre,act)==0) return ant;
+    while(!vacio(&aux)){
+        if(strcmp((*dato)->nombre,aux->nombre)==0 && (*dato)->sucursal == aux->sucursal) return ant;
         ant = aux;
         aux = aux->next;
     }
     return NULL;
 }
+Actividades *GetActividad(int index,Actividades *list){
+    int i = 0;
+    for(int i = 0; i < index; i++){
+        list = list->next;
+    }
+    if(i == index) return list;
+    return NULL;
+}
 _Bool remove_actividad(Actividades **dato,Actividades **top){
     Actividades *aux = *top,*ant = NULL;
-    while(vacio(&aux) != true){
-        if(*dato == *top && aux == *top && ant == NULL){
-            *top = aux->next;
+    while(!vacio(&aux)){
+        if(strcmp(aux->nombre,(*dato)->nombre) == 0 &&  aux->sucursal == (*dato)->sucursal && aux == *top){
+            *top = (*top)->next;
+            (*top)->next = NULL;
             free(aux);
             return true;
         }
-        else if(aux == *dato){
+        else if(strcmp(aux->nombre,(*dato)->nombre) == 0 &&  aux->sucursal == (*dato)->sucursal && aux != *top){
             ant->next = aux->next;
+            aux->next = NULL;
             free(aux);
             return true;
         }
