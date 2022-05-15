@@ -87,21 +87,6 @@ void load_actividades(Actividades **top);
         return;
     }    
 }*/
-void insertar_actividad(Actividades **top){
-    Actividades *nuevo;
-    nuevo = (Actividades *)malloc(sizeof(Actividades));
-    printf("Ingrese el nombre de la actividad: ");
-    fgets(nuevo->nombre, sizeof(nuevo->nombre),stdin);
-    strtok(nuevo->nombre,"\n");
-    printf("\nIngrese el cupo: ");
-    fflush(stdin);
-    scanf("%d", &nuevo->cupo);
-    printf("\nIngrese la sucursal: ");
-    fflush(stdin);
-    scanf("%d", &(nuevo->sucursal));
-    if(nuevo->sucursal > 2) return;
-    printf("\nHorario de ingreso: ");
-}
 void ABMACTA(){
     char menu[4][24] = {"ABM ACTIVIDADES\n",
     "  Insertar actividad\n",
@@ -182,14 +167,6 @@ int dia_a_num(char *texto){
     else if(strcmp(texto,"viernes")==0) return 5;
     else if(strcmp(texto,"sabado")==0) return 6;
     return -1;
-}
-void imprimir_actividades(Actividades **top){
-    Actividades *aux;
-    aux = *top;
-    while(aux != NULL){
-        printf("%s %i %i %i %i %i %i\n",aux->nombre,aux->cupo,aux->sucursal,aux->turno.horarioInicio.tm_hour,aux->turno.horarioInicio.tm_min,aux->turno.horarioFin.tm_hour,aux->turno.horarioFin.tm_min);
-        aux = aux->next;
-    }
 }
 void load_actividades(Actividades **top){
     FILE *fichero;
