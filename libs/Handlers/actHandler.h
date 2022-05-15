@@ -16,10 +16,12 @@ _Bool isNumber(char *text);
 _Bool remove_actividad(Actividades **dato,Actividades **top);
 Actividades *FindActividad(Actividades **dato,Actividades **top);
 Actividades *FindActividad_ant(Actividades **dato,Actividades **top);
+Actividades *GetActividad(int index,Actividades *list);
 int selector(int max, int acum);
-void load_actividades(Actividades **top);
+
 
 void ABMACTA(){
+    Actividades *top = NULL,*L = NULL;
     char menu[4][24] = {"ABM ACTIVIDADES\n",
     "  Insertar actividad\n",
     "  Eliminar actividad\n",
@@ -44,7 +46,16 @@ void ABMACTA(){
         switch(ant){
             case 1:
                 system(cls);
-                printf("1\n");     
+                load_actividades(&top);
+                L = (Actividades *)malloc(sizeof(Actividades));  
+                fflush(stdin);
+                fgets(L->nombre,50,stdin); //ingresa el nombre de la actividad
+                L->nombre[strlen(L->nombre)-1] = '\0';
+                fflush(stdin);
+                scanf("%i",&L->sucursal);//ingresa la sucursal de la actividad
+                apilar(&L,&top);
+                save_actividades(&top);
+                L = NULL;
                 system("pause");       
             break;
 
@@ -67,6 +78,7 @@ void ABMACTA(){
     }
 }
 void apilar(Actividades **dato, Actividades **top){
+    if(!*dato) return;
     (*dato)->next = *top;
     *top = *dato;
     *dato = NULL;
@@ -155,11 +167,12 @@ Actividades *FindActividad_ant(Actividades **dato,Actividades **top){
     return NULL;
 }
 Actividades *GetActividad(int index,Actividades *list){
-    int i = 0;
-    for(int i = 0; i < index; i++){
+    if(!list) return NULL;
+    for(int i = 0; i <= index; i++){
+        if(i == index) return list;
+        if(i <= index && !list) return NULL;
         list = list->next;
     }
-    if(i == index) return list;
     return NULL;
 }
 _Bool remove_actividad(Actividades **dato,Actividades **top){
