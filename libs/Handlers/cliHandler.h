@@ -29,10 +29,6 @@ void BorrarListaClientes(Clientes **list);
 void LoadClientes(Clientes **list);
 void SaveClientes(Clientes *list);
 
-// interfaz
-Clientes ClientesPrompt(Clientes *client);
-void ClientesPromptRestore(int index, Clientes *client);
-void ClientesPrintList();
 #pragma endregion
 
 void InsertClient(Clientes **node, Clientes **list)
