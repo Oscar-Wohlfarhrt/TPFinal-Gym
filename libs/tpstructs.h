@@ -19,6 +19,8 @@ struct ClientesPagos;
 typedef struct ClientesPagos ClientesPagos;
 struct Reservas;
 typedef struct Reservas Reservas;
+struct Asistencia;
+typedef struct Asistencia Asistencia;
 
 struct Clientes{
     char nombre[50];
@@ -28,7 +30,7 @@ struct Clientes{
     struct tm fechaNacimiento;
     struct tm ultimaActividad;
     struct tm fechaBaja;
-    Clientes *next;
+    struct Clientes *next;
 };
 
 struct Profesores{
@@ -40,7 +42,7 @@ struct Profesores{
 };
 
 struct Turnos{
-    int actividad;
+    long actividad;
     int dias;
     struct tm horarioInicio;
     struct tm horarioFin;
@@ -63,7 +65,7 @@ struct ActTurno{
 };
 
 struct ClientesPagos{
-    long dni;
+    long actturn;
     float monto;
     struct tm fechaEmision;
     struct tm fechaPago;
@@ -74,4 +76,9 @@ struct Reservas{
     long dni;
     char actividad[50];
     struct Reservas *next;
+};
+
+struct Asistencia{
+    long actturn;
+    struct tm fecha;
 };
