@@ -5,6 +5,9 @@
 #include <ctype.h>
 #include "../libs/cmenus.h"
 
+#define true 1
+#define false 0
+
 struct Clientes;
 typedef struct Clientes Clientes;
 struct Profesores;
@@ -21,6 +24,8 @@ struct Reservas;
 typedef struct Reservas Reservas;
 struct Asistencia;
 typedef struct Asistencia Asistencia;
+struct colaEspera;
+typedef struct colaEspera colaEspera;
 
 struct Clientes{
     char nombre[50];
@@ -81,4 +86,9 @@ struct Reservas{
 struct Asistencia{
     long actturn;
     struct tm fecha;
+};
+struct colaEspera{
+    long dni;
+    char actividad[50];
+    struct colaEspera *next;
 };
