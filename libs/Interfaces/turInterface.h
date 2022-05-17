@@ -7,15 +7,15 @@ Turnos TurnPrompt(Turnos *client, int *errout);
 void TurnPromptRestore(int index, Turnos *client);
 void TurnsPrintList();
 
-Turnos TurnPrompt(Turnos *client, int *errout)
+Turnos TurnPrompt(Turnos *turn, int *errout)
 {
     system(cls);
     int err = 1;
 
     Turnos cli;
 
-    if (client)
-        cli = *client;
+    if (turn)
+        cli = *turn;
 
     char op = '\0';
     int index = 0;
@@ -41,15 +41,15 @@ Turnos TurnPrompt(Turnos *client, int *errout)
             printf("\e[48;5;235m");
 
         printf("%i. %25s: ", i + 1, options[i]);
-        if (client)
-            TurnPromptRestore(i, client);
+        if (turn)
+            TurnPromptRestore(i, turn);
         printf("\e[K\e[0m\n");
     }
     printf("\e[48;5;237mcancelar edicion - c | finalizar edicion - e\e[K\e[0m\n");
     printf("\e[s"); // se guarda el cursor
 
-    if (!client)
-        client = &cli;
+    if (!turn)
+        turn = &cli;
 
     printf("\e[u"); // se resetea el cursor
 
@@ -67,7 +67,7 @@ Turnos TurnPrompt(Turnos *client, int *errout)
         }
         else if (op == 'c')
         {
-            *client = cli;
+            *turn = cli;
             err = 0;
             if (errout)
                 *errout = 0;
@@ -92,22 +92,15 @@ Turnos TurnPrompt(Turnos *client, int *errout)
 
             if (strcmp(input, "c"))
             {
-                if (index > 3)
+                if (index == 2 || index == 3)
                 {
-                    char *day = strtok(input, "/");
-                    char *month = strtok(NULL, "/");
-                    char *year = strtok(NULL, "/");
+                    char *hour = strtok(input, ":");
+                    char *min = strtok(NULL, ":");
 
-                    if (!TryToInt32(day, &tm.tm_mday))
+                    if (!TryToInt32(hour, &tm.tm_hour))
                         err = 2;
-                    if (!TryToInt32(month, &tm.tm_mon))
+                    if (!TryToInt32(min, &tm.tm_min))
                         err = 2;
-                    else
-                        tm.tm_mon -= 1;
-                    if (!TryToInt32(year, &tm.tm_year))
-                        err = 2;
-                    else
-                        tm.tm_year -= 1900;
                 }
 
                 if (err == 1)
@@ -115,34 +108,32 @@ Turnos TurnPrompt(Turnos *client, int *errout)
                     switch (index)
                     {
                     case 0:
-                        TryToInt64(input, &client->dni);
+                        TryToInt64(input, &turn->actividad);
                         break;
                     case 1:
-                        strcpy(client->nombre, input);
+                        TryToInt32(input, &turn->dia);
                         break;
                     case 2:
-                        strcpy(client->apellido, input);
+                        turn->horarioInicio = tm;
                         break;
                     case 3:
-                        strcpy(client->telefono, input);
+                        turn->horarioFin = tm;
                         break;
                     case 4:
-                        client->fechaNacimiento = tm;
+                        TryToInt64(input, &turn->prof);
                         break;
                     case 5:
-                        client->ultimaActividad = tm;
+                        TryToInt32(input, &turn->cupo);
                         break;
-                    case 6:
-                        client->fechaBaja = tm;
                     }
                 }
             }
-            TurnPromptRestore(index, client);
+            TurnPromptRestore(index, turn);
             printf("\e[u\e[J\e[0m");
         }
     }
 
-    return *client;
+    return *turn;
 }
 void TurnPromptRestore(int index, Turnos *turn)
 {
@@ -158,22 +149,19 @@ void TurnPromptRestore(int index, Turnos *turn)
         printf("%i", turn->actividad);
         break;
     case 1:
-        printf("%s", turn->nombre);
+        printf("%i", turn->dia);
         break;
     case 2:
-        printf("%s", turn->apellido);
+        printf("%2i:%02i", turn->horarioInicio.tm_hour, turn->horarioInicio.tm_min);
         break;
     case 3:
-        printf("%s", turn->telefono);
+        printf("%2i:%02i", turn->horarioFin.tm_hour, turn->horarioFin.tm_min);
         break;
     case 4:
-        printf("%02i/%02i/%04i", turn->fechaNacimiento.tm_mday, turn->fechaNacimiento.tm_mon + 1, turn->fechaNacimiento.tm_year + 1900);
+        printf("%i", turn->prof);
         break;
     case 5:
-        printf("%02i/%02i/%04i", turn->ultimaActividad.tm_mday, turn->ultimaActividad.tm_mon + 1, turn->ultimaActividad.tm_year + 1900);
-        break;
-    case 6:
-        printf("%02i/%02i/%04i", turn->fechaBaja.tm_mday, turn->fechaBaja.tm_mon + 1, turn->fechaBaja.tm_year + 1900);
+        printf("%i", turn->cupo);
         break;
     }
 }
@@ -195,13 +183,20 @@ void TurnsPrintList()
         system(cls);
         err = 1;
 
-        // se obtiene el primer cliente de la lista
-        Turnos *cli = GetClient(page * entries, clientes);
+        // se obtiene el primer turno de la lista
+        Turnos *turn = GetTurn(page * entries, turnos);
+
+    /*  "Actividad",
+        "Dia",
+        "Hora de inicio",
+        "hora de fin",
+        "DNI Profesor",
+        "Cupo Maximo",*/
 
         printf("\e[48;5;237m");
         printf("Turnos: Pagina %i\e[K\n", page + 1);
-        printf("%-5s | %-10s | %-50s | %-20s | %-20s\e[K\n", "Index", "DNI", "NOMBRE", "TELEFONO", "ULTIMA ACTIVIDAD");
-        printf("%-5s | %-10s | %-50s | %-20s | %-20s\e[K\n\e[0m", "", "", "APELLIDO", "FECHA NACIMIENTO", "FECHA DE BAJA");
+        printf("%-5s | %-50s | %-50s | %-20s | %-20s\e[K\n", "Index", "ACTIVIDAD", "PROFESOR", "DIA", "HORA INICIO");
+        printf("%-5s | %-50s | %-50s | %-20s | %-20s\e[K\n\e[0m", "", "", "", "CUPO", "HORA FIN");
         for (int i = 0; i < entries; i++)
         {
             int index = i + 1 + (page * entries);
@@ -210,19 +205,18 @@ void TurnsPrintList()
             else
                 printf("\e[48;5;235m");
 
-            if (cli)
+            if (turn)
             {
                 // se genera la fecha de nacimiento
-                char date1[17], date2[17], date3[17];
-                sprintf(date1, "%02i/%02i/%04i", cli->fechaNacimiento.tm_mday, cli->fechaNacimiento.tm_mon + 1, cli->fechaNacimiento.tm_year + 1900);
-                sprintf(date2, "%02i/%02i/%04i", cli->ultimaActividad.tm_mday, cli->ultimaActividad.tm_mon + 1, cli->ultimaActividad.tm_year + 1900);
-                sprintf(date3, "%02i/%02i/%04i", cli->fechaBaja.tm_mday, cli->fechaBaja.tm_mon + 1, cli->fechaBaja.tm_year + 1900);
+                char date1[17], date2[17];
+                sprintf(date1,"%2i:%02i", turn->horarioInicio.tm_hour, turn->horarioInicio.tm_min);
+                sprintf(date2,"%2i:%02i", turn->horarioFin.tm_hour, turn->horarioFin.tm_min);
 
                 // se imprime la fila
-                printf("%5i | %-10i | %-50s | %-20s | %-20s\e[K\n", index, cli->dni, cli->nombre, cli->telefono, date2);
-                printf("%5s | %-10s | %-50s | %-20s | %-20s\e[K\e[0m\n", "", "", cli->apellido, date1, date3);
+                printf("%5i | %-50i | %-50i | %-20i | %-20s\e[K\n", index, turn->actividad, turn->prof, turn->dia, date1);
+                printf("%5s | %-50s | %-50s | %-20i | %-20s\e[K\e[0m\n", "" , "", "",turn->cupo, date2);
 
-                cli = cli->next;
+                turn = turn->next;
             }
             else // si no existen mas registros
             {
@@ -266,9 +260,9 @@ void TurnsPrintList()
             Turnos data = TurnPrompt(NULL, &errout);
             if (errout)
             {
-                Turnos *newCli = (Turnos *)malloc(sizeof(Turnos));
-                *newCli = data;
-                InsertClient(&newCli, &clientes);
+                Turnos *newTurn = (Turnos *)malloc(sizeof(Turnos));
+                *newTurn = data;
+                InsertTurn(&newTurn, &turnos);
             }
         }
         else if (!strncmp(op, "e", 1)) // editar
@@ -279,10 +273,10 @@ void TurnsPrintList()
             // se intenta convertir el indice a entero
             if (TryToInt32(ind, &editIndex))
             {
-                Turnos *editCli = NULL;
-                // se verifica que el cliente no sea NULL
-                if (editCli = GetClient(editIndex - 1, clientes))
-                    TurnPrompt(editCli, NULL);
+                Turnos *editTurn = NULL;
+                // se verifica que el turno no sea NULL
+                if (editTurn = GetTurn(editIndex - 1, turnos))
+                    TurnPrompt(editTurn, NULL);
             }
         }
         else if (!strncmp(op, "x", 1)) // eliminar
@@ -293,10 +287,11 @@ void TurnsPrintList()
             // se intenta convertir el indice a entero
             if (TryToInt32(ind, &editIndex))
             {
-                Turnos *editCli = NULL;
-                // se verifica que el cliente no sea NULL
-                if (editCli = GetClient(editIndex - 1, clientes))
-                    BorrarCliente(*editCli, &clientes);
+                //Turnos *editTurn = NULL;
+                // se verifica que el turno no sea NULL
+                //if (editTurn = GetTurn(editIndex - 1, turnos))
+                
+                BorrarTurn(editIndex - 1, &turnos);
             }
         }
     }
