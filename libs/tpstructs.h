@@ -48,7 +48,7 @@ struct Profesores{
 
 struct Turnos{
     long actividad;
-    int dias;
+    int dia;
     struct tm horarioInicio;
     struct tm horarioFin;
     long prof;
