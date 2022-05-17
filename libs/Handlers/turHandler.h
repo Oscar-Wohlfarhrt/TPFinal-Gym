@@ -5,7 +5,7 @@ Turnos *turnos;
 
 void InsertTurn(Turnos **node, Turnos **list);
 Turnos *FindLastTurn(Turnos *list);
-//Turnos *FindTurn(struct tm time, Turnos *list);
+Turnos *FindTurn(long act,struct tm time, Turnos *list);
 Turnos *GetTurn(int index, Turnos *list);
 int BorrarTurn(int index, Turnos **list);
 void BuscarBorrarTurn(int index, Turnos **bor, Turnos **ant);
@@ -50,6 +50,25 @@ Turnos *FindLastTurn(Turnos *list)
     }
 
     return last;
+}
+Turnos *FindTurn(long act,struct tm time, Turnos *list)
+{
+    Turnos *fNode = NULL;
+
+    while (list)
+    {
+        if ((list->actividad == act) &&
+            (list->horarioInicio.tm_hour<=time.tm_hour) && (list->horarioFin.tm_hour>=time.tm_hour) &&
+            (list->horarioInicio.tm_min<=time.tm_min) && (list->horarioFin.tm_min>=time.tm_min))
+        {
+            fNode = list;
+            list = NULL;
+        }
+        else
+            list = list->next;
+    }
+
+    return fNode;
 }
 Turnos *GetTurn(int index, Turnos *list)
 {
