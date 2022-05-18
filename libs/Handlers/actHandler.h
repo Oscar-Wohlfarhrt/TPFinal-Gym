@@ -1,84 +1,13 @@
 #pragma once
 #include "../tpstructs.h"
 
-#define esc 27
-#define enter 13
-#define up 72
-#define down 80
-#define left 75
-#define right 77
-
 _Bool vacio(void **top);
 _Bool isNumber(char *text);
 _Bool remove_actividad(Actividades **dato, Actividades **top);
 Actividades *FindActividad(Actividades **dato, Actividades **top);
 Actividades *FindActividad_ant(Actividades **dato, Actividades **top);
 Actividades *GetActividad(int index, Actividades *list);
-int selector(int max, int acum);
 
-void ABMACTA()
-{
-    Actividades *top = NULL, *L = NULL;
-    char menu[4][24] = {"ABM ACTIVIDADES\n",
-                        "  Insertar actividad\n",
-                        "  Eliminar actividad\n",
-                        "  Modificar actividad\n"},
-         menucpy[4][24];
-    char ch;
-    int aux = 1, ant = 1;
-    memcpy(&menucpy[0], &menu[0], sizeof(menu));
-    while (1)
-    {
-        system(cls);
-        aux = 1;
-        do
-        {
-            menu[aux][0] = '>';
-            fputs(strcat(strcat(strcat(menu[0], menu[1]), menu[2]), menu[3]), stdout);
-            ant = aux;
-            aux = selector(3, aux);
-            memcpy(&menu[0], &menucpy[0], sizeof(menu));
-            fflush(stdout);
-            system("cls");
-            // printf("%i",aux);
-        } while (aux != 4 && aux != -1);
-        if (aux == -1)
-            return;
-        switch (ant)
-        {
-        case 1:
-            system(cls);
-            load_actividades(&top);
-            L = (Actividades *)malloc(sizeof(Actividades));
-            fflush(stdin);
-            fgets(L->nombre, 50, stdin); // ingresa el nombre de la actividad
-            L->nombre[strlen(L->nombre) - 1] = '\0';
-            fflush(stdin);
-            scanf("%i", &L->sucursal); // ingresa la sucursal de la actividad
-            apilar(&L, &top);
-            save_actividades(&top);
-            L = NULL;
-            system("pause");
-            break;
-
-        case 2:
-            system(cls);
-            printf("2\n");
-            system("pause");
-            break;
-
-        case 3:
-            system(cls);
-            printf("3\n");
-            system("pause");
-            break;
-
-        default:
-            return;
-            break;
-        }
-    }
-}
 void apilar(Actividades **dato, Actividades **top)
 {
     if (!*dato)
@@ -235,32 +164,5 @@ _Bool remove_actividad(Actividades **dato, Actividades **top)
         aux = aux->next;
     }
     return false;
-}
-int selector(int max, int acum)
-{
-    int i = acum;
-    printf("%d", i);
-    fflush(stdin);
-    _sleep(10);
-    switch (getch())
-    {
-    case up:
-        i--;
-        break;
-    case down:
-        i++;
-        break;
-    case enter:
-        return (max + 1);
-        break;
-    case esc:
-        return -1;
-        break;
-    }
-    if (i == 0)
-        i = max;
-    if (i > max)
-        i = 1;
-    return i;
 }
 #pragma endregion
