@@ -86,6 +86,7 @@ struct Reservas{
 struct Asistencia{
     long actturn;
     struct tm fecha;
+    struct Asistencia *next;
 };
 struct colaEspera{
     long dni;

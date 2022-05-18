@@ -1,28 +1,27 @@
 #pragma once
 #include "../tpstructs.h"
 
+Asistencia *asist;
 
-ClientesPagos *pagos;
-
-void InsertPago(ClientesPagos **node, ClientesPagos **list);
-ClientesPagos *FindLastPago(ClientesPagos *list);
-ClientesPagos *FindPago(long act,struct tm time, ClientesPagos *list);
-ClientesPagos *GetPago(int index, ClientesPagos *list);
-int BorrarPago(int index, ClientesPagos **list);
-void BuscarBorrarPago(int index, ClientesPagos **bor, ClientesPagos **ant);
-void BorrarListaPago(ClientesPagos **list);
+void InsertAsist(Asistencia **node, Asistencia **list);
+Asistencia *FindLastAsist(Asistencia *list);
+Asistencia *FindAsist(long act,struct tm time, Asistencia *list);
+Asistencia *GetAsist(int index, Asistencia *list);
+int BorrarAsist(int index, Asistencia **list);
+void BuscarBorrarAsist(int index, Asistencia **bor, Asistencia **ant);
+void BorrarListaAsist(Asistencia **list);
 
 // escritura y lecura del archivo
-void LoadPagos(ClientesPagos **list);
-void SavePagos(ClientesPagos *list);
+void LoadAsist(Asistencia **list);
+void SaveAsist(Asistencia *list);
 
-void InsertPago(ClientesPagos **node, ClientesPagos **list)
+void InsertAsist(Asistencia **node, Asistencia **list)
 {
     (*node)->next = NULL;
 
     if (*list)
     {
-        ClientesPagos *last = FindLastPago(*list);
+        Asistencia *last = FindLastAsist(*list);
         if (last)
         {
             (*node)->next = last->next;
@@ -40,9 +39,9 @@ void InsertPago(ClientesPagos **node, ClientesPagos **list)
     }
     *node = NULL;
 }
-ClientesPagos *FindLastPago(ClientesPagos *list)
+Asistencia *FindLastAsist(Asistencia *list)
 {
-    ClientesPagos *last = NULL;
+    Asistencia *last = NULL;
 
     while (list)
     {
@@ -52,7 +51,7 @@ ClientesPagos *FindLastPago(ClientesPagos *list)
 
     return last;
 }
-ClientesPagos *GetPago(int index, ClientesPagos *list)
+Asistencia *GetAsist(int index, Asistencia *list)
 {
     if (index >= 0)
     {
@@ -67,12 +66,12 @@ ClientesPagos *GetPago(int index, ClientesPagos *list)
 
     return list;
 }
-int BorrarPago(int index, ClientesPagos **list)
+int BorrarAsist(int index, Asistencia **list)
 {
     int err = 1;
     if(index>=0){
-        ClientesPagos *ant = NULL, *bor = *list;
-        BuscarBorrarPago(index, &bor, &ant);
+        Asistencia *ant = NULL, *bor = *list;
+        BuscarBorrarAsist(index, &bor, &ant);
 
         if (bor)
         {
@@ -91,7 +90,7 @@ int BorrarPago(int index, ClientesPagos **list)
     }
     return err;
 }
-void BuscarBorrarPago(int index, ClientesPagos **bor, ClientesPagos **ant)
+void BuscarBorrarAsist(int index, Asistencia **bor, Asistencia **ant)
 {
     int found = 0;
     while (*bor && index>0)
@@ -101,9 +100,9 @@ void BuscarBorrarPago(int index, ClientesPagos **bor, ClientesPagos **ant)
         index--;
     }
 }
-void BorrarListaPago(ClientesPagos **list)
+void BorrarListaAsist(Asistencia **list)
 {
-    ClientesPagos *aux = NULL;
+    Asistencia *aux = NULL;
     while (list)
     {
         aux = *list;
@@ -113,33 +112,33 @@ void BorrarListaPago(ClientesPagos **list)
     }
 }
 
-void LoadPagos(ClientesPagos **list)
+void LoadAsist(Asistencia **list)
 {
     FILE *f;
 
-    if (f = fopen("pagos.bin", "rb"))
+    if (f = fopen("asist.bin", "rb"))
     {
-        ClientesPagos *node = (ClientesPagos*)malloc(sizeof(ClientesPagos));
-        fread(node, sizeof(ClientesPagos), 1, f);
+        Asistencia *node = (Asistencia*)malloc(sizeof(Asistencia));
+        fread(node, sizeof(Asistencia), 1, f);
         while (!feof(f))
         {
-            InsertPago(&node, list);
-            node = (ClientesPagos*)malloc(sizeof(ClientesPagos));
-            fread(node, sizeof(ClientesPagos), 1, f);
+            InsertAsist(&node, list);
+            node = (Asistencia*)malloc(sizeof(Asistencia));
+            fread(node, sizeof(Asistencia), 1, f);
         }
         free(node);
         fclose(f);
     }
 }
-void SavePagos(ClientesPagos *list)
+void SaveAsist(Asistencia *list)
 {
     FILE *f;
 
-    if (f = fopen("pagos.bin", "wb"))
+    if (f = fopen("asist.bin", "wb"))
     {
         while (list)
         {
-            fwrite(list, sizeof(ClientesPagos), 1, f);
+            fwrite(list, sizeof(Asistencia), 1, f);
             list = list->next;
         }
         fclose(f);
