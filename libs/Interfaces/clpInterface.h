@@ -1,39 +1,37 @@
 #pragma once
 
-#include "../Handlers/turHandler.h"
+#include "../Handlers/clpHandler.h"
 
 // interfaz
-Turnos TurnPrompt(Turnos *client, int *errout);
-void TurnPromptRestore(int index, Turnos *client);
-void TurnsPrintList();
+ClientesPagos PagosPrompt(ClientesPagos *client, int *errout);
+void PagosPromptRestore(int index, ClientesPagos *client);
+void PagosPrintList();
 
-Turnos TurnPrompt(Turnos *turn, int *errout)
+ClientesPagos PagosPrompt(ClientesPagos *client, int *errout)
 {
     system(cls);
     int err = 1;
 
-    Turnos cli;
+    ClientesPagos cli;
 
-    if (turn)
-        cli = *turn;
+    if (client)
+        cli = *client;
 
     char op = '\0';
     int index = 0;
 
     // opciones para el menu
     char *options[] = {
-        "Actividad",
-        "Dia",
-        "Hora de inicio",
-        "hora de fin",
-        "DNI Profesor",
-        "Cupo Maximo",
+        "Actividad-Turno",
+        "Monto",
+        "Emision",
+        "Pago",
     };
 
     // se muestra la interfaz
     printf("\e[48;5;237m");
-    printf("Turnos:\e[K\n\e[K\n");
-    for (int i = 0; i < 6; i++)
+    printf("ClientesPagos:\e[K\n\e[K\n");
+    for (int i = 0; i < 4; i++)
     {
         if (i % 2)
             printf("\e[48;5;236m");
@@ -41,15 +39,15 @@ Turnos TurnPrompt(Turnos *turn, int *errout)
             printf("\e[48;5;235m");
 
         printf("%i. %25s: ", i + 1, options[i]);
-        if (turn)
-            TurnPromptRestore(i, turn);
+        if (client)
+            PagosPromptRestore(i, client);
         printf("\e[K\e[0m\n");
     }
     printf("\e[48;5;237mcancelar edicion - c | finalizar edicion - e\e[K\e[0m\n");
     printf("\e[s"); // se guarda el cursor
 
-    if (!turn)
-        turn = &cli;
+    if (!client)
+        client = &cli;
 
     printf("\e[u"); // se resetea el cursor
 
@@ -67,12 +65,12 @@ Turnos TurnPrompt(Turnos *turn, int *errout)
         }
         else if (op == 'c')
         {
-            *turn = cli;
+            *client = cli;
             err = 0;
             if (errout)
                 *errout = 0;
         }
-        else if (op >= '1' && op <= '6')
+        else if (op >= '1' && op <= '4')
         {
             index = op - '1';
 
@@ -94,13 +92,20 @@ Turnos TurnPrompt(Turnos *turn, int *errout)
             {
                 if (index == 2 || index == 3)
                 {
-                    char *hour = strtok(input, ":");
-                    char *min = strtok(NULL, ":");
+                    char *day = strtok(input, "/");
+                    char *month = strtok(NULL, "/");
+                    char *year = strtok(NULL, "/");
 
-                    if (!TryToInt32(hour, &tm.tm_hour))
+                    if (!TryToInt32(day, &tm.tm_mday))
                         err = 2;
-                    if (!TryToInt32(min, &tm.tm_min))
+                    if (!TryToInt32(month, &tm.tm_mon))
                         err = 2;
+                    else
+                        tm.tm_mon -= 1;
+                    if (!TryToInt32(year, &tm.tm_year))
+                        err = 2;
+                    else
+                        tm.tm_year -= 1900;
                 }
 
                 if (err == 1)
@@ -108,34 +113,28 @@ Turnos TurnPrompt(Turnos *turn, int *errout)
                     switch (index)
                     {
                     case 0:
-                        TryToInt64(input, &turn->actividad);
+                        TryToInt64(input, &client->actturn);
                         break;
                     case 1:
-                        TryToInt32(input, &turn->dia);
+                        TryToFloat(input, &client->monto);
                         break;
                     case 2:
-                        turn->horarioInicio = tm;
+                        client->fechaEmision = tm;
                         break;
                     case 3:
-                        turn->horarioFin = tm;
-                        break;
-                    case 4:
-                        TryToInt64(input, &turn->prof);
-                        break;
-                    case 5:
-                        TryToInt32(input, &turn->cupo);
+                        client->fechaPago = tm;
                         break;
                     }
                 }
             }
-            TurnPromptRestore(index, turn);
+            PagosPromptRestore(index, client);
             printf("\e[u\e[J\e[0m");
         }
     }
 
-    return *turn;
+    return *client;
 }
-void TurnPromptRestore(int index, Turnos *turn)
+void PagosPromptRestore(int index, ClientesPagos *client)
 {
     SetCurPos(30, index + 2);
     if (index % 2)
@@ -146,26 +145,20 @@ void TurnPromptRestore(int index, Turnos *turn)
     switch (index)
     {
     case 0:
-        printf("%i", turn->actividad);
+        printf("%i", client->actturn);
         break;
     case 1:
-        printf("%i", turn->dia);
+        printf("$%.02f", client->monto);
         break;
     case 2:
-        printf("%2i:%02i", turn->horarioInicio.tm_hour, turn->horarioInicio.tm_min);
+        printf("%02i/%02i/%04i", client->fechaEmision.tm_mday, client->fechaEmision.tm_mon + 1, client->fechaEmision.tm_year + 1900);
         break;
     case 3:
-        printf("%2i:%02i", turn->horarioFin.tm_hour, turn->horarioFin.tm_min);
-        break;
-    case 4:
-        printf("%i", turn->prof);
-        break;
-    case 5:
-        printf("%i", turn->cupo);
+        printf("%02i/%02i/%04i", client->fechaPago.tm_mday, client->fechaPago.tm_mon + 1, client->fechaPago.tm_year + 1900);
         break;
     }
 }
-void TurnsPrintList()
+void PagosPrintList()
 {
     const int entries = 10; // entradas por pagina
 
@@ -183,8 +176,8 @@ void TurnsPrintList()
         system(cls);
         err = 1;
 
-        // se obtiene el primer turno de la lista
-        Turnos *turn = GetTurn(page * entries, turnos);
+        // se obtiene el primer elemento de la lista
+        ClientesPagos *client = GetPago(page * entries, pagos);
 
     /*  "Actividad",
         "Dia",
@@ -194,9 +187,9 @@ void TurnsPrintList()
         "Cupo Maximo",*/
 
         printf("\e[48;5;237m");
-        printf("Turnos: Pagina %i\e[K\n", page + 1);
-        printf("%-5s | %-50s | %-50s | %-20s | %-20s\e[K\n", "Index", "ACTIVIDAD", "PROFESOR", "DIA", "HORA INICIO");
-        printf("%-5s | %-50s | %-50s | %-20s | %-20s\e[K\n\e[0m", "", "", "", "CUPO", "HORA FIN");
+        printf("Pagos: Pagina %i\e[K\n", page + 1);
+        printf("%-5s | %-50s | %-20s | %-20s\e[K\n", "Index", "ACT-TURNO","MONTO", "EMISION");
+        printf("%-5s | %-50s | %-20s | %-20s\e[K\n\e[0m", "", "","", "PAGO");
         for (int i = 0; i < entries; i++)
         {
             int index = i + 1 + (page * entries);
@@ -205,18 +198,18 @@ void TurnsPrintList()
             else
                 printf("\e[48;5;235m");
 
-            if (turn)
+            if (client)
             {
                 // se genera la fecha de nacimiento
-                char date1[17], date2[17];
-                sprintf(date1,"%2i:%02i", turn->horarioInicio.tm_hour, turn->horarioInicio.tm_min);
-                sprintf(date2,"%2i:%02i", turn->horarioFin.tm_hour, turn->horarioFin.tm_min);
-
+                char date1[17],date2[17];
+                sprintf(date1, "%02i/%02i/%04i", client->fechaEmision.tm_mday, client->fechaEmision.tm_mon + 1, client->fechaEmision.tm_year + 1900);
+                sprintf(date2, "%02i/%02i/%04i", client->fechaPago.tm_mday, client->fechaPago.tm_mon + 1, client->fechaPago.tm_year + 1900);
+                
                 // se imprime la fila
-                printf("%5i | %-50i | %-50i | %-20i | %-20s\e[K\n", index, turn->actividad, turn->prof, turn->dia, date1);
-                printf("%5s | %-50s | %-50s | %-20i | %-20s\e[K\e[0m\n", "" , "", "",turn->cupo, date2);
+                printf("%5i | %-50i | $%-19.02f | %-20s\e[K\n", index, client->actturn,client->monto, date1);
+                printf("%5s | %-50s | %-20s | %-20s\e[K\e[0m\n", "" , "", "", date2);
 
-                turn = turn->next;
+                client = client->next;
             }
             else // si no existen mas registros
             {
@@ -257,12 +250,12 @@ void TurnsPrintList()
         else if (!strncmp(op, "w", 1)) // anadir
         {
             int errout = 0;
-            Turnos data = TurnPrompt(NULL, &errout);
+            ClientesPagos data = PagosPrompt(NULL, &errout);
             if (errout)
             {
-                Turnos *newTurn = (Turnos *)malloc(sizeof(Turnos));
+                ClientesPagos *newTurn = (ClientesPagos *)malloc(sizeof(ClientesPagos));
                 *newTurn = data;
-                InsertTurn(&newTurn, &turnos);
+                InsertPago(&newTurn, &pagos);
             }
         }
         else if (!strncmp(op, "e", 1)) // editar
@@ -273,10 +266,10 @@ void TurnsPrintList()
             // se intenta convertir el indice a entero
             if (TryToInt32(ind, &editIndex))
             {
-                Turnos *editTurn = NULL;
+                ClientesPagos *editTurn = NULL;
                 // se verifica que el turno no sea NULL
-                if (editTurn = GetTurn(editIndex - 1, turnos))
-                    TurnPrompt(editTurn, NULL);
+                if (editTurn = GetPago(editIndex - 1, pagos))
+                    PagosPrompt(editTurn, NULL);
             }
         }
         else if (!strncmp(op, "x", 1)) // eliminar
@@ -287,11 +280,11 @@ void TurnsPrintList()
             // se intenta convertir el indice a entero
             if (TryToInt32(ind, &editIndex))
             {
-                //Turnos *editTurn = NULL;
+                //ClientesPagos *editTurn = NULL;
                 // se verifica que el turno no sea NULL
                 //if (editTurn = GetTurn(editIndex - 1, turnos))
                 
-                BorrarTurn(editIndex - 1, &turnos);
+                BorrarPago(editIndex - 1, &pagos);
             }
         }
     }
