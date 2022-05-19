@@ -135,3 +135,27 @@ int TryToInt64(char *str, long *out)
     *out = atol(str);
     return 1;
 }
+int TryToFloat(char *str, float *out)
+{
+    if(!str)
+        return 0;
+    
+    int length=strlen(str);
+    for (int i = 1; i < 256; i++)
+    {
+        if ((((char)i) >= 48 && ((char)i) <= 57) || ((char)i) == '-' || ((char)i) == '.')
+        {
+        } //rango ascii de numeros enteros
+        else
+        {
+            for (int j = 0; j < length; j++)
+            {
+                if (str[j] == (char)i)
+                    return 0;
+            }
+        }
+    }
+
+    *out = atof(str);
+    return 1;
+}
