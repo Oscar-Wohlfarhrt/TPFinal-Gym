@@ -10,14 +10,18 @@
 	    struct Profesores *next;
 	}Profesores;
 */
-Profesores insterProf(Profesores**node,Profesores**ini);//Inster at the end
+
+void LoadP();
+Profesores InsertP(Profesores**node,Profesores**ini);//Inster at the end
+Profesores  *standarAdd();
 void PrintList(Profesores*ini);//aux text
-Profesores ModificarProf(long dato,Profesores **ini);
+int ReplaceP(Profesores **node,Profesores **ini);
 Profesores *buscarAnterior(long dato,Profesores *ini);
-Profesores elminarProf(long dato,Profesores **ini);
+int flagRemove(long dato,Profesores *ini);
+int RemoveP(long dato,Profesores **ini);
 
 
-Profesores insterProf(Profesores**node,Profesores**ini){
+Profesores InsertP(Profesores**node,Profesores**ini){
 	Profesores *ant;
 	ant = *ini;
 	int flag = 0;
@@ -41,6 +45,21 @@ Profesores insterProf(Profesores**node,Profesores**ini){
 	*node = NULL;
 }
 
+Profesores *standarAdd(){
+	Profesores *nodeNew = (struct Profesores*)malloc(sizeof(struct Profesores));
+
+	printf("Ingrese nombre: \n");
+	gets(nodeNew->nombre);
+	printf("Ingrese apellido: \n");
+	gets(nodeNew->apellido);
+	printf("Ingrese telefono: \n");
+	gets(nodeNew->telefono);
+	printf("Ingrese dni: \n");
+	scanf("%ld",&nodeNew->dni);
+
+	return nodeNew;
+}
+
 void PrintList(Profesores*ini){
 	while (ini!=NULL)
 	{
@@ -50,19 +69,37 @@ void PrintList(Profesores*ini){
 		printf("-----------------------------------------\n");
 		ini = (ini)->next;
 	}
-	
+
 }
 
-Profesores ModificarProf(long dato,Profesores **ini){
+int ReplaceP(Profesores **node,Profesores **ini){
+	int flag=0;
 	while((*ini) != NULL){
-		if(((*ini)->dni) == dato){
-			printf("procesar texto");
+		if((*ini)->dni == (*node)->dni){
+			printf("procesar texto");//funcion de procesar
+			flag=1;
 			break;
-		}	
-		else{		
+		}
+		else{
 			*ini = (*ini) -> next;
 		}
 	}
+	return flag;
+}
+
+int flagRemove(long dato,Profesores *ini){
+	flag = 0;
+	while(ini != NULL){
+		if(((ini)->dni) == dato){
+			flag = 1;
+			break;
+		}
+		else{
+			anterior = ini;
+			ini = (ini) -> next;
+		}
+	}
+	return flag;
 }
 
 Profesores *buscarAnterior(long dato,Profesores *ini){
@@ -70,7 +107,7 @@ Profesores *buscarAnterior(long dato,Profesores *ini){
 	while(ini != NULL){
 		if(((ini)->dni) == dato){
 			break;
-		}	
+		}
 		else{
 			anterior = ini;
 			ini = (ini) -> next;
@@ -79,15 +116,24 @@ Profesores *buscarAnterior(long dato,Profesores *ini){
 	return anterior;
 }
 
-Profesores elminarProf(long dato,Profesores **ini){
+int RemoveP(long dato,Profesores **ini){
 	Profesores *anterior= buscarAnterior(dato,(*ini));
-	if(anterior != NULL){
-		*ini = anterior->next;
-		anterior -> next = (*ini )-> next;
-		(*ini) -> next = NULL;
-		free(*ini);
+	Profesores *bor = *ini;
+	int flag = flagRemove(dato,(*ini));
+	if(flag != 0){
+		if(anterior != NULL){
+			bor = anterior->next;
+			anterior -> next = bor-> next;
+			bor -> next = NULL;
+			free(bor);
+		}
+		else{
+			free(bor);
+		}
 	}
 	else{
-		free(*ini);
+		printf("No se ha encontrado el node a borrar");
 	}
+	return flag;
 }
+
