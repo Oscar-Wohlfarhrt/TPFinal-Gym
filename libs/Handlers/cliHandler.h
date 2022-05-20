@@ -128,7 +128,7 @@ int BorrarCliente(Clientes value, Clientes **list)
 void BuscarBorrarCliente(Clientes value, Clientes **bor, Clientes **ant)
 {
     int found = 0;
-    while (bor && !found)
+    while (*bor && !found)
     {
         if (value.dni == (*bor)->dni)
         {
