@@ -3,23 +3,40 @@
 
 _Bool vacio(void **top);
 _Bool isNumber(char *text);
-_Bool remove_actividad(Actividades **dato, Actividades **top);
-Actividades *FindActividad(Actividades **dato, Actividades **top);
-Actividades *FindActividad_ant(Actividades **dato, Actividades **top);
+_Bool remove_actividad(Actividades **dato, Actividades **e, Actividades **s);
+Actividades *FindActividad(Actividades **dato, Actividades **s, Actividades **e);
 Actividades *GetActividad(int index, Actividades *list);
 
-void apilar(Actividades **dato, Actividades **top)
+void enqueue_actividad(Actividades **p, Actividades **e, Actividades **s)
 {
-    if (!*dato)
+    if (!p)
         return;
-    (*dato)->next = *top;
-    *top = *dato;
-    *dato = NULL;
+    (*p)->next = NULL;
+    if (!(*s) && !(*e))
+    {
+        (*s) = (*p);
+    }
+    else
+    {
+        (*e)->next = *p;
+    }
+    *e = *p;
+    *p = NULL;
 }
-void desapilar(Actividades **dato, Actividades **top)
+void dequeue_actividad(Actividades **p, Actividades **e, Actividades **s)
 {
-    *dato = *top;
-    *top = (*top)->next;
+    if (!p)
+        return;
+    *p = *s;
+    if (!(*s)->next)
+    {
+        *s = NULL;
+    }
+    else
+    {
+        *s = (*s)->next;
+    }
+    (*p)->next = NULL;
 }
 _Bool vacio(void **top)
 {
@@ -59,7 +76,7 @@ int dia_a_num(char *texto)
         return 6;
     return -1;
 }
-void load_actividades(Actividades **top)
+void load_actividades(Actividades **e,Actividades **s)
 {
     FILE *fichero;
     fichero = fopen("actividades.dat", "rb");
@@ -74,55 +91,35 @@ void load_actividades(Actividades **top)
                 fclose(fichero);
                 break;
             }
-            nodo->next = *top;
-            *top = nodo;
-            nodo = NULL;
+            enqueue_actividad(&nodo, &(*e), &(*s));
         }
     }
     fclose(fichero);
 }
-void save_actividades(Actividades **top)
+void save_actividades(Actividades *e, Actividades *s)
 {
-    Actividades *aux = NULL, *tp2 = NULL, *tope = *top;
+    Actividades *aux = NULL;
     FILE *fichero;
     fichero = fopen("actividades.dat", "wb");
-    if (fichero == NULL || *top == NULL)
+    if (!fichero || !s)
     {
         fclose(fichero);
         return;
     }
-    while (!vacio(&tope))
+    while(s)
     {
-        desapilar(&aux, &tope);
-        apilar(&aux, &tp2);
-    }
-    while (!vacio(&tp2))
-    {
-        desapilar(&aux, &tp2);
-        fwrite(aux, sizeof(Actividades), 1, fichero);
-        apilar(&aux, &tope);
+        dequeue_actividad(&aux, &e, &s);
+        fwrite(aux,sizeof(Actividades),1,fichero);
     }
     fclose(fichero);
 }
-Actividades *FindActividad(Actividades **dato, Actividades **top)
+Actividades *FindActividad(Actividades **dato, Actividades **s, Actividades **e)
 {
-    Actividades *aux = *top;
-    while (!vacio(&aux))
+    Actividades *aux = *s;
+    while (aux)
     {
         if (strcmp((*dato)->nombre, aux->nombre) == 0 && (*dato)->sucursal == aux->sucursal)
             return aux;
-        aux = aux->next;
-    }
-    return NULL;
-}
-Actividades *FindActividad_ant(Actividades **dato, Actividades **top)
-{
-    Actividades *aux = *top, *ant;
-    while (!vacio(&aux))
-    {
-        if (strcmp((*dato)->nombre, aux->nombre) == 0 && (*dato)->sucursal == aux->sucursal)
-            return ant;
-        ant = aux;
         aux = aux->next;
     }
     return NULL;
@@ -141,28 +138,25 @@ Actividades *GetActividad(int index, Actividades *list)
     }
     return NULL;
 }
-_Bool remove_actividad(Actividades **dato, Actividades **top)
+_Bool remove_actividad(Actividades **dato, Actividades **e, Actividades **s)
 {
-    Actividades *aux = *top, *ant = NULL;
-    while (!vacio(&aux))
+    Actividades *aux = *s;
+    if (!(*dato))
+        return false;
+    if ((*dato) == (*s))
     {
-        if (strcmp(aux->nombre, (*dato)->nombre) == 0 && aux->sucursal == (*dato)->sucursal && aux == *top)
-        {
-            *top = (*top)->next;
-            (*top)->next = NULL;
-            free(aux);
+        (*s) = (*s)->next;
+        free(aux);
+        return true;
+    }
+    while(aux){
+        if(*dato == aux->next){
+            aux->next = aux->next->next;
+            free(*dato);
             return true;
         }
-        else if (strcmp(aux->nombre, (*dato)->nombre) == 0 && aux->sucursal == (*dato)->sucursal && aux != *top)
-        {
-            ant->next = aux->next;
-            aux->next = NULL;
-            free(aux);
-            return true;
-        }
-        ant = aux;
         aux = aux->next;
     }
-    return false;
 }
+
 #pragma endregion

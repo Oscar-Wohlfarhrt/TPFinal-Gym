@@ -88,6 +88,7 @@ struct Asistencia{
     struct tm fecha;
     struct Asistencia *next;
 };
+
 struct colaEspera{
     long dni;
     char actividad[50];
