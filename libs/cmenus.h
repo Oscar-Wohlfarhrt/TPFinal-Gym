@@ -32,7 +32,7 @@ void ClearConsole(){
 
 void SetCurPos(int XPos, int YPos)
 {
-    printf("\033[%d;%dH", YPos + 1, XPos + 1);
+    printf("\033[%d;%dH", YPos + 1, XPos + 1);//printf("\033[%d;%dH", (y), (x)) sacado de internet
 }
 
 void setMenus(char *menus[], char request[], char error[])

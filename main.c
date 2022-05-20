@@ -24,8 +24,8 @@ int Replace([tipo] value,[struct] *new,[struct] **list)
 
 int main(int argc, char **args)
 {
-    Actividades *L;
-    ABMACTA(&L);
+    Actividades *e=NULL, *s=NULL;
+    ActiPrintList(e,s);
     printf("Trabajo en progreso...\n");
     printf("Primer commit");
     return 0;
