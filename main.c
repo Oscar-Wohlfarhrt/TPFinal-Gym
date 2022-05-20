@@ -4,7 +4,7 @@
 #include "libs/Handlers/actHandler.h"
 //#include "libs/Handlers/turHandler.h"
 
-/* 
+/*
 //si se busca por mas de una variable
 //reemplazar [tipo] por [struct]
 
@@ -14,7 +14,7 @@
 void Load([struct] **list)
 void Save([struct] *list)
 void Insert([struct] **node, [struct] **list)
-int Remove([tipo] value, [struct] **list) 
+int Remove([tipo] value, [struct] **list)
 [struct] *Find([tipo] value,[struct] *list)
 int Replace([tipo] value,[struct] *new,[struct] **list)
 [struct] *GetByIndex(int index,[struct] *list)

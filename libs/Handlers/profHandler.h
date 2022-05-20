@@ -95,7 +95,6 @@ int flagRemove(long dato,Profesores *ini){
 			break;
 		}
 		else{
-			anterior = ini;
 			ini = (ini) -> next;
 		}
 	}
