@@ -1,8 +1,10 @@
 #pragma once
 #include "../tpstructs.h"
 
-colaEspera *getbyName(char *array, colaEspera **e, colaEspera **s);
+typedef int _Bool;
+
 colaEspera *getbyDNI(long dni, colaEspera **e, colaEspera **s);
+_Bool remove_espera(colaEspera **dato, colaEspera **e, colaEspera **s);
 
 void enqueue_espera(colaEspera **p, colaEspera **e, colaEspera **s)
 {
@@ -22,10 +24,17 @@ void enqueue_espera(colaEspera **p, colaEspera **e, colaEspera **s)
 }
 void dequeue_espera(colaEspera **p, colaEspera **e, colaEspera **s)
 {
-    if (!(*p) || !(*s))
+    if (!p)
         return;
     *p = *s;
-    *s = (*s)->next;
+    if (!(*s)->next)
+    {
+        *s = NULL;
+    }
+    else
+    {
+        *s = (*s)->next;
+    }
     (*p)->next = NULL;
 }
 void load_espera(colaEspera **p, colaEspera **e, colaEspera **s)
@@ -37,29 +46,9 @@ void load_espera(colaEspera **p, colaEspera **e, colaEspera **s)
     {
         colaEspera *nuevo = (colaEspera *)malloc(sizeof(colaEspera));
         fread(nuevo, sizeof(colaEspera), 1, f);
-        enqueue_espera(*p, *e, *s);
+        enqueue_espera(&(*p), &(*e), &(*s));
     }
     fclose(f);
-}
-colaEspera *getbyName(char *array, colaEspera **e, colaEspera **s){
-    colaEspera *p = *s;
-    while (p)
-    {
-        if (!strcmp(p->nombre, array))
-            return p;
-        p = p->next;
-    }
-    return NULL;
-}
-colaEspera *getbyDNI(long dni, colaEspera **e, colaEspera **s){
-    colaEspera *p = *s;
-    while (p)
-    {
-        if (p->dni == dni)
-            return p;
-        p = p->next;
-    }
-    return NULL;
 }
 void save_espera(colaEspera **p, colaEspera **e, colaEspera **s)
 {
@@ -74,27 +63,37 @@ void save_espera(colaEspera **p, colaEspera **e, colaEspera **s)
     }
     fclose(f);
 }
-_Bool remove_espera(colaEspera **p, colaEspera **e, colaEspera **s)
+colaEspera *getbyDNI(long dni, colaEspera **e, colaEspera **s)
 {
-    colaEspera *p2 = *s;
-    if (!(*p))
-        return false;
-    if (!(*e))
+    colaEspera *p = *s;
+    while (p)
     {
-        *s = NULL;
-        return false;
+        if (p->dni == dni)
+            return p;
+        p = p->next;
     }
-    if ((*p) == (p2))
+    return NULL;
+}
+_Bool remove_espera(colaEspera **dato, colaEspera **e, colaEspera **s)
+{
+    colaEspera *aux = *s;
+    if (!(*dato))
+        return false;
+    if ((*dato) == (*s))
     {
-        *e = NULL;
-        *s = NULL;
+        (*s) = (*s)->next;
+        free(aux);
         return true;
     }
-    while (p2->next != (*p))
-        p2 = p2->next;
-    p2->next = (*p)->next;
-    free(*p);
-    *p = NULL;
-    return true;
+    while (aux)
+    {
+        if (*dato == aux->next)
+        {
+            aux->next = aux->next->next;
+            free(*dato);
+            return true;
+        }
+        aux = aux->next;
+    }
 }
 #pragma endregion

@@ -2,26 +2,25 @@
 #include "../tpstructs.h"
 
 _Bool vacio(void **top);
-_Bool isNumber(char *text);
 _Bool remove_actividad(Actividades **dato, Actividades **e, Actividades **s);
-Actividades *FindActividad(Actividades **dato, Actividades **s, Actividades **e);
-Actividades *GetActividad(int index, Actividades *list);
+Actividades *FindActividad(char *nombre, int suc, Actividades *s, Actividades *e);
+Actividades *GetActividad(int index, Actividades *e, Actividades *s);
 
 void enqueue_actividad(Actividades **p, Actividades **e, Actividades **s)
 {
-    if (!p)
-        return;
-    (*p)->next = NULL;
-    if (!(*s) && !(*e))
-    {
-        (*s) = (*p);
-    }
-    else
-    {
-        (*e)->next = *p;
-    }
-    *e = *p;
-    *p = NULL;
+   if (!(*p))
+      return;
+   (*p)->next = NULL;
+   if (!(*e))
+   {
+      *s = *p;
+   }
+   else
+   {
+      (*e)->next = *p;
+   }
+   *e = *p;
+   *p = NULL;
 }
 void dequeue_actividad(Actividades **p, Actividades **e, Actividades **s)
 {
@@ -108,35 +107,36 @@ void save_actividades(Actividades *e, Actividades *s)
     }
     while(s)
     {
-        dequeue_actividad(&aux, &e, &s);
+        aux = s;
+        s = s->next;
         fwrite(aux,sizeof(Actividades),1,fichero);
     }
     fclose(fichero);
 }
-Actividades *FindActividad(Actividades **dato, Actividades **s, Actividades **e)
+Actividades *FindActividad(char *nombre, int suc, Actividades *s, Actividades *e)
 {
-    Actividades *aux = *s;
+    Actividades *aux = s;
     while (aux)
     {
-        if (strcmp((*dato)->nombre, aux->nombre) == 0 && (*dato)->sucursal == aux->sucursal)
+        if (strcmp(nombre, aux->nombre) == 0 && suc == aux->sucursal)
             return aux;
         aux = aux->next;
     }
     return NULL;
 }
-Actividades *GetActividad(int index, Actividades *list)
+Actividades *GetActividad(int index, Actividades *e, Actividades *s)
 {
-    if (!list)
-        return NULL;
-    for (int i = 0; i <= index; i++)
-    {
-        if (i == index)
-            return list;
-        if (i <= index && !list)
-            return NULL;
-        list = list->next;
-    }
-    return NULL;
+   for (int i = 0; i <= index; i++)
+   {
+      if (!s)
+         return NULL;
+      if (i == index)
+      {
+         return s;
+      }
+      s = s->next;
+   }
+   return NULL;
 }
 _Bool remove_actividad(Actividades **dato, Actividades **e, Actividades **s)
 {
@@ -158,5 +158,4 @@ _Bool remove_actividad(Actividades **dato, Actividades **e, Actividades **s)
         aux = aux->next;
     }
 }
-
 #pragma endregion
