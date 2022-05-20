@@ -1,10 +1,12 @@
 #pragma once
 #include "../tpstructs.h"
 
-_Bool vacio(void **top);
 _Bool remove_actividad(Actividades **dato, Actividades **e, Actividades **s);
 Actividades *FindActividad(char *nombre, int suc, Actividades *s, Actividades *e);
 Actividades *GetActividad(int index, Actividades *e, Actividades *s);
+
+//interfaz
+Actividades ActividadesPrompt(Actividades *e, Actividades *s, int *errout);
 
 void enqueue_actividad(Actividades **p, Actividades **e, Actividades **s)
 {
@@ -36,44 +38,6 @@ void dequeue_actividad(Actividades **p, Actividades **e, Actividades **s)
         *s = (*s)->next;
     }
     (*p)->next = NULL;
-}
-_Bool vacio(void **top)
-{
-    if ((*top) == NULL)
-    {
-        return true;
-    }
-    return false;
-}
-_Bool isNumber(char *text)
-{
-    int j;
-    j = strlen(text);
-    while (j--)
-    {
-        if (text[j] >= '0' && text[j] <= '9')
-            continue;
-        return false;
-    }
-    return true;
-}
-int dia_a_num(char *texto)
-{
-    if (strcmp(texto, "domingo") == 0)
-        return 0;
-    else if (strcmp(texto, "lunes") == 0)
-        return 1;
-    else if (strcmp(texto, "martes") == 0)
-        return 2;
-    else if (strcmp(texto, "miercoles") == 0)
-        return 3;
-    else if (strcmp(texto, "jueves") == 0)
-        return 4;
-    else if (strcmp(texto, "viernes") == 0)
-        return 5;
-    else if (strcmp(texto, "sabado") == 0)
-        return 6;
-    return -1;
 }
 void load_actividades(Actividades **e,Actividades **s)
 {
@@ -157,5 +121,129 @@ _Bool remove_actividad(Actividades **dato, Actividades **e, Actividades **s)
         }
         aux = aux->next;
     }
+}
+Actividades ActividadesPrompt(Actividades *e, Actividades *s, int *errout){
+    system(cls);
+    int err = 1;
+
+    Actividades act;
+
+    if (s)
+        act = *s;
+
+    char op = '\0';
+    int index = 0;
+
+    // opciones para el menu
+    char *options[] = {
+        "Actividad",
+        "Dia",
+        "Hora de inicio",
+        "hora de fin",
+        "DNI Profesor",
+        "Cupo Maximo",
+    };
+
+    // se muestra la interfaz
+    printf("\e[48;5;237m");
+    printf("Turnos:\e[K\n\e[K\n");
+    for (int i = 0; i < 6; i++)
+    {
+        (i % 2)?printf("\e[48;5;236m"):printf("\e[48;5;235m");
+
+        printf("%i. %25s: ", i + 1, options[i]);
+        if (turn)
+            TurnPromptRestore(i, turn);
+        printf("\e[K\e[0m\n");
+    }
+    printf("\e[48;5;237mcancelar edicion - c | finalizar edicion - e\e[K\e[0m\n");
+    printf("\e[s"); // se guarda el cursor
+
+    if (!turn)
+        turn = &cli;
+
+    printf("\e[u"); // se resetea el cursor
+
+    while (err)
+    {
+        err = 1;
+        scanf("%c", &op);          // se lee la opcion
+        fseek(stdin, 0, SEEK_END); // se limpia el buffer de entrada
+
+        if (op == 'e')
+        {
+            err = 0;
+            if (errout)
+                *errout = 1;
+        }
+        else if (op == 'c')
+        {
+            *turn = cli;
+            err = 0;
+            if (errout)
+                *errout = 0;
+        }
+        else if (op >= '1' && op <= '6')
+        {
+            index = op - '1';
+
+            SetCurPos(30, index + 2);
+            if (index % 2)
+                printf("\e[48;5;236m");
+            else
+                printf("\e[48;5;235m");
+            printf("\e[K");
+
+            char input[50];
+            fgets(input, 50, stdin);
+            fseek(stdin, 0, SEEK_END); // se limpia el buffer de entrada
+            *strchr(input, '\n') = '\0';
+
+            struct tm tm;
+
+            if (strcmp(input, "c"))
+            {
+                if (index == 2 || index == 3)
+                {
+                    char *hour = strtok(input, ":");
+                    char *min = strtok(NULL, ":");
+
+                    if (!TryToInt32(hour, &tm.tm_hour))
+                        err = 2;
+                    if (!TryToInt32(min, &tm.tm_min))
+                        err = 2;
+                }
+
+                if (err == 1)
+                {
+                    switch (index)
+                    {
+                    case 0:
+                        TryToInt64(input, &turn->actividad);
+                        break;
+                    case 1:
+                        TryToInt32(input, &turn->dia);
+                        break;
+                    case 2:
+                        turn->horarioInicio = tm;
+                        break;
+                    case 3:
+                        turn->horarioFin = tm;
+                        break;
+                    case 4:
+                        TryToInt64(input, &turn->prof);
+                        break;
+                    case 5:
+                        TryToInt32(input, &turn->cupo);
+                        break;
+                    }
+                }
+            }
+            TurnPromptRestore(index, turn);
+            printf("\e[u\e[J\e[0m");
+        }
+    }
+
+    return *turn;
 }
 #pragma endregion
