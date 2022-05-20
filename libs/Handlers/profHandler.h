@@ -88,7 +88,7 @@ int ReplaceP(Profesores **node,Profesores **ini){
 }
 
 int flagRemove(long dato,Profesores *ini){
-	flag = 0;
+	int flag = 0;
 	while(ini != NULL){
 		if(((ini)->dni) == dato){
 			flag = 1;
