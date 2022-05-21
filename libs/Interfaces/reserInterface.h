@@ -1,5 +1,6 @@
 #pragma once
-#include "../tpstructs.h"
+//#include "../tpstructs.h"
+#include "../Handlers/resHandler.h"
 
 void EsperaPrintList(colaEspera *in,colaEspera *lista);
 {

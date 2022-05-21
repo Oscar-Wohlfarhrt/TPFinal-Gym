@@ -1,5 +1,7 @@
 #pragma once
-#include "../tpstructs.h"
+//#include "../tpstructs.h"
+#include "../Handlers/actHandler.h"
+
 // interfaz
 Actividades ActPrompt(Actividades *s, int *errout);
 
