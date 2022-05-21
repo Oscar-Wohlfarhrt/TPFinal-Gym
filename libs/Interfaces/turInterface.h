@@ -129,7 +129,7 @@ Turnos TurnPrompt(Turnos *turn, int *errout)
                 }
             }
             TurnPromptRestore(index, turn);
-            printf("\e[u\e[J\e[0m");
+            printf("\e[u\e[0m\e[J");
         }
     }
 

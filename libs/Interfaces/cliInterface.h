@@ -139,7 +139,7 @@ Clientes ClientesPrompt(Clientes *client, int *errout)
                 }
             }
             ClientesPromptRestore(index, client);
-            printf("\e[u\e[J\e[0m");
+            printf("\e[u\e[0m\e[J");
         }
     }
 

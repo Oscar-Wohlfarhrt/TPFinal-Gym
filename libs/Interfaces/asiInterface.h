@@ -120,7 +120,7 @@ Asistencia AsistPrompt(Asistencia *asis, int *errout)
                 }
             }
             AsistPromptRestore(index, asis);
-            printf("\e[u\e[J\e[0m");
+            printf("\e[u\e[0m\e[J");
         }
     }
 
