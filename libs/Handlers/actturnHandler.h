@@ -1,70 +1,85 @@
 #pragma once
 #include "../tpstructs.h"
-void load_ActTurn(ActTurno **p);
-void save_ActTurn(ActTurno **p);
-void insert_Turno(ActTurno **dato, ActTurno **top); // APILA
-_Bool remove_ActTurn(int turno, ActTurno **p);
-_Bool replace_ActTurn(int turno, ActTurno *new, ActTurno **top);
-ActTurno *get_ActTurn(int index, ActTurno **top);
-ActTurno *find_ActTurn(int turno, ActTurno **top);
-void load_ActTrun(ActTurno **p)
+void load_ActTurn(ActTurno **list);
+void save_ActTurn(ActTurno *list);
+void insert_ActTurno(ActTurno **dato, ActTurno **list);
+_Bool remove_ActTurn(int turno, ActTurno **list);
+_Bool replace_ActTurn(int turno, ActTurno *new, ActTurno **list);
+int BorrarActTurn(int index, ActTurno **list);
+ActTurno *get_ActTurn(int index, ActTurno **list);
+ActTurno *find_ActTurn(int turno, ActTurno **list);
+ActTurno *FindLastActTurno(ActTurno *list);
+
+void load_ActTrun(ActTurno **list)
 {
-    FILE *f = fopen("ActTurn.dat", "rb");
-    if (f)
+    FILE *fichero;
+    fichero = fopen("ActTurn.bin", "rb");
+    if (fichero != NULL)
     {
-        while (!feof(f))
+        while (!feof(fichero))
         {
             ActTurno *aux = (ActTurno *)malloc(sizeof(ActTurno));
-            if (!aux)
-                break;
-            fread(aux, sizeof(ActTurno), 1, f);
-            if (feof(f))
+            fread(aux, sizeof(ActTurno), 1, fichero);
+            if (feof(fichero))
             {
-                free(aux);
+                fclose(fichero);
                 break;
             }
-            if (!*p)
-            {
-                *p = aux;
-                aux->next = NULL;
-            }
-            else
-            {
-                aux->next = *p;
-                *p = aux;
-            }
+            InsertActividad(&aux, &(*list));
         }
     }
+    fclose(fichero);
 }
-void save_ActTrun(ActTurno **p)
+void save_ActTrun(ActTurno *list)
 {
-    FILE *f = fopen("ActTurn.dat", "wb");
+    FILE *f = fopen("ActTurn.bin", "wb");
     if (f)
     {
-        ActTurno *aux = *p;
-        while (aux)
+        while (list)
         {
-            fwrite(aux, sizeof(ActTurno), 1, f);
-            aux = aux->next;
+            fwrite(list, sizeof(ActTurno), 1, f);
+            list = list->next;
         }
     }
 }
-void insert_Turno(ActTurno **dato, ActTurno **top)
-{ // apila
-    if (!*dato)
-        return;
-    (*dato)->next = *top;
-    *top = *dato;
-    *dato = NULL;
-}
-_Bool remove_ActTurn(int turno, ActTurno **top)
+void insert_ActTurno(ActTurno **node, ActTurno **list)
 {
-    ActTurno *aux = *top, *ant = NULL;
+    (*node)->next = NULL;
+    if (*list)
+    {
+        ActTurno *last = FindLastActTurno(*list);
+        if (last)
+        {
+            (*node)->next = last->next;
+            last->next = *node;
+        }
+        else
+        {
+            (*node)->next = *list;
+            *list = *node;
+        }
+    }
+    else
+    {
+        *list = *node;
+    }
+    *node = NULL;
+}
+ActTurno *FindLastActTurno(ActTurno *list)
+{
+    ActTurno *last = list;
+    while (last->next)
+        last = last->next;
+    return last;
+}
+_Bool remove_ActTurn(int turno, ActTurno **list)
+{
+    ActTurno *aux = *list, *ant = NULL;
     while (aux)
     {
         if (aux->turno == turno)
         {
-            (!ant) ? *top = aux->next : ant->next = aux->next;
+            (!ant) ? *list = aux->next : ant->next = aux->next;
             free(aux);
             return true;
         }
@@ -73,14 +88,14 @@ _Bool remove_ActTurn(int turno, ActTurno **top)
     }
     return false;
 }
-_Bool replace_ActTurn(int turno, ActTurno *new, ActTurno **top)
+_Bool replace_ActTurn(int turno, ActTurno *new, ActTurno **list)
 {
-    ActTurno *aux = *top, ant = NULL;
+    ActTurno *aux = *list, ant = NULL;
     while (aux)
     {
         if (turno == aux->turno)
         {
-            (!ant) ? *top = new : ant->next = new;
+            (!ant) ? *list = new : ant->next = new;
             new->next = aux->next;
             free(aux);
             return true;
@@ -90,10 +105,10 @@ _Bool replace_ActTurn(int turno, ActTurno *new, ActTurno **top)
     }
     return false;
 }
-ActTurno *get_ActTurn(int index, ActTurno **top)
+ActTurno *get_ActTurn(int index, ActTurno **list)
 {
-    ActTurno *aux = *top;
-    if (!*top)
+    ActTurno *aux = *list;
+    if (!*list)
         return NULL;
     for (int i = 0; i <= index; i++)
     {
@@ -105,9 +120,9 @@ ActTurno *get_ActTurn(int index, ActTurno **top)
     }
     return NULL;
 }
-ActTurno *find_ActTurn(int turno, ActTurno **top)
+ActTurno *find_ActTurn(int turno, ActTurno **list)
 {
-    ActTurno *aux = *top;
+    ActTurno *aux = *list;
     while (aux)
     {
         if (aux->turno == turno)
@@ -115,5 +130,39 @@ ActTurno *find_ActTurn(int turno, ActTurno **top)
         aux = aux->next;
     }
     return NULL;
+}
+int BorrarActTurn(int index, ActTurno **list)
+{
+    int err = 1;
+    if(index>=0){
+        ActTurno *ant = NULL, *bor = *list;
+        BuscarBorrarActTurn(index, &bor, &ant);
+
+        if (bor)
+        {
+            if (ant)
+            {
+                ant->next = bor->next;
+            }
+            else
+            {
+                *list = (*list)->next;
+            }
+            bor->next = NULL;
+            free(bor);
+            err = 0;
+        }
+    }
+    return err;
+}
+void BuscarBorrarActTurn(int index, ActTurno **bor, ActTurno **ant)
+{
+    int found = 0;
+    while (*bor && index>0)
+    {
+        *ant = *bor;
+        *bor = (*bor)->next;
+        index--;
+    }
 }
 #pragma endregion
