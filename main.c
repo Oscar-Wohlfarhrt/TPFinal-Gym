@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include "libs/tpstructs.h"
 #include "libs/Handlers/actHandler.h"
+#include "libs/interfaces/actInterface.h"
 //#include "libs/Handlers/turHandler.h"
 
 /*
@@ -24,9 +25,15 @@ int Replace([tipo] value,[struct] *new,[struct] **list)
 
 int main(int argc, char **args)
 {
-    Actividades *e=NULL, *s=NULL;
-    ActiPrintList(e,s);
+    Actividades *s=NULL;
+    ActiPrintList(&s);
     printf("Trabajo en progreso...\n");
     printf("Primer commit");
+    if(s) printf("Tiene algo");
+    if(!s) printf("No hay nada");
+    while(s){
+        printf("%-50s | %-10i\e[K\e[0m\n", s->nombre, s->sucursal);
+        s=s->next;
+    }
     return 0;
 }
