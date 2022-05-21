@@ -14,9 +14,6 @@ ClientesPagos PagosPrompt(ClientesPagos *client, int *errout)
 
     ClientesPagos cli;
 
-    if (client)
-        cli = *client;
-
     char op = '\0';
     int index = 0;
 
@@ -46,7 +43,9 @@ ClientesPagos PagosPrompt(ClientesPagos *client, int *errout)
     printf("\e[48;5;237mcancelar edicion - c | finalizar edicion - e\e[K\e[0m\n");
     printf("\e[s"); // se guarda el cursor
 
-    if (!client)
+    if (client)
+        cli = *client;
+    else
         client = &cli;
 
     printf("\e[u"); // se resetea el cursor

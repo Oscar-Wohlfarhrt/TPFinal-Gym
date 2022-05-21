@@ -14,9 +14,6 @@ Turnos TurnPrompt(Turnos *turn, int *errout)
 
     Turnos cli;
 
-    if (turn)
-        cli = *turn;
-
     char op = '\0';
     int index = 0;
 
@@ -48,7 +45,9 @@ Turnos TurnPrompt(Turnos *turn, int *errout)
     printf("\e[48;5;237mcancelar edicion - c | finalizar edicion - e\e[K\e[0m\n");
     printf("\e[s"); // se guarda el cursor
 
-    if (!turn)
+    if (turn)
+        cli = *turn;
+    else
         turn = &cli;
 
     printf("\e[u"); // se resetea el cursor

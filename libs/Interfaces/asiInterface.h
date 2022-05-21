@@ -14,9 +14,6 @@ Asistencia AsistPrompt(Asistencia *asis, int *errout)
 
     Asistencia cli;
 
-    if (asis)
-        cli = *asis;
-
     char op = '\0';
     int index = 0;
 
@@ -44,7 +41,9 @@ Asistencia AsistPrompt(Asistencia *asis, int *errout)
     printf("\e[48;5;237mcancelar edicion - c | finalizar edicion - e\e[K\e[0m\n");
     printf("\e[s"); // se guarda el cursor
 
-    if (!asis)
+    if (asis)
+        cli = *asis;
+    else
         asis = &cli;
 
     printf("\e[u"); // se resetea el cursor
