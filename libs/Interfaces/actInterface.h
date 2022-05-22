@@ -101,10 +101,7 @@ void ActiPrintList(Actividades **list)
                 Actividades *editAct = NULL, data;
                 // se verifica que el turno no sea NULL
                 if (editAct = GetActividad(editIndex - 1, *list)){
-                    data = ActPrompt(editAct, NULL);
-                    Actividades *newAct = (Actividades *)malloc(sizeof(Actividades));
-                    *newAct = data;
-                    ReplaceAct(editIndex - 1, newAct,&*list);               
+                    ActPrompt(editAct, NULL);            
                 }
             }
         }
@@ -205,11 +202,11 @@ Actividades ActPrompt(Actividades *s, int *errout)
                     case 0:
                         for (int inc = 0; inc < strlen(input); inc++)
                             input[inc] = tolower(input[inc]);
-                        strcpy(act.nombre, input);
+                        strcpy(s->nombre, input);
                         break;
                     case 1:
-                        TryToInt32(input, &act.sucursal);
-                        break;
+                        TryToInt32(input, &s->sucursal);
+                        break; 
                     }
                 }
             }
