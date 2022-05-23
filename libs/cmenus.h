@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "strext.h"
 
 #ifdef __unix__
 #define cls "clear"
