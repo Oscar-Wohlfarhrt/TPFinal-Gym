@@ -1,6 +1,6 @@
 #pragma once
 #include "../tpstructs.h"
-#include "sim.h"
+//#include "sim.h"
 
 Profesores *profes = NULL;
 
@@ -16,7 +16,7 @@ Profesores *profes = NULL;
 
 void SaveProf(Profesores *ini);
 void LoadProf(Profesores **ini);
-void PrintMenu();
+//void PrintMenu();
 Profesores *Find(long dato,Profesores *ini);
 Profesores InsertP(Profesores**node,Profesores**ini);//Inster at the end
 Profesores  *standarAdd();
@@ -27,7 +27,7 @@ int flagRemove(long dato,Profesores *ini);
 int RemoveP(Profesores node,Profesores **ini);
 Profesores *GetProf(int index, Profesores *ini);
 
-void PrintMenu(){
+/*void PrintMenu(){
 	int a;
 	Profesores *start=NULL,*nodeNew=NULL;
 	do{
@@ -88,7 +88,7 @@ void PrintMenu(){
 			break;
 		}	
 	}while(a > 1);
-}
+}*/
 
 Profesores *Find(long dato,Profesores *ini){
 	while (ini != NULL){
@@ -131,7 +131,6 @@ Profesores *standarAdd(){
 	Profesores *nodeNew = (struct Profesores*)malloc(sizeof(struct Profesores));
 	printf("Ingrese dni: \n");
 	scanf("%ld",&nodeNew->dni);
-		fflush(stdin);
 	printf("Ingrese nombre: \n");
 	fgets(nodeNew->nombre, 50, stdin);
 		fflush(stdin);
@@ -141,6 +140,7 @@ Profesores *standarAdd(){
 	printf("Ingrese telefono: \n");
 	fgets(nodeNew->telefono, 50, stdin);
 		fflush(stdin);
+		*strchr(stdin, '\n') = '\0';
 	return nodeNew;
 	printf("si");
 }
