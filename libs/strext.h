@@ -3,7 +3,7 @@
 #include <string.h>
 #include <ctype.h>
 
-#ifdef __linux__
+#ifdef __unix__
 char *strlwr(char *text)
 {
     for (int i = 0; i < strlen(text); i++)
