@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "libs/tpstructs.h"
-#include "libs/Handlers/actHandler.h"
-#include "libs/interfaces/actInterface.h"
+//#include "libs/tpstructs.h"
+//#include "libs/Handlers/actHandler.h"
+//#include "libs/interfaces/actInterface.h"
 //#include "libs/Handlers/turHandler.h"
 
 /*
@@ -23,9 +23,19 @@ int Replace([tipo] value,[struct] *new,[struct] **list)
 
 */
 
+char *title="_________  _____      ______  ___  ___ ___    ___    ___\n"
+            "|__   __|  |  _ \\     |  __|  | |  |  \\| |   / _ \\   | |\n"
+            "   | |     | |_| |    | |_    | |  | \\ \\ |  / /_\\ \\  | |\n"
+            "   | |     |  __/     |  _|   | |  | |\\  |  | ___ |  | |__\n"
+            "   |_|     |_|        |_|     |_|  |_| \\_|  |_| |_|  |____|\n";
+
+
+
 int main(int argc, char **args)
 {
-    Actividades *s=NULL;
+    printf("%s",title);
+
+    /*Actividades *s=NULL;
     ActiPrintList(&s);
     printf("Trabajo en progreso...\n");
     printf("Primer commit");
@@ -34,6 +44,6 @@ int main(int argc, char **args)
     while(s){
         printf("%-50s | %-10i\e[K\e[0m\n", s->nombre, s->sucursal);
         s=s->next;
-    }
+    }*/
     return 0;
 }
