@@ -18,7 +18,7 @@ void SaveProf(Profesores *ini);
 void LoadProf(Profesores **ini);
 Profesores *Find(long dato,Profesores *ini);
 Profesores InsertP(Profesores**node,Profesores**ini);//Inster at the end
-void PrintList(Profesores*ini);//aux text
+void PrintList(Profesores*ini);//debug tool
 int ReplaceP(Profesores **node,Profesores **ini);
 Profesores *buscarAnterior(long dato,Profesores *ini);
 int flagRemove(long dato,Profesores *ini);
