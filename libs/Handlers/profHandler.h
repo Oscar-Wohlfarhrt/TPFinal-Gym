@@ -16,79 +16,17 @@ Profesores *profes = NULL;
 
 void SaveProf(Profesores *ini);
 void LoadProf(Profesores **ini);
-//void PrintMenu();
 Profesores *Find(long dato,Profesores *ini);
 Profesores InsertP(Profesores**node,Profesores**ini);//Inster at the end
-Profesores  *standarAdd();
 void PrintList(Profesores*ini);//aux text
 int ReplaceP(Profesores **node,Profesores **ini);
 Profesores *buscarAnterior(long dato,Profesores *ini);
 int flagRemove(long dato,Profesores *ini);
 int RemoveP(Profesores node,Profesores **ini);
 Profesores *GetProf(int index, Profesores *ini);
+Profesores *FindLastProf(Profesores node, Profesores *ini);
 
-/*void PrintMenu(){
-	int a;
-	Profesores *start=NULL,*nodeNew=NULL;
-	do{
-		system("pause");
-		system("cls");
-		printf("1.Insert at end\n");
-		printf("2.Remove Node\n");
-		printf("3.Print List Prof\n");
-		printf("4.Replace\n");
-		printf("5.Find Prof\n");
-		printf("6.Load\n");
-		printf("7.Save\n");
-		printf("11.Random add\n");
-		printf("0.Exit\n");
-		scanf("%d",&a);
-		fflush(stdin);
-		switch (a)
-		{
-		case 1:
-				nodeNew = standarAdd();
-				system("cls");
-				InsertP(&nodeNew,&start);
-			break;
-		case 2:
-			printf("hola mundo");
-			break;
-		case 3:
-			PrintList(start);
-			break;
-		case 4:
-			
-			break;
-		case 5:
-			
-			break;
-		case 6:
-			
-			break;
-		case 7:
-			
-			break;
-		case 0:
-			
-			break;
-		case 11:
-			for(int i =0 ;i<4;i++){ //generate a random values
-				nodeNew = (struct Profesores*)malloc(sizeof(struct Profesores));
-				ranstr(10,(nodeNew)->nombre);
-				ranstr(10,(nodeNew)-> apellido);
-				(nodeNew)->dni = (long)aran(10,200);
-				ranstr(10,(nodeNew)-> telefono);
-				InsertP(&nodeNew,&start);
-				free(nodeNew);
-			}
-			break;
-		default:
-			printf("Try again\n");
-			break;
-		}	
-	}while(a > 1);
-}*/
+
 
 Profesores *Find(long dato,Profesores *ini){
 	while (ini != NULL){
@@ -104,45 +42,17 @@ Profesores *Find(long dato,Profesores *ini){
 }
 
 Profesores InsertP(Profesores**node,Profesores**ini){
-	Profesores *ant;
-	ant = *ini;
-	int flag = 0;
-	while(ant!=NULL && flag == 0) {
-		if(((ant)->next )== NULL){
-			flag =1;
-		}
-		else{
-			ant = (ant)->next;
-		}
-	}
-
-	if(ant == NULL){
+	(*node)-> next = NULL;
+	if(*ini == NULL) {
 		*ini = *node;
-		(*ini)->next =NULL;
 	}
-	else{
-		(ant)->next = *node;
-		(ant)->next->next =NULL;
+	else if((*ini)->next == NULL){ 
+		(*ini)->next = *node;	
 	}
-	*node = NULL;
-}
+	else InsertP(node,&(*ini)->next);
 
-Profesores *standarAdd(){
-	Profesores *nodeNew = (struct Profesores*)malloc(sizeof(struct Profesores));
-	printf("Ingrese dni: \n");
-	scanf("%ld",&nodeNew->dni);
-	printf("Ingrese nombre: \n");
-	fgets(nodeNew->nombre, 50, stdin);
-		fflush(stdin);
-	printf("Ingrese apellido: \n");
-	fgets(nodeNew->apellido, 50, stdin);
-		fflush(stdin);
-	printf("Ingrese telefono: \n");
-	fgets(nodeNew->telefono, 50, stdin);
-		fflush(stdin);
-		*strchr(stdin, '\n') = '\0';
-	return nodeNew;
-	printf("si");
+	*node = NULL;
+
 }
 
 void PrintList(Profesores*ini){
@@ -222,31 +132,31 @@ int RemoveP(Profesores node,Profesores **ini){
 	return flag;
 }
 
+
 void SaveProf(Profesores *ini){
-	FILE*f;
-	if((f = fopen("profRecords.bin","wb") )!=NULL){
-		while (ini != NULL){
-			fread(ini,sizeof(Profesores),1,f);
-			ini = ini-> next;
-		}
-		fclose(f);
-	}
+	FILE *f;
+    if (f = fopen("profRecords.bin", "wb")){
+        while (ini){
+            fwrite(ini, sizeof(Profesores), 1, f);
+            ini = ini->next;
+        }
+        fclose(f);
+    }
 }
 
 void LoadProf(Profesores **ini){
-	FILE*f;
-	if((f = fopen("profRecords.bin","rb"))!=NULL){
-		Profesores *temp=(Profesores*)malloc(sizeof(Profesores));
-		fread(temp,sizeof(Profesores),1,f);
-	
-		while (!feof(f)){
-			InsertP(&temp,ini);
-			Profesores *temp=(Profesores*)malloc(sizeof(Profesores));
-			fread(temp,sizeof(Profesores),1,f);
-		}
-		free(temp);
-		fclose(f);
-	}
+	FILE *f;
+    if (f = fopen("profRecords.bin", "rb")) {
+        Profesores *node = (Profesores *)malloc(sizeof(Profesores));
+        fread(node, sizeof(Profesores), 1, f);
+        while (!feof(f)){
+            InsertP(&node, ini);
+            node = (Profesores *)malloc(sizeof(Profesores));
+            fread(node, sizeof(Profesores), 1, f);
+        }
+        free(node);
+        fclose(f);
+    }
 }
 
 Profesores *GetProf(int index, Profesores *ini){
