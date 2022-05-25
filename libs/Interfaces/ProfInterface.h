@@ -52,7 +52,7 @@ Profesores ProfPrompt(Profesores *prof, int *errout)
     while (err)
     {
         err = 1;
-        scanf("%c", &op);          // se lee la opcion
+        scanf("%c%*c", &op);          // se lee la opcion
         fseek(stdin, 0, SEEK_END); // se limpia el buffer de entrada
 
         if (op == 'e')
@@ -142,7 +142,7 @@ void ProfPromptRestore(int index, Profesores *prof)
     switch (index)
     {
     case 0:
-        printf("%i", prof->dni);
+        printf("%li", prof->dni);
         break;
     case 1:
         printf("%s", prof->nombre);
@@ -179,7 +179,7 @@ void ProfPrintList()
         printf("\e[48;5;237m");
         printf("Profesores: Pagina %i\e[K\n", page + 1);
         printf("%-5s | %-10s | %-50s | %-20s\e[K\n", "Index", "DNI", "NOMBRE", "TELEFONO");
-        printf("%-5s | %-10s | %-50s | %-20s\e[K\n\e[0m", "", "", "APELLIDO");
+        printf("%-5s | %-10s | %-50s | %-20s\e[K\n\e[0m", "", "", "APELLIDO","");
         for (int i = 0; i < entries; i++)
         {
             int index = i + 1 + (page * entries);
@@ -197,8 +197,8 @@ void ProfPrintList()
                 sprintf(date3, "%02i/%02i/%04i", pro->fechaBaja.tm_mday, pro->fechaBaja.tm_mon + 1, pro->fechaBaja.tm_year + 1900);}*/
 
                 // se imprime la fila
-                printf("%5i | %-10i | %-50s | %-20s\e[K\n", index, pro->dni, pro->nombre, pro->telefono);
-                printf("%5s | %-10s | %-50s | %-20s\e[K\e[0m\n", "", "", pro->apellido);
+                printf("%5i | %-10li | %-50s | %-20s\e[K\n", index, pro->dni, pro->nombre, pro->telefono);
+                printf("%5s | %-10s | %-50s | %-20s\e[K\e[0m\n", "", "", pro->apellido,"");
 
                 pro = pro->next;
             }
