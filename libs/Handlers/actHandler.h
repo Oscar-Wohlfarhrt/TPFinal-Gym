@@ -7,6 +7,11 @@ _Bool ReplaceAct(int index,Actividades **node,Actividades **list);
 Actividades *FindActividad(char *nombre, int suc, Actividades *list);
 Actividades *GetActividad(int index, Actividades *list);
 Actividades *FindLastAct(Actividades *list);
+void InsertActividad(Actividades **node, Actividades **list);
+void load_actividades(Actividades **list);
+void save_actividades(Actividades *list);
+void BuscarBorrarAct(int index,Actividades **bor,Actividades **ant);
+void borrarListaActividades(Actividades **list);
 
 void InsertActividad(Actividades **node, Actividades **list)
 {
@@ -167,6 +172,16 @@ _Bool ReplaceAct(int index,Actividades **node,Actividades **list){
         (*node)->next = aux->next;
         aux->next = *node;
         return true;
+    }
+}
+void borrarListaActividades(Actividades **list)
+{
+    Actividades *aux = *list;
+    while (aux)
+    {
+        *list = (*list)->next;
+        free(aux);
+        aux = *list;
     }
 }
 #pragma endregion

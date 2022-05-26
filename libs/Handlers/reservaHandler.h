@@ -1,7 +1,6 @@
 #pragma once
 #include "../tpstructs.h"
 
-typedef int _Bool;
 
 Reservas *getbyDNI(long dni, Reservas **list);
 Reservas *FindReservas(long dni, char *actividad, Reservas *list);
@@ -50,7 +49,7 @@ void save_espera(Reservas *list)
     }
     fclose(fichero);
 }
-Reservas *getbyDNI(long dni, Reservas **e, Reservas **list)
+Reservas *getbyDNI(long dni, Reservas **list)
 {
     Reservas *p = *list;
     while (p)
@@ -66,9 +65,10 @@ Reservas *FindReservas(long dni, char *actividad, Reservas *list)
     Reservas *Nodo = NULL;
     while (list)
     {
-        if(list->dni == dni && !(strcmp(list->actividad, actividad)))
+        if(list->dni == dni && !(strcmp(list->actividad, actividad))){
             Nodo = list;
             break;
+        }
         else
             list = list->next;
     }
@@ -109,5 +109,16 @@ Reservas *GetRes(int index, Reservas *list)
         list = list->next;
     }
     return NULL;
+}
+void borrarListaReservas(Reservas **list)
+{
+    Reservas *aux = NULL;
+    while (list)
+    {
+        aux = *list;
+        *list = (*list)->next;
+        aux->next = NULL;
+        free(aux);
+    }
 }
 #pragma endregion

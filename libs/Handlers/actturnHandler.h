@@ -1,5 +1,6 @@
 #pragma once
 #include "../tpstructs.h"
+
 void load_ActTurn(ActTurno **list);
 void save_ActTurn(ActTurno *list);
 void insert_ActTurno(ActTurno **dato, ActTurno **list);
@@ -79,7 +80,14 @@ _Bool remove_ActTurn(int turno, ActTurno **list)
     {
         if (aux->turno == turno)
         {
-            (!ant) ? *list = aux->next : ant->next = aux->next;
+            if (!ant)
+            {
+                *list = aux->next;
+            }
+            else
+            {
+                ant->next = aux->next;
+            }
             free(aux);
             return true;
         }
@@ -90,12 +98,19 @@ _Bool remove_ActTurn(int turno, ActTurno **list)
 }
 _Bool replace_ActTurn(int turno, ActTurno *new, ActTurno **list)
 {
-    ActTurno *aux = *list, ant = NULL;
+    ActTurno *aux = *list, *ant = NULL;
     while (aux)
     {
         if (turno == aux->turno)
         {
-            (!ant) ? *list = new : ant->next = new;
+            if (!ant)
+            {
+                *list = new;
+            }
+            else
+            {
+                ant->next = new;
+            }
             new->next = aux->next;
             free(aux);
             return true;
@@ -134,7 +149,8 @@ ActTurno *find_ActTurn(int turno, ActTurno **list)
 int BorrarActTurn(int index, ActTurno **list)
 {
     int err = 1;
-    if(index>=0){
+    if (index >= 0)
+    {
         ActTurno *ant = NULL, *bor = *list;
         BuscarBorrarActTurn(index, &bor, &ant);
 
@@ -158,11 +174,21 @@ int BorrarActTurn(int index, ActTurno **list)
 void BuscarBorrarActTurn(int index, ActTurno **bor, ActTurno **ant)
 {
     int found = 0;
-    while (*bor && index>0)
+    while (*bor && index > 0)
     {
         *ant = *bor;
         *bor = (*bor)->next;
         index--;
+    }
+}
+void borrarListaActTurn(ActTurno **list)
+{
+    ActTurno *aux = *list;
+    while (aux)
+    {
+        *list = (*list)->next;
+        free(aux);
+        aux = *list;
     }
 }
 #pragma endregion
