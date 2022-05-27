@@ -3,15 +3,25 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <conio.h>
 #include <signal.h>
 
-#define key_escape 27
-#define key_enter 13
-#define key_up 327
-#define key_left 330
-#define key_right 332
-#define key_down 335
+#ifndef __unix__
+    #include <conio.h>
+
+    #define key_escape 27
+    #define key_enter 13
+    #define key_up 327
+    #define key_left 330
+    #define key_right 332
+    #define key_down 335
+#else
+    #define key_escape 27
+    #define key_enter 0
+    #define key_up 320
+    #define key_left 323
+    #define key_right 322
+    #define key_down 321
+#endif
 
 #ifdef __unix__
     #define cls "clear"
@@ -27,6 +37,7 @@ void setAdvFormats(char *defFormat,char *opFormat,char *defFormatEnd,char *opFor
 void advMenu(int menuIndex,void (*userFuncs[])(void),int opCount);
 void printAdvMenu(char *fmenu,int op);
 
+#ifndef __unix__
 short getKeyCode(){
     short c = getch();
 
@@ -42,6 +53,26 @@ short getKeyCode(){
     }
     return c;
 }
+#else
+short getKeyCode(){
+    short test1 = fgetc(stdin);
+    short test2 = 0;
+    if (test1 == 27)
+    {
+        test2 = fgetc(stdin);
+        if(test2 == 91){
+            short test3=fgetc(stdin);
+            fgetc(stdin);
+            return 255 + test3;
+        }
+        else if(test2==10)
+        {
+            return test1;
+        }
+    }
+    return 0;
+}
+#endif
 void setAdvMenus(char **menus)
 {
     _menus=menus;
