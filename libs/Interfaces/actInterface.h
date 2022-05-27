@@ -3,8 +3,13 @@
 #include "../Handlers/actHandler.h"
 
 // interfaz
+void ActiPrintList(Actividades **list);
 Actividades ActPrompt(Actividades *s, int *errout);
+void ActPromptRestore(int index, Actividades *p);
 
+void ActiPrintListVoid(){
+    ActiPrintList(&acti);
+}
 void ActiPrintList(Actividades **list)
 {
     // Actividades *s = *list;

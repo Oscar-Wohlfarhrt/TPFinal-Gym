@@ -72,14 +72,14 @@ void EmptyFunction();
 #pragma endregion
 
 void forcedExit(){
-    printf("Salida Forzada");
+    printf("\e[0mSalida Forzada");
 }
 
 int main(int argc, char **args)
 {
     signal(SIGINT,forcedExit);
 
-    getKeyCode();
+    //getKeyCode(); //debug
 
     setAdvMenus(menus);
     setAdvFormats("| ","\e[48;5;25m|-< ",
@@ -115,7 +115,7 @@ void ABMs(){
     void (*ABMsMenu[])(void)={
         ClientesPrintList,
         ProfPrintList,
-        ActiPrintList,
+        ActiPrintListVoid,
         TurnsPrintList,
         EmptyFunction,
     };

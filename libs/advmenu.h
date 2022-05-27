@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <conio.h>
+#include <signal.h>
 
 #define key_escape 27
 #define key_enter 13
@@ -28,6 +29,12 @@ void printAdvMenu(char *fmenu,int op);
 
 short getKeyCode(){
     short c = getch();
+
+    if (c==3)
+    {
+        raise(SIGINT);
+        exit(1);
+    }
 
     if (c==224){
         char c2 = getch();

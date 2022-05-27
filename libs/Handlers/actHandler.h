@@ -1,6 +1,8 @@
 #pragma once
 #include "../tpstructs.h"
 
+Actividades *acti;
+
 _Bool remove_actividad(Actividades **dato, Actividades **s);
 _Bool BorrarAct(int index, Actividades **list);
 _Bool ReplaceAct(int index,Actividades **node,Actividades **list);
