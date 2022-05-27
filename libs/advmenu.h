@@ -21,10 +21,10 @@
 char **_menus,*_defFormat,*_opFormat,*_defFormatEnd,*_opFormatEnd;
 
 short getKeyCode();
-void setMenus(char **menus);
-void setFormats(char *defFormat,char *opFormat,char *defFormatEnd,char *opFormatEnd);
+void setAdvMenus(char **menus);
+void setAdvFormats(char *defFormat,char *opFormat,char *defFormatEnd,char *opFormatEnd);
 void advMenu(int menuIndex,void (*userFuncs[])(void),int opCount);
-void printMenu(char *fmenu,int op);
+void printAdvMenu(char *fmenu,int op);
 
 short getKeyCode(){
     short c = getch();
@@ -35,11 +35,11 @@ short getKeyCode(){
     }
     return c;
 }
-void setMenus(char **menus)
+void setAdvMenus(char **menus)
 {
     _menus=menus;
 }
-void setFormats(char *defFormat,char *opFormat,char *defFormatEnd,char *opFormatEnd){
+void setAdvFormats(char *defFormat,char *opFormat,char *defFormatEnd,char *opFormatEnd){
     _defFormat=defFormat;
     _opFormat=opFormat;
     _defFormatEnd=defFormatEnd;
@@ -48,10 +48,10 @@ void setFormats(char *defFormat,char *opFormat,char *defFormatEnd,char *opFormat
 void advMenu(int menuIndex,void (*userFuncs[])(void),int opCount){
     int err=1,op=0;
     while(err){
+        printf("\e[?25l");//esconde el cursor
         system(cls);
 
-        printMenu(_menus[menuIndex],op);
-
+        printAdvMenu(_menus[menuIndex],op);
         int key=getKeyCode();
         
         if( key == key_up && op){
@@ -61,6 +61,7 @@ void advMenu(int menuIndex,void (*userFuncs[])(void),int opCount){
             op++;
         }
         else if(key==key_enter && op<opCount){
+            printf("\e[?25h");//muestra el cursor
             userFuncs[op]();
         }
         else if(key==key_enter && op==opCount){
@@ -70,8 +71,9 @@ void advMenu(int menuIndex,void (*userFuncs[])(void),int opCount){
             err=0;
         }
     }
+    printf("\e[?25h");//muestra el cursor
 }
-void printMenu(char *fmenu,int op){
+void printAdvMenu(char *fmenu,int op){
     char *pos = fmenu,*end;
 
     end=strstr(fmenu,"<o>");
