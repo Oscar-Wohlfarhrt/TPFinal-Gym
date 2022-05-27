@@ -1,11 +1,12 @@
 #pragma once
 #include "../tpstructs.h"
+#include <stdbool.h>
 
 void load_ActTurn(ActTurno **list);
 void save_ActTurn(ActTurno *list);
 void insert_ActTurno(ActTurno **dato, ActTurno **list);
 _Bool remove_ActTurn(int turno, ActTurno **list);
-_Bool replace_ActTurn(int turno, ActTurno *new, ActTurno **list);
+_Bool replace_ActTurn(int turno, ActTurno *newe , ActTurno **list);
 int BorrarActTurn(int index, ActTurno **list);
 ActTurno *get_ActTurn(int index, ActTurno **list);
 ActTurno *find_ActTurn(int turno, ActTurno **list);
@@ -26,7 +27,7 @@ void load_ActTrun(ActTurno **list)
                 fclose(fichero);
                 break;
             }
-            InsertActividad(&aux, &(*list));
+            insert_ActTurno(&aux, &(*list));
         }
     }
     fclose(fichero);
@@ -96,7 +97,7 @@ _Bool remove_ActTurn(int turno, ActTurno **list)
     }
     return false;
 }
-_Bool replace_ActTurn(int turno, ActTurno *new, ActTurno **list)
+_Bool replace_ActTurn(int turno, ActTurno *newe, ActTurno **list)
 {
     ActTurno *aux = *list, *ant = NULL;
     while (aux)
@@ -105,13 +106,13 @@ _Bool replace_ActTurn(int turno, ActTurno *new, ActTurno **list)
         {
             if (!ant)
             {
-                *list = new;
+                *list = newe;
             }
             else
             {
-                ant->next = new;
+                ant->next = newe;
             }
-            new->next = aux->next;
+            newe->next = aux->next;
             free(aux);
             return true;
         }
