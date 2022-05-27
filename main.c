@@ -3,6 +3,10 @@
 #include "libs/advmenu.h"
 #include <signal.h>
 #include "libs/tpstructs.h"
+
+#include "libs/interfaces/interfaces.h"
+
+
 //#include "libs/Handlers/actHandler.h"
 //#include "libs/interfaces/actInterface.h"
 //#include "libs/Handlers/turHandler.h"
@@ -75,6 +79,8 @@ int main(int argc, char **args)
 {
     signal(SIGINT,forcedExit);
 
+    getKeyCode();
+
     setAdvMenus(menus);
     setAdvFormats("| ","\e[48;5;25m|-< ",
                ""," >\e[0m");
@@ -107,10 +113,10 @@ int main(int argc, char **args)
 
 void ABMs(){
     void (*ABMsMenu[])(void)={
-        EmptyFunction,
-        EmptyFunction,
-        EmptyFunction,
-        EmptyFunction,
+        ClientesPrintList,
+        ProfPrintList,
+        ActiPrintList,
+        TurnsPrintList,
         EmptyFunction,
     };
 
