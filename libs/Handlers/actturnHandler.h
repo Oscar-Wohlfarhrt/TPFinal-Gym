@@ -1,6 +1,5 @@
 #pragma once
 #include "../tpstructs.h"
-#include <stdbool.h>
 
 void load_ActTurn(ActTurno **list);
 void save_ActTurn(ActTurno *list);

@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <ctype.h>
+#include <stdbool.h>
 #include "../libs/cmenus.h"
 
 #define true 1
