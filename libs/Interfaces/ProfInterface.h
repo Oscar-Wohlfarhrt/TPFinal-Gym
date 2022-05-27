@@ -124,9 +124,9 @@ Profesores ProfPrompt(Profesores *prof, int *errout)
                         break;
                 }
             }
+            }
             ProfPromptRestore(index, prof);
             printf("\e[u\e[0m\e[J");
-            }
         }
     }
     return *prof;
