@@ -62,12 +62,10 @@ char *menus[]={
 #pragma region SubMenusPrototipes
 
 void ABMs();
-void Asistencias();
-void Cuotas();
 void Listas();
 
 //Funcion para opciones no implementadas
-void EmptyFunction();
+void EmptyFunction(){}
 
 #pragma endregion
 
@@ -82,13 +80,13 @@ int main(int argc, char **args)
     //getKeyCode(); //debug
 
     setAdvMenus(menus);
-    setAdvFormats("| ","\e[48;5;25m|-< ",
-               ""," >\e[0m");
+    setAdvFormats("| ","\e[1m\e[48;5;25m|-< ",
+               ""," > \e[0m");
     
     void (*mainMenu[])(void)={
         ABMs,
-        Asistencias,
-        Cuotas,
+        AsistPrintList,
+        PagosPrintList,
         Listas,
     };
 
@@ -122,12 +120,6 @@ void ABMs(){
 
     advMenu(1,ABMsMenu,5);
 }
-void Asistencias(){
-
-}
-void Cuotas(){
-
-}
 void Listas(){
     void (*ListasMenu[])(void)={
         EmptyFunction,
@@ -139,9 +131,6 @@ void Listas(){
     };
 
     advMenu(2,ListasMenu,6);
-}
-void EmptyFunction(){
-
 }
 
 #pragma endregion
