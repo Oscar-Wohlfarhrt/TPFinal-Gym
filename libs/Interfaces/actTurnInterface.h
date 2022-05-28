@@ -100,6 +100,10 @@ ActTurno ActTurnPrompt(ActTurno *ActTurn, int *errout)
                 }
             }
             ActTurnPromptRestore(index, ActTurn);
+            if(index==0){
+                ActTurnPromptRestore(2, ActTurn);
+                ActTurnPromptRestore(3, ActTurn);
+            }
             printf("\e[u\e[0m\e[J");
         }
     }
@@ -107,7 +111,7 @@ ActTurno ActTurnPrompt(ActTurno *ActTurn, int *errout)
 }
 void ActTurnPromptRestore(int index, ActTurno *ActTurn)
 {
-    Clientes *client = GetClient(ActTurn->dni, clientes);
+    Clientes *client = FindClient(ActTurn->dni, clientes);
     SetCurPos(30, index + 2);
     if (index % 2)
         printf("\e[48;5;236m");
@@ -123,10 +127,10 @@ void ActTurnPromptRestore(int index, ActTurno *ActTurn)
         printf("%i", ActTurn->turno);
         break;
     case 2:
-        printf("%s", client->nombre);
+        printf("%s", client?client->nombre:"NULL");
         break;
     case 3:
-        printf("%s", client->apellido);
+        printf("%s", client?client->apellido:"NULL");
         break;
     }
 }
@@ -154,7 +158,7 @@ void ActTurnsPrintList()
 
         printf("\e[48;5;237m");
         printf("ActTurno: Pagina %i\e[K\n", page + 1);
-        printf("%-3s | %-10s | %-3s | %-50s | %-50s\e[K\e[0m\n", "Index","DNI", "TURNO","NOMBRE", "APELLIDO");
+        printf("%-5s | %-10s | %-5s | %-50s | %-50s\e[K\e[0m\n", "Index","DNI", "TURNO","NOMBRE", "APELLIDO");
         for (int i = 0; i < entries; i++)
         {
             int index = i + 1 + (page * entries);
@@ -165,15 +169,15 @@ void ActTurnsPrintList()
 
             if (ActTurn)
             {
-                client = GetClient(ActTurn->dni, clientes);
+                client = FindClient(ActTurn->dni, clientes);
                 // se imprime la fila
                 // printf("%-5s | %-20s | %-5s | %-50s | %-50s  \e[K\e[0m\n", "Index","DNI", "TURNO","NOMBRE", "APELLIDO");
-                printf("%3i | %-10li | %-3is | %-50s | %-50s \e[K\n", index,ActTurn->dni, ActTurn->turno,client->nombre,client->apellido);
+                printf("%5i | %-10li | %-5i | %-50s | %-50s \e[K\n", index,ActTurn->dni, ActTurn->turno,client?client->nombre:"NULL",client?client->apellido:"NULL");
                 ActTurn = ActTurn->next;
             }
             else // si no existen mas registros
             {
-                printf("%5i\e[K\n\e[K\e[0m\n", index);
+                printf("%5i\e[K\e[0m\n", index);
                 err = 2;
             }
         }
