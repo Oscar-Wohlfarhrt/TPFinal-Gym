@@ -14,6 +14,7 @@ void load_actividades(Actividades **list);
 void save_actividades(Actividades *list);
 void BuscarBorrarAct(int index,Actividades **bor,Actividades **ant);
 void borrarListaActividades(Actividades **list);
+int maxAct(Actividades *list);
 
 void InsertActividad(Actividades **node, Actividades **list)
 {
@@ -185,5 +186,13 @@ void borrarListaActividades(Actividades **list)
         free(aux);
         aux = *list;
     }
+}
+int maxAct(Actividades *list){
+    int cont = 0;
+    while (list != NULL){
+        if(list->sucursal>cont) cont = list->sucursal;
+        list = list ->next;
+    } 
+    return cont;
 }
 #pragma endregion
