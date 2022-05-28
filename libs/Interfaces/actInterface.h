@@ -32,7 +32,7 @@ void ActiPrintList(Actividades **list)
         
         printf("\e[48;5;237m");
         printf("ACTIVIDADES: Pagina %i\e[K\n", page + 1);
-        printf("%-5s | %-50s | %-20s\e[K\n", "Index", "ACTIVIDAD", "SUCURSAL");
+        printf("%-5s | %-50s | %-20s\e[K\e[0m\n", "Index", "ACTIVIDAD", "SUCURSAL");
         for (int i = 0; i < entries; i++)
         {
             int index = i + 1 + (page * entries);
@@ -50,7 +50,7 @@ void ActiPrintList(Actividades **list)
             }
             else // si no existen mas registros
             {
-                printf("%5i\e[K\n\e[K\e[0m\n", index);
+                printf("%5i\e[K\e[0m\n", index);
                 err = 2;
             }
         }

@@ -153,7 +153,7 @@ void ActTurnsPrintList()
 
         printf("\e[48;5;237m");
         printf("ActTurno: Pagina %i\e[K\n", page + 1);
-        printf("%-5s | %-20s | %-5s  \e[K\n", "Index", "DNI", "TURNO");
+        printf("%-5s | %-20s | %-5s  \e[K\e[0m\n", "Index", "DNI", "TURNO");
         for (int i = 0; i < entries; i++)
         {
             int index = i + 1 + (page * entries);

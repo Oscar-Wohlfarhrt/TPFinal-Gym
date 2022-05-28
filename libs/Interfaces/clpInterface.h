@@ -188,7 +188,7 @@ void PagosPrintList()
         printf("\e[48;5;237m");
         printf("Pagos: Pagina %i\e[K\n", page + 1);
         printf("%-5s | %-50s | %-20s | %-20s\e[K\n", "Index", "ACT-TURNO","MONTO", "EMISION");
-        printf("%-5s | %-50s | %-20s | %-20s\e[K\n\e[0m", "", "","", "PAGO");
+        printf("%-5s | %-50s | %-20s | %-20s\e[K\n\e[0m", "", "","RECARGO", "PAGO");
         for (int i = 0; i < entries; i++)
         {
             int index = i + 1 + (page * entries);
@@ -204,9 +204,13 @@ void PagosPrintList()
                 sprintf(date1, "%02i/%02i/%04i", client->fechaEmision.tm_mday, client->fechaEmision.tm_mon + 1, client->fechaEmision.tm_year + 1900);
                 sprintf(date2, "%02i/%02i/%04i", client->fechaPago.tm_mday, client->fechaPago.tm_mon + 1, client->fechaPago.tm_year + 1900);
                 
+                float monto=client->monto;
+                if(((client->fechaPago.tm_mon>=client->fechaEmision.tm_mon)||(client->fechaPago.tm_year>=client->fechaEmision.tm_year))&&client->fechaPago.tm_mday>10)
+                    monto*=1.1;
+
                 // se imprime la fila
-                printf("%5i | %-50i | $%-19.02f | %-20s\e[K\n", index, client->actturn,client->monto, date1);
-                printf("%5s | %-50s | %-20s | %-20s\e[K\e[0m\n", "" , "", "", date2);
+                printf("%5i | %-50i | $%-19.02f | %-20s\e[K\n", index, client->actturn,monto, date1);
+                printf("%5s | %-50s | %-20s | %-20s\e[K\e[0m\n", "" , "", monto>client->monto?"Si":"No", date2);
 
                 client = client->next;
             }

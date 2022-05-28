@@ -125,7 +125,7 @@ void ABMs(){
         ProfPrintList,
         ActiPrintListVoid,
         TurnsPrintList,
-        EmptyFunction,
+        ActTurnsPrintList,
     };
 
     advMenu(1,ABMsMenu,5);
