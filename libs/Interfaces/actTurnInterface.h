@@ -1,13 +1,13 @@
 #pragma once
 
-#include "../Handlers/actturHandler.h"
+#include "../Handlers/actturnHandler.h"
 
 // interfaz
 ActTurno ActTurnPrompt(ActTurno *ActTurn, int *errout);
 void ActTurnPromptRestore(int index, ActTurno *ActTurn);
 void ActTurnsPrintList();
 
-ActTurno ActTurnPrompt(ActTurno ActTurn, int *errout)
+ActTurno ActTurnPrompt(ActTurno *ActTurn, int *errout)
 {
     system(cls);
     int err = 1;
@@ -34,17 +34,17 @@ ActTurno ActTurnPrompt(ActTurno ActTurn, int *errout)
             printf("\e[48;5;235m");
 
         printf("%i. %25s: ", i + 1, options[i]);
-        if (turn)
-            ActTurnPromptRestore(i, turn);
+        if (ActTurn)
+            ActTurnPromptRestore(i, ActTurn);
         printf("\e[K\e[0m\n");
     }
     printf("\e[48;5;237mcancelar edicion - c | finalizar edicion - e\e[K\e[0m\n");
     printf("\e[s"); // se guarda el cursor
 
-    if (turn)
-        actt = ActTurn;
+    if (ActTurn)
+        actt = *ActTurn;
     else
-        turn = &actt;
+        ActTurn = &actt;
 
     printf("\e[u"); // se resetea el cursor
 
@@ -62,7 +62,7 @@ ActTurno ActTurnPrompt(ActTurno ActTurn, int *errout)
         }
         else if (op == 'c')
         {
-            ActTurn = actt;
+            *ActTurn = actt;
             err = 0;
             if (errout)
                 *errout = 0;
@@ -95,9 +95,6 @@ ActTurno ActTurnPrompt(ActTurno ActTurn, int *errout)
                     case 1:
                         TryToInt32(input, &ActTurn->turno);
                         break;
-                    case 2:
-                        TryToInt64(input, &ActTurn->cliente);
-                        break;
                     }
                 }
             }
@@ -106,9 +103,9 @@ ActTurno ActTurnPrompt(ActTurno ActTurn, int *errout)
         }
     }
 
-    return ActTurn;
+    return *ActTurn;
 }
-void ActTurnPromptRestore(int index, ActTurno ActTurn)
+void ActTurnPromptRestore(int index, ActTurno *ActTurn)
 {
     SetCurPos(30, index + 2);
     if (index % 2)
@@ -145,7 +142,7 @@ void ActTurnsPrintList()
         err = 1;
 
         // se obtiene el primer turno de la lista
-        ActTurno ActTurn = get_ActTurn(page * entries, ActTurno);
+        ActTurno *ActTurn = get_ActTurn(page * entries, &acturn);
 
     /*  "Actividad",
         "Dia",
@@ -165,7 +162,7 @@ void ActTurnsPrintList()
             else
                 printf("\e[48;5;235m");
 
-            if (turn)
+            if (ActTurn)
             {
                 // se imprime la fila
                 //printf("%-5s | %-20s | %-5s | %-20s \e[K\n", "Index", "DNI", "TURNO", "CLIENTE");
@@ -216,7 +213,7 @@ void ActTurnsPrintList()
             {
                 ActTurno *newActTurn = (ActTurno *)malloc(sizeof(ActTurno));
                 *newActTurn = data;
-                insert_ActTurno(&newActTurn, &ActTurno);
+                insert_ActTurno(&newActTurn, &acturn);
             }
         }
         else if (!strncmp(op, "e", 1)) // editar
@@ -228,7 +225,7 @@ void ActTurnsPrintList()
             if (TryToInt32(ind, &editIndex))
             {
                 ActTurno *editActTurn = NULL;
-                if (editActTurn = get_ActTurn(editIndex - 1, ActTurno))
+                if (editActTurn = get_ActTurn(editIndex - 1, &acturn))
                     ActTurnPrompt(editActTurn, NULL);
             }
         }
@@ -240,7 +237,7 @@ void ActTurnsPrintList()
             // se intenta convertir el indice a entero
             if (TryToInt32(ind, &editIndex))
             {
-                BorrarActTurn(editIndex - 1, &ActTurno);
+                BorrarActTurn(editIndex - 1, &acturn);
             }
         }
     }

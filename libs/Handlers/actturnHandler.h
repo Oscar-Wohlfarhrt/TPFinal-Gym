@@ -1,6 +1,8 @@
 #pragma once
 #include "../tpstructs.h"
 
+ActTurno *acturn = NULL;
+
 void load_ActTurn(ActTurno **list);
 void save_ActTurn(ActTurno *list);
 void insert_ActTurno(ActTurno **dato, ActTurno **list);
@@ -10,6 +12,8 @@ int BorrarActTurn(int index, ActTurno **list);
 ActTurno *get_ActTurn(int index, ActTurno **list);
 ActTurno *find_ActTurn(int turno, ActTurno **list);
 ActTurno *FindLastActTurno(ActTurno *list);
+void BuscarBorrarActTurn(int index, ActTurno **bor, ActTurno **ant);
+void borrarListaActTurn(ActTurno **list);
 
 void load_ActTrun(ActTurno **list)
 {
