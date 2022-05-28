@@ -25,8 +25,8 @@ struct Reservas;
 typedef struct Reservas Reservas;
 struct Asistencia;
 typedef struct Asistencia Asistencia;
-struct colaEspera;
-typedef struct colaEspera colaEspera;
+struct ABClientes;
+typedef struct ABClientes ABClientes;
 
 struct Clientes{
     char nombre[50];
@@ -87,4 +87,16 @@ struct Asistencia{
     long actturn;
     struct tm fecha;
     struct Asistencia *next;
+};
+
+struct ABClientes{
+    char nombre[50];
+    char apellido[50];
+    long dni;
+    char telefono[20];
+    struct tm fechaNacimiento;
+    struct tm ultimaActividad;
+    struct tm fechaBaja;
+    struct ABClientes *izq;
+    struct ABClientes *der;
 };

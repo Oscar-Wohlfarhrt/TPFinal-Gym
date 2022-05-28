@@ -15,7 +15,7 @@ ActTurno *FindLastActTurno(ActTurno *list);
 void BuscarBorrarActTurn(int index, ActTurno **bor, ActTurno **ant);
 void borrarListaActTurn(ActTurno **list);
 
-void load_ActTrun(ActTurno **list)
+void load_ActTurn(ActTurno **list)
 {
     FILE *fichero;
     fichero = fopen("ActTurn.bin", "rb");
@@ -35,7 +35,7 @@ void load_ActTrun(ActTurno **list)
     }
     fclose(fichero);
 }
-void save_ActTrun(ActTurno *list)
+void save_ActTurn(ActTurno *list)
 {
     FILE *f = fopen("ActTurn.bin", "wb");
     if (f)
