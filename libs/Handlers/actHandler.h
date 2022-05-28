@@ -3,9 +3,9 @@
 
 Actividades *acti;
 
-_Bool remove_actividad(Actividades **dato, Actividades **s);
-_Bool BorrarAct(int index, Actividades **list);
-_Bool ReplaceAct(int index,Actividades **node,Actividades **list);
+bool remove_actividad(Actividades **dato, Actividades **s);
+bool BorrarAct(int index, Actividades **list);
+bool ReplaceAct(int index,Actividades **node,Actividades **list);
 Actividades *FindActividad(char *nombre, int suc, Actividades *list);
 Actividades *GetActividad(int index, Actividades *list);
 Actividades *FindLastAct(Actividades *list);
@@ -106,7 +106,7 @@ Actividades *GetActividad(int index, Actividades *list)
     }
     return NULL;
 }
-_Bool remove_actividad(Actividades **dato, Actividades **s)
+bool remove_actividad(Actividades **dato, Actividades **s)
 {
     Actividades *aux = *s;
     if (!(*dato))
@@ -128,7 +128,7 @@ _Bool remove_actividad(Actividades **dato, Actividades **s)
         aux = aux->next;
     }
 }
-_Bool BorrarAct(int index, Actividades **list)
+bool BorrarAct(int index, Actividades **list)
 {
     Actividades *ant = NULL, *bor = *list;
     if (index >= 0)
@@ -160,7 +160,7 @@ void BuscarBorrarAct(int index, Actividades **bor, Actividades **ant)
         index--;
     }
 }
-_Bool ReplaceAct(int index,Actividades **node,Actividades **list){
+bool ReplaceAct(int index,Actividades **node,Actividades **list){
 	Actividades *aux = *list;
     if (!index || !*node || !*list) return false;
     for (int i = 0; i < index; i++)
