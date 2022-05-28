@@ -1,5 +1,7 @@
 #pragma once
 #include "../tpstructs.h"
+#include "actturnHandler.h"
+#include "cliHandler.h"
 
 Asistencia *asist;
 
@@ -10,6 +12,7 @@ Asistencia *GetAsist(int index, Asistencia *list);
 int BorrarAsist(int index, Asistencia **list);
 void BuscarBorrarAsist(int index, Asistencia **bor, Asistencia **ant);
 void BorrarListaAsist(Asistencia **list);
+void UpdateClientDate(Asistencia,ActTurno *,Clientes *);
 
 // escritura y lecura del archivo
 void LoadAsist(Asistencia **list);
@@ -109,6 +112,16 @@ void BorrarListaAsist(Asistencia **list)
         *list = (*list)->next;
         aux->next = NULL;
         free(aux);
+    }
+}
+void UpdateClientDate(Asistencia node,ActTurno *actTurns,Clientes *clients){
+    ActTurno *actturn = get_ActTurn(node.actturn, &actTurns);
+    Clientes *client = NULL;
+    if(actturn){
+        client=FindClient(actturn->dni,clients);
+        if(client){
+            client->ultimaActividad = node.fecha;
+        }
     }
 }
 

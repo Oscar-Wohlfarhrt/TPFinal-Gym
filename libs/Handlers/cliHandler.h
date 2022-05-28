@@ -24,6 +24,7 @@ int BorrarCliente(Clientes value, Clientes **list);
 void BuscarBorrarCliente(Clientes value, Clientes **bor, Clientes **ant);
 int ReplaceClient(int dni, Clientes *newClient, Clientes *list);
 void BorrarListaClientes(Clientes **list);
+void UpdateClientBaja(Clientes *list);
 
 // escritura y lecura del archivo
 void LoadClientes(Clientes **list);
@@ -161,6 +162,16 @@ void BorrarListaClientes(Clientes **list)
         *list = (*list)->next;
         aux->next = NULL;
         free(aux);
+    }
+}
+void UpdateClientBaja(Clientes *list){
+    time_t nowt=time(NULL);
+    struct tm now=*localtime(&nowt);
+    while(list){
+        if(dayDifftime(now,list->ultimaActividad)>30)//2592000
+            list->fechaBaja=now;
+
+        list=list->next;
     }
 }
 

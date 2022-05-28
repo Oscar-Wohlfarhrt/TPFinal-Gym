@@ -40,6 +40,7 @@ char *menus[]={
     "<o>ABMs</o>\n"
     "<o>Asistencia</o>\n"
     "<o>Cuotas</o>\n"
+    "<o>Reservas</o>\n"
     "<o>Listas</o>\n|\n"
     "<o>Salir</o>\n",
     "--- ABMs ---\n\n"
@@ -55,7 +56,6 @@ char *menus[]={
     "<o>Clientes por Turno</o>\n|\n"
     "<o>Turnos por Actividad</o>\n"
     "<o>Turnos por Sede</o>\n|\n"
-    "<o>Reservas</o>\n|\n"
     "<o>Salir</o>\n",
 };
 
@@ -85,7 +85,7 @@ int main(int argc, char **args)
 {
     signal(SIGINT,forcedExit);
     LoadAllFiles();
-    //getKeyCode(); //debug
+    getKeyCode(); //debug
 
     setAdvMenus(menus);
     setAdvFormats("| ","\e[1m\e[38;5;136m|-< ",
@@ -95,10 +95,11 @@ int main(int argc, char **args)
         ABMs,
         AsistPrintList,
         PagosPrintList,
+        EmptyFunction,
         Listas,
     };
 
-    advMenu(0,mainMenu,4);
+    advMenu(0,mainMenu,5);
 
     //printf("%s",title);
 
@@ -137,10 +138,9 @@ void Listas(){
         EmptyFunction,
         EmptyFunction,
         EmptyFunction,
-        EmptyFunction,
     };
 
-    advMenu(2,ListasMenu,6);
+    advMenu(2,ListasMenu,5);
 }
 
 #pragma endregion

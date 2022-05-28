@@ -4,7 +4,8 @@
 #include <time.h>
 #include <ctype.h>
 #include <stdbool.h>
-#include "../libs/cmenus.h"
+#include "cmenus.h"
+#include "utils.h"
 
 #define true 1
 #define false 0

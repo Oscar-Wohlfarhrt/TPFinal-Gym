@@ -239,6 +239,7 @@ sprintf(date1, "%02i/%02i/%04i", asis->fecha.tm_mday, asis->fecha.tm_mon + 1, as
             {
                 Asistencia *newTurn = (Asistencia *)malloc(sizeof(Asistencia));
                 *newTurn = data;
+                UpdateClientDate(*newTurn,acturn,clientes);
                 InsertAsist(&newTurn, &asist);
             }
         }
@@ -250,10 +251,14 @@ sprintf(date1, "%02i/%02i/%04i", asis->fecha.tm_mday, asis->fecha.tm_mon + 1, as
             // se intenta convertir el indice a entero
             if (TryToInt32(ind, &editIndex))
             {
+                int errout=0;
                 Asistencia *editTurn = NULL;
                 // se verifica que el turno no sea NULL
                 if (editTurn = GetAsist(editIndex - 1, asist))
-                    AsistPrompt(editTurn, NULL);
+                    AsistPrompt(editTurn, &errout);
+
+                if(errout)
+                    UpdateClientDate(*editTurn,acturn,clientes);
             }
         }
         else if (!strncmp(op, "x", 1)) // eliminar
