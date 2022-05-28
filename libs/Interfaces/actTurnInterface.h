@@ -172,7 +172,7 @@ void ActTurnsPrintList()
                 client = FindClient(ActTurn->dni, clientes);
                 // se imprime la fila
                 // printf("%-5s | %-20s | %-5s | %-50s | %-50s  \e[K\e[0m\n", "Index","DNI", "TURNO","NOMBRE", "APELLIDO");
-                printf("%5i | %-10li | %-5i | %-50s | %-50s \e[K\n", index,ActTurn->dni, ActTurn->turno,client?client->nombre:"NULL",client?client->apellido:"NULL");
+                printf("%5i | %-10li | %-5i | %-50s | %-50s \e[K\e[0m\n", index,ActTurn->dni, ActTurn->turno,client?client->nombre:"NULL",client?client->apellido:"NULL");
                 ActTurn = ActTurn->next;
             }
             else // si no existen mas registros
