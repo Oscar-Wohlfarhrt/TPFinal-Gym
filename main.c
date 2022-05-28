@@ -69,14 +69,22 @@ void EmptyFunction(){}
 
 #pragma endregion
 
+#pragma region ArchivosPrototipos
+
+void LoadAllFiles();
+void SaveAllFiles();
+
+#pragma endregion
+
 void forcedExit(){
+    SaveAllFiles();
     printf("\e[0mSalida Forzada");
 }
 
 int main(int argc, char **args)
 {
     signal(SIGINT,forcedExit);
-
+    LoadAllFiles();
     //getKeyCode(); //debug
 
     setAdvMenus(menus);
@@ -104,6 +112,8 @@ int main(int argc, char **args)
         printf("%-50s | %-10i\e[K\e[0m\n", s->nombre, s->sucursal);
         s=s->next;
     }*/
+    SaveAllFiles();
+
     return 0;
 }
 
@@ -131,6 +141,30 @@ void Listas(){
     };
 
     advMenu(2,ListasMenu,6);
+}
+
+#pragma endregion
+
+
+#pragma region Archivos
+
+void LoadAllFiles(){
+    LoadClientes(&clientes);
+    LoadProf(&profes);
+    load_actividades(&acti);
+    LoadTurnos(&turnos);
+    load_ActTurn(&acturn);
+    LoadPagos(&pagos);
+    LoadAsist(&asist);
+}
+void SaveAllFiles(){
+    SaveClientes(clientes);
+    SaveProf(profes);
+    save_actividades(acti);
+    SaveTurnos(turnos);
+    save_ActTurn(acturn);
+    SavePagos(pagos);
+    SaveAsist(asist);
 }
 
 #pragma endregion

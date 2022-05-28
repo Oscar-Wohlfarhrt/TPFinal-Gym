@@ -11,6 +11,7 @@ ClientesPagos *GetPago(int index, ClientesPagos *list);
 int BorrarPago(int index, ClientesPagos **list);
 void BuscarBorrarPago(int index, ClientesPagos **bor, ClientesPagos **ant);
 void BorrarListaPago(ClientesPagos **list);
+void ReindexPagos(int index, ClientesPagos *list);
 
 // escritura y lecura del archivo
 void LoadPagos(ClientesPagos **list);
@@ -111,6 +112,10 @@ void BorrarListaPago(ClientesPagos **list)
         aux->next = NULL;
         free(aux);
     }
+}
+
+void ReindexPagos(int index, ClientesPagos *list){
+    
 }
 
 void LoadPagos(ClientesPagos **list)
