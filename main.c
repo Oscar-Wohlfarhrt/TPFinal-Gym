@@ -83,9 +83,13 @@ void forcedExit(){
 
 int main(int argc, char **args)
 {
+    //getKeyCode(); //debug
+
     signal(SIGINT,forcedExit);
     LoadAllFiles();
-    getKeyCode(); //debug
+
+    //actualiza la fecha de baja de los clientes de ser necesario
+    UpdateClientBaja(clientes);
 
     setAdvMenus(menus);
     setAdvFormats("| ","\e[1m\e[38;5;136m|-< ",
