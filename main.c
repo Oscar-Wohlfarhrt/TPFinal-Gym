@@ -36,7 +36,7 @@ char *title="_________  _____      ______  ___  ___ ___    ___    ___\n"
             "   |_|     |_|        |_|     |_|  |_| \\_|  |_| |_|  |____|\n";
 
 char *menus[]={
-    "TP Final\n\n"
+    "\e[1m\e[4m\e[38;5;15mTP Final\e[0m\n\n"
     "<o>ABMs</o>\n"
     "<o>Asistencia</o>\n"
     "<o>Cuotas</o>\n"
@@ -80,7 +80,7 @@ int main(int argc, char **args)
     //getKeyCode(); //debug
 
     setAdvMenus(menus);
-    setAdvFormats("| ","\e[1m\e[48;5;25m|-< ",
+    setAdvFormats("| ","\e[1m\e[38;5;136m|-< ",
                ""," > \e[0m");
     
     void (*mainMenu[])(void)={

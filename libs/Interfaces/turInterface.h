@@ -211,9 +211,10 @@ void TurnsPrintList()
                 sprintf(date1,"%2i:%02i", turn->horarioInicio.tm_hour, turn->horarioInicio.tm_min);
                 sprintf(date2,"%2i:%02i", turn->horarioFin.tm_hour, turn->horarioFin.tm_min);
 
+                Profesores *prof= FindProf(turn->prof,profes);
                 // se imprime la fila
                 printf("%5i | %-50i | %-50i | %-20i | %-20s\e[K\n", index, turn->actividad, turn->prof, turn->dia, date1);
-                printf("%5s | %-50s | %-50s | %-20i | %-20s\e[K\e[0m\n", "" , "", "",turn->cupo, date2);
+                printf("%5s | %-50s | %-50s | %-20i | %-20s\e[K\e[0m\n", "" , "",prof?prof->nombre:"NULL",turn->cupo, date2);
 
                 turn = turn->next;
             }

@@ -19,7 +19,7 @@ void PrintList(Profesores*ini);//aux text
 //functions
 void SaveProf(Profesores *ini);
 void LoadProf(Profesores **ini);
-Profesores *Find(Profesores node,Profesores *ini);//R
+Profesores *FindProf(long node,Profesores *ini);//R
 Profesores InsertP(Profesores**node,Profesores**ini);//R
 int ReplaceP(Profesores **node,Profesores **ini);
 int RemoveP(Profesores node,Profesores **ini);//R
@@ -27,13 +27,12 @@ Profesores *GetProf(int index, Profesores *ini);
 Profesores *FindLastProf(Profesores node, Profesores *ini);
 
 
-Profesores *Find(Profesores node,Profesores *ini){
+Profesores *FindProf(long node,Profesores *ini){
 	if(ini != NULL){
-		if(ini->dni == node.dni){
-			PrintList(ini);
+		if(ini->dni == node){
 			return ini;
 		}else{
-			Find(node,ini->next);
+			FindProf(node,ini->next);
 		}
 	}
 }
