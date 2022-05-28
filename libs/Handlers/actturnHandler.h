@@ -14,6 +14,7 @@ ActTurno *find_ActTurn(int turno, ActTurno **list);
 ActTurno *FindLastActTurno(ActTurno *list);
 void BuscarBorrarActTurn(int index, ActTurno **bor, ActTurno **ant);
 void borrarListaActTurn(ActTurno **list);
+int sizeIndex(ActTurno *list);
 
 void load_ActTurn(ActTurno **list)
 {
@@ -194,5 +195,13 @@ void borrarListaActTurn(ActTurno **list)
         free(aux);
         aux = *list;
     }
+}
+int sizeIndex(ActTurno *list){
+    int cont = 0;
+    while (list != NULL){
+        cont++;
+        list = list ->next;
+    } 
+    return cont;
 }
 #pragma endregion
