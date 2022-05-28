@@ -3,9 +3,8 @@ joaTest/
 Emma/
 trabajar_en_el_laburo/
 oscar/
-libs/Handlers/actHandler.exe
 .vscode/
 Trash/
-main.exe
-libs/Handlers/actturnHandler.exe
-libs/Handlers/actturnHandler.exe
+temp/
+*.exe
+*.bin
