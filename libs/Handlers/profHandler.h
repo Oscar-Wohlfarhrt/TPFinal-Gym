@@ -35,6 +35,9 @@ Profesores *FindProf(long node,Profesores *ini){
 			FindProf(node,ini->next);
 		}
 	}
+    else{
+        return NULL;
+    }
 }
 
 Profesores InsertP(Profesores**node,Profesores**ini){
