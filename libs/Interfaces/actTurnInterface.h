@@ -21,12 +21,14 @@ ActTurno ActTurnPrompt(ActTurno *ActTurn, int *errout)
     char *options[] = {
         "DNI",
         "TURNO",
+        "NOMBRE",
+        "APELLIDO",
     };
 
     // se muestra la interfaz
     printf("\e[48;5;237m");
     printf("ActTurno:\e[K\n\e[K\n");
-    for (int i = 0; i < 2; i++)
+    for (int i = 0; i < 4; i++)
     {
         if (i % 2)
             printf("\e[48;5;236m");
@@ -70,7 +72,6 @@ ActTurno ActTurnPrompt(ActTurno *ActTurn, int *errout)
         else if (op >= '1' && op <= '2')
         {
             index = op - '1';
-
             SetCurPos(30, index + 2);
             if (index % 2)
                 printf("\e[48;5;236m");
@@ -102,11 +103,11 @@ ActTurno ActTurnPrompt(ActTurno *ActTurn, int *errout)
             printf("\e[u\e[0m\e[J");
         }
     }
-
     return *ActTurn;
 }
 void ActTurnPromptRestore(int index, ActTurno *ActTurn)
 {
+    Clientes *client = GetClient(ActTurn->dni, clientes);
     SetCurPos(30, index + 2);
     if (index % 2)
         printf("\e[48;5;236m");
@@ -120,6 +121,12 @@ void ActTurnPromptRestore(int index, ActTurno *ActTurn)
         break;
     case 1:
         printf("%i", ActTurn->turno);
+        break;
+    case 2:
+        printf("%s", client->nombre);
+        break;
+    case 3:
+        printf("%s", client->apellido);
         break;
     }
 }
@@ -143,17 +150,11 @@ void ActTurnsPrintList()
 
         // se obtiene el primer turno de la lista
         ActTurno *ActTurn = get_ActTurn(page * entries, &acturn);
-
-    /*  "Actividad",
-        "Dia",
-        "Hora de inicio",
-        "hora de fin",
-        "DNI Profesor",
-        "Cupo Maximo",*/
+        Clientes *client = NULL;
 
         printf("\e[48;5;237m");
         printf("ActTurno: Pagina %i\e[K\n", page + 1);
-        printf("%-5s | %-20s | %-5s  \e[K\e[0m\n", "Index", "DNI", "TURNO");
+        printf("%-3s | %-10s | %-3s | %-50s | %-50s\e[K\e[0m\n", "Index","DNI", "TURNO","NOMBRE", "APELLIDO");
         for (int i = 0; i < entries; i++)
         {
             int index = i + 1 + (page * entries);
@@ -164,9 +165,10 @@ void ActTurnsPrintList()
 
             if (ActTurn)
             {
+                client = GetClient(ActTurn->dni, clientes);
                 // se imprime la fila
-                //printf("%-5s | %-20s | %-5s | %-20s \e[K\n", "Index", "DNI", "TURNO", "CLIENTE");
-                printf("%5i | %-20i | %-5i \e[K\n", index, ActTurn->dni, ActTurn->turno);
+                // printf("%-5s | %-20s | %-5s | %-50s | %-50s  \e[K\e[0m\n", "Index","DNI", "TURNO","NOMBRE", "APELLIDO");
+                printf("%3i | %-10li | %-3is | %-50s | %-50s \e[K\n", index,ActTurn->dni, ActTurn->turno,client->nombre,client->apellido);
                 ActTurn = ActTurn->next;
             }
             else // si no existen mas registros
