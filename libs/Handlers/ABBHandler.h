@@ -8,17 +8,14 @@ ABClientes *borrarArbol(ABClientes *root);
 
 ABClientes *insert(ABClientes **raiz, ABClientes **nodo)
 {
-    int sel;
     if (!raiz)
         return *nodo;
     else
     {
-        if (sel = strcmp(strcat((*nodo)->nombre, (*nodo)->apellido), strcat((*raiz)->nombre, (*raiz)->apellido)))
-        {
-            if (sel < 0) (*raiz)->izq = insert(&(*raiz)->izq, nodo);
-            
-            else  (*raiz)->der = insert(&(*raiz)->der, nodo);
-        }
+        if (strcmp(strcat((*nodo)->nombre, (*nodo)->apellido), strcat((*raiz)->nombre, (*raiz)->apellido)) < 0)
+            (*raiz)->izq = insert(&(*raiz)->izq, nodo);
+        else
+            (*raiz)->der = insert(&(*raiz)->der, nodo);
     }
     return *nodo;
 }
@@ -29,13 +26,14 @@ ABClientes *eliminar(ABClientes *raiz, ABClientes *nodo)
         return NULL;
     if (sel = strcmp(strcat(nodo->nombre, nodo->apellido), strcat(raiz->nombre, raiz->apellido)))
     {
-        if (sel == 1)
+        if (sel > 0)
             raiz->izq = eliminar(raiz->izq, nodo);
-        if (sel == 2)
+        else
             raiz->der = eliminar(raiz->der, nodo);
-        if (!sel)
-            raiz = borrar(raiz);
     }
+    else
+            raiz = borrar(raiz);
+
     return (raiz);
 }
 ABClientes *borrar(ABClientes *borrar)
@@ -64,7 +62,7 @@ ABClientes *borrar(ABClientes *borrar)
     free(borrar);
     return (r);
 }
-_Bool cargarABClientes(ABClientes *root)
+int cargarABClientes(ABClientes *root)
 {
     ABClientes *nodo;
     FILE *f = fopen("ABClientes.bin", "rb");
