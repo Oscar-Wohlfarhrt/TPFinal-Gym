@@ -205,8 +205,8 @@ Actividades ActPrompt(Actividades *s, int *errout)
                     switch (index)
                     {
                     case 0:
-                        for (int inc = 0; inc < strlen(input); inc++)
-                            input[inc] = tolower(input[inc]);
+                        /*for (int inc = 0; inc < strlen(input); inc++)
+                            input[inc] = tolower(input[inc]);*/
                         strcpy(s->nombre, input);
                         break;
                     case 1:

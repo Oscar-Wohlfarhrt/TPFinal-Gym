@@ -28,16 +28,12 @@ Profesores *FindLastProf(Profesores node, Profesores *ini);
 
 
 Profesores *FindProf(long node,Profesores *ini){
-	if(ini != NULL){
-		if(ini->dni == node){
-			return ini;
-		}else{
-			FindProf(node,ini->next);
+	if(ini){
+		if(ini->dni != node){
+			ini=FindProf(node,ini->next);
 		}
 	}
-    else{
-        return NULL;
-    }
+    return ini;
 }
 
 Profesores InsertP(Profesores**node,Profesores**ini){
