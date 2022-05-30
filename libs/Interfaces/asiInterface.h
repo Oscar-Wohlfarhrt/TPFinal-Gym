@@ -1,6 +1,8 @@
 #pragma once
 
 #include "../Handlers/asiHandler.h"
+#include "interfaces.h"
+#include "../Handlers/turHandler.h"
 
 // interfaz
 Asistencia AsistPrompt(Asistencia *client, int *errout);
@@ -48,13 +50,32 @@ Asistencia AsistPrompt(Asistencia *asis, int *errout)
 
     printf("\e[u"); // se resetea el cursor
 
+    ActTurno *at;
+    Turnos *tur;
+
     while (err)
     {
         err = 1;
+        if (asis)
+        {
+            ActTurno *at = get_ActTurn(asis->actturn, &acturn);
+            Turnos *tur = at ? GetTurn(at->turno, turnos) : NULL;
+
+            if(tur){
+                if(!betweenTime(asis->fecha,tur->horarioInicio,tur->horarioFin) || dayOfWeek(asis->fecha) != tur->dia)
+                    err=3;
+            }
+            else
+                err=3;
+        }
+
+        if(err==3)
+            printf("Asistencia no valida\n");
+
         scanf("%c", &op);          // se lee la opcion
         fseek(stdin, 0, SEEK_END); // se limpia el buffer de entrada
 
-        if (op == 'e')
+        if (op == 'e' && err!=3)
         {
             err = 0;
             if (errout)
@@ -91,7 +112,9 @@ Asistencia AsistPrompt(Asistencia *asis, int *errout)
                 {
                     char *day = strtok(input, "/");
                     char *month = strtok(NULL, "/");
-                    char *year = strtok(NULL, "/");
+                    char *year = strtok(NULL, " ");
+                    char *hour = strtok(NULL, ":");
+                    char *min = strtok(NULL, ":");
 
                     if (!TryToInt32(day, &tm.tm_mday))
                         err = 2;
@@ -103,9 +126,14 @@ Asistencia AsistPrompt(Asistencia *asis, int *errout)
                         err = 2;
                     else
                         tm.tm_year -= 1900;
+
+                    if (!TryToInt32(hour, &tm.tm_hour))
+                        err = 2;
+                    if (!TryToInt32(min, &tm.tm_min))
+                        err = 2;
                 }
 
-                if (err == 1)
+                if (err != 2)
                 {
                     switch (index)
                     {
@@ -119,8 +147,8 @@ Asistencia AsistPrompt(Asistencia *asis, int *errout)
                 }
             }
             AsistPromptRestore(index, asis);
-            printf("\e[u\e[0m\e[J");
         }
+        printf("\e[u\e[0m\e[J");
     }
 
     return *asis;
@@ -139,7 +167,7 @@ void AsistPromptRestore(int index, Asistencia *asis)
         printf("%i", asis->actturn);
         break;
     case 1:
-        printf("%02i/%02i/%04i", asis->fecha.tm_mday, asis->fecha.tm_mon + 1, asis->fecha.tm_year + 1900);
+        printf("%02i/%02i/%04i %02i:%02i", asis->fecha.tm_mday, asis->fecha.tm_mon + 1, asis->fecha.tm_year + 1900, asis->fecha.tm_hour, asis->fecha.tm_min);
         break;
     }
 }
@@ -164,17 +192,17 @@ void AsistPrintList()
         // se obtiene el primer elemento de la lista
         Asistencia *asis = GetAsist(page * entries, asist);
 
-    /*  "Actividad",
-        "Dia",
-        "Hora de inicio",
-        "hora de fin",
-        "DNI Profesor",
-        "Cupo Maximo",*/
+        /*  "Actividad",
+            "Dia",
+            "Hora de inicio",
+            "hora de fin",
+            "DNI Profesor",
+            "Cupo Maximo",*/
 
         printf("\e[48;5;237m");
         printf("Asistencias: Pagina %i\e[K\n", page + 1);
-        printf("%-5s | %-50s | %-20s\e[K\n", "Index", "ACT-TURNO", "FECHA");
-        printf("%-5s | %-50s | %-20s\e[K\n\e[0m", "", "", "");
+        printf("%-5s | %-50s | %-50s\e[K\n", "Index", "ACTIVIDAD", "FECHA");
+        printf("%-5s | %-50s | %-50s\e[K\n\e[0m", "SEDE", "NOMBRE", "APELLIDO");
         for (int i = 0; i < entries; i++)
         {
             int index = i + 1 + (page * entries);
@@ -186,12 +214,17 @@ void AsistPrintList()
             if (asis)
             {
                 // se genera la fecha de nacimiento
-                char date1[17];
-sprintf(date1, "%02i/%02i/%04i", asis->fecha.tm_mday, asis->fecha.tm_mon + 1, asis->fecha.tm_year + 1900);
-                
+                char date1[20];
+                sprintf(date1, "%02i/%02i/%04i %02i:%02i", asis->fecha.tm_mday, asis->fecha.tm_mon + 1, asis->fecha.tm_year + 1900, asis->fecha.tm_hour, asis->fecha.tm_min);
+
+                ActTurno *at = get_ActTurn(asis->actturn, &acturn);
+                Clientes *cli = at ? FindClient(at->dni, clientes) : NULL;
+                Turnos *tur = at ? GetTurn(at->turno, turnos) : NULL;
+                Actividades *act = tur ? GetActividad(tur->actividad, acti) : NULL;
+
                 // se imprime la fila
-                printf("%5i | %-50i | %-20s\e[K\n", index, asis->actturn, date1);
-                printf("%5s | %-50s | %-20s\e[K\e[0m\n", "" , "", "");
+                printf("%5i | %-50s | %-50s\e[K\n", index, act ? act->nombre : "NULL", date1);
+                printf("%5i | %-50s | %-50s\e[K\e[0m\n", act ? act->sucursal : -1, cli ? cli->nombre : "NULL", cli ? cli->apellido : "NULL");
 
                 asis = asis->next;
             }
@@ -239,7 +272,7 @@ sprintf(date1, "%02i/%02i/%04i", asis->fecha.tm_mday, asis->fecha.tm_mon + 1, as
             {
                 Asistencia *newTurn = (Asistencia *)malloc(sizeof(Asistencia));
                 *newTurn = data;
-                UpdateClientDate(*newTurn,acturn,clientes);
+                UpdateClientDate(*newTurn, acturn, clientes);
                 InsertAsist(&newTurn, &asist);
             }
         }
@@ -251,14 +284,14 @@ sprintf(date1, "%02i/%02i/%04i", asis->fecha.tm_mday, asis->fecha.tm_mon + 1, as
             // se intenta convertir el indice a entero
             if (TryToInt32(ind, &editIndex))
             {
-                int errout=0;
+                int errout = 0;
                 Asistencia *editTurn = NULL;
                 // se verifica que el turno no sea NULL
                 if (editTurn = GetAsist(editIndex - 1, asist))
                     AsistPrompt(editTurn, &errout);
 
-                if(errout)
-                    UpdateClientDate(*editTurn,acturn,clientes);
+                if (errout)
+                    UpdateClientDate(*editTurn, acturn, clientes);
             }
         }
         else if (!strncmp(op, "x", 1)) // eliminar
@@ -269,10 +302,10 @@ sprintf(date1, "%02i/%02i/%04i", asis->fecha.tm_mday, asis->fecha.tm_mon + 1, as
             // se intenta convertir el indice a entero
             if (TryToInt32(ind, &editIndex))
             {
-                //Asistencia *editTurn = NULL;
-                // se verifica que el turno no sea NULL
-                //if (editTurn = GetTurn(editIndex - 1, turnos))
-                
+                // Asistencia *editTurn = NULL;
+                //  se verifica que el turno no sea NULL
+                // if (editTurn = GetTurn(editIndex - 1, turnos))
+
                 BorrarAsist(editIndex - 1, &asist);
             }
         }

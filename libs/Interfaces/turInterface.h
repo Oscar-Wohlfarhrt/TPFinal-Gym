@@ -195,7 +195,7 @@ void TurnsPrintList()
         printf("\e[48;5;237m");
         printf("Turnos: Pagina %i\e[K\n", page + 1);
         printf("%-5s | %-50s | %-50s | %-20s | %-20s\e[K\n", "Index", "ACTIVIDAD", "PROFESOR", "DIA", "HORA INICIO");
-        printf("%-5s | %-50s | %-50s | %-20s | %-20s\e[K\n\e[0m", "", "", "", "CUPO", "HORA FIN");
+        printf("%-5s | %-50s | %-50s | %-20s | %-20s\e[K\n\e[0m", "SEDE", "", "", "CUPO", "HORA FIN");
         for (int i = 0; i < entries; i++)
         {
             int index = i + 1 + (page * entries);
@@ -215,7 +215,7 @@ void TurnsPrintList()
                 Actividades *act = GetActividad(turn->actividad, acti);
                 // se imprime la fila
                 printf("%5i | %-50i | %-50i | %-20i | %-20s\e[K\n", index, turn->actividad, turn->prof, turn->dia, date1);
-                printf("%5s | %-50s | %-50s | %-20i | %-20s\e[K\e[0m\n", "" , act?act->nombre:"NULL",prof?prof->nombre:"NULL",turn->cupo, date2);
+                printf("%5i | %-50s | %-50s | %-20i | %-20s\e[K\e[0m\n", act?act->sucursal:-1 , act?act->nombre:"NULL",prof?prof->nombre:"NULL",turn->cupo, date2);
 
                 turn = turn->next;
             }

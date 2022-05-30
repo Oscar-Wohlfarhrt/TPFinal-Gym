@@ -84,7 +84,7 @@ void forcedExit(){
 
 int main(int argc, char **args)
 {
-    //getKeyCode(); //debug
+    getKeyCode(); //debug
 
     signal(SIGINT,forcedExit);
     LoadAllFiles();
@@ -94,7 +94,7 @@ int main(int argc, char **args)
 
     setAdvMenus(menus);
     setAdvFormats("| ","\e[1m\e[38;5;136m|-< ",
-               ""," > \e[0m");
+                  ""," > \e[0m");
     
     void (*mainMenu[])(void)={
         ABMs,
