@@ -1,23 +1,26 @@
 #pragma once
 #include "../tpstructs.h"
-
+ABClientes *root = NULL;
 ABClientes *eliminar(ABClientes *raiz, ABClientes *nodo);
-ABClientes *insert(ABClientes **raiz, ABClientes **nodo);
+ABClientes *insert(ABClientes *raiz, ABClientes **nodo);
 ABClientes *borrar(ABClientes *borrar);
-ABClientes *borrarArbol(ABClientes *root);
+ABClientes *borrarArbol(ABClientes *raiz);
+ABClientes *GetAB(char *nombre, char *apellido, ABClientes *raiz);
 
-ABClientes *insert(ABClientes **raiz, ABClientes **nodo)
+ABClientes *insert(ABClientes *raiz, ABClientes **nodo)
 {
-    if (!raiz)
-        return *nodo;
+    if (raiz)
+    {
+        if (strcmp(strcat((*nodo)->nombre, (*nodo)->apellido), strcat(raiz->nombre, raiz->apellido)) < 0)
+            raiz->izq = insert(raiz->izq, nodo);
+        else
+            raiz->der = insert(raiz->der, nodo);
+    }
     else
     {
-        if (strcmp(strcat((*nodo)->nombre, (*nodo)->apellido), strcat((*raiz)->nombre, (*raiz)->apellido)) < 0)
-            (*raiz)->izq = insert(&(*raiz)->izq, nodo);
-        else
-            (*raiz)->der = insert(&(*raiz)->der, nodo);
+        raiz = *nodo;
     }
-    return *nodo;
+    return raiz;
 }
 ABClientes *eliminar(ABClientes *raiz, ABClientes *nodo)
 {
@@ -32,8 +35,7 @@ ABClientes *eliminar(ABClientes *raiz, ABClientes *nodo)
             raiz->der = eliminar(raiz->der, nodo);
     }
     else
-            raiz = borrar(raiz);
-
+        raiz = borrar(raiz);
     return (raiz);
 }
 ABClientes *borrar(ABClientes *borrar)
@@ -41,15 +43,15 @@ ABClientes *borrar(ABClientes *borrar)
     ABClientes *ant, *r;
     ant = NULL;
     r = borrar->izq;
-    if (r != NULL)
+    if (r)
     {
-        while (r->der != NULL)
+        while (r->der)
         {
             ant = r;
             r = r->der;
         }
         r->der = borrar->der;
-        if (ant != NULL)
+        if (ant)
         {
             ant->der = r->izq;
             r->izq = borrar->izq;
@@ -62,11 +64,12 @@ ABClientes *borrar(ABClientes *borrar)
     free(borrar);
     return (r);
 }
-int cargarABClientes(ABClientes *root)
+int cargarABClientes(ABClientes *raiz)
 {
     ABClientes *nodo;
     FILE *f = fopen("ABClientes.bin", "rb");
-    if(!f){
+    if (!f)
+    {
         fclose(f);
         return false;
     }
@@ -75,21 +78,34 @@ int cargarABClientes(ABClientes *root)
         while (fread(&nodo, sizeof(ABClientes), 1, f))
         {
             nodo = (ABClientes *)malloc(sizeof(ABClientes));
-            insert(&root, &nodo);
+            insert(raiz, &nodo);
         }
     }
     return true;
 }
-ABClientes *borrarArbol(ABClientes *root){
-    if(root){
-        root->izq = borrarArbol(root->izq);
-        root->der = borrarArbol(root->der);
-    }
-    if(!root->izq && !root->der){
-        free(root);
+ABClientes *borrarArbol(ABClientes *raiz)
+{
+    if (raiz)
+    {
+        raiz->izq = borrarArbol(raiz->izq);
+        raiz->der = borrarArbol(raiz->der);
+        free(raiz);
         return NULL;
-    } 
-    return root;
+    }
+    return raiz;
 }
-
+ABClientes *GetAB(char *nombre, char *apellido, ABClientes *raiz)
+{
+    short int sel = strcmp(strcat(nombre, apellido), strcat(raiz->nombre, raiz->apellido));
+    if (raiz)
+    {
+        if (sel == 0)
+            return raiz;
+        else if (sel > 0)
+            raiz->der = GetAB(nombre, apellido, raiz->der);
+        else
+            raiz->izq = GetAB(nombre, apellido, raiz->izq);
+    }
+    return raiz;
+}
 #pragma endregion
