@@ -4,6 +4,7 @@
 #include <signal.h>
 #include "libs/tpstructs.h"
 
+#include "libs/List/Listas.h"
 #include "libs/interfaces/interfaces.h"
 
 
@@ -137,9 +138,9 @@ void ABMs(){
 }
 void Listas(){
     void (*ListasMenu[])(void)={
+        SedePrintList,
         EmptyFunction,
-        EmptyFunction,
-        EmptyFunction,
+        TurnPrintList,
         EmptyFunction,
         EmptyFunction,
     };
