@@ -68,6 +68,6 @@ int dayOfWeek(struct tm time){
 
     return ((day += mon<3?year--:year-2),(23*mon/9+day+4+year/4-year/100+year/400))%7;
 }
-int weekofYear(struct tm time){
+int weekOfYear(struct tm time){
     return (time.tm_yday+6-time.tm_wday)/7;
 }

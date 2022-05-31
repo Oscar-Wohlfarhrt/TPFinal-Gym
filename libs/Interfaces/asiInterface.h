@@ -23,14 +23,17 @@ int CountActTurn(ActTurno value,ActTurno *list){
     }
     return count;
 }
-int CountAsist(ActTurno value,Asistencia *list){
+int CountAsist(Asistencia value,Asistencia *list){
     int count=0;
     while(list){
+        ActTurno *ata = get_ActTurn(value.actturn, &acturn);
         ActTurno *at = get_ActTurn(list->actturn, &acturn);
         Turnos *tur = at ? GetTurn(at->turno, turnos) : NULL;
         Actividades *act = tur ? GetActividad(tur->actividad, acti) : NULL;
 
-        if(at && act && at->dni==value.dni && act->sucursal==0)
+        if(ata && at && act &&
+           at->dni==ata->dni && act->sucursal==0 &&
+           weekOfYear(list->fecha)== weekOfYear(value.fecha))
             count++;
 
         list=list->next;
@@ -95,7 +98,7 @@ Asistencia AsistPrompt(Asistencia *asis, int *errout)
             Actividades *act = tur ? GetActividad(tur->actividad, acti) : NULL;
 
             if(act){
-                if(CountActTurn(*at,acturn)<=CountAsist(*at,asist))
+                if(CountActTurn(*at,acturn)<=CountAsist(*asis,asist))
 
                 if(tur){
                     if(!betweenTime(asis->fecha,tur->horarioInicio,tur->horarioFin) || /*dayOfWeek(asis->fecha)*/asis->fecha.tm_wday != tur->dia)
