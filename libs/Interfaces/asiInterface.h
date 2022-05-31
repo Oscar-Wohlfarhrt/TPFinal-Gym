@@ -3,11 +3,41 @@
 #include "../Handlers/asiHandler.h"
 #include "interfaces.h"
 #include "../Handlers/turHandler.h"
+#include "../Handlers/actHandler.h"
 
 // interfaz
 Asistencia AsistPrompt(Asistencia *client, int *errout);
 void AsistPromptRestore(int index, Asistencia *client);
 void AsistPrintList();
+
+int CountActTurn(ActTurno value,ActTurno *list){
+    int count=0;
+    while(list){
+        Turnos *tur = GetTurn(list->turno, turnos);
+        Actividades *act = tur ? GetActividad(tur->actividad, acti) : NULL;
+
+        if(act && list->dni==value.dni && act->sucursal==0)
+            count++;
+
+        list=list->next;
+    }
+    return count;
+}
+int CountAsist(ActTurno value,Asistencia *list){
+    int count=0;
+    while(list){
+        ActTurno *at = get_ActTurn(list->actturn, &acturn);
+        Turnos *tur = at ? GetTurn(at->turno, turnos) : NULL;
+        Actividades *act = tur ? GetActividad(tur->actividad, acti) : NULL;
+
+        if(at && act && at->dni==value.dni && act->sucursal==0)
+            count++;
+
+        list=list->next;
+    }
+    return count;
+}
+
 
 Asistencia AsistPrompt(Asistencia *asis, int *errout)
 {
@@ -58,12 +88,19 @@ Asistencia AsistPrompt(Asistencia *asis, int *errout)
         err = 1;
         if (asis)
         {
+            mktime(&asis->fecha);
+            
             ActTurno *at = get_ActTurn(asis->actturn, &acturn);
             Turnos *tur = at ? GetTurn(at->turno, turnos) : NULL;
+            Actividades *act = tur ? GetActividad(tur->actividad, acti) : NULL;
 
-            if(tur){
-                if(!betweenTime(asis->fecha,tur->horarioInicio,tur->horarioFin) || dayOfWeek(asis->fecha) != tur->dia)
-                    err=3;
+            if(act){
+                if(CountActTurn(*at,acturn)<=CountAsist(*at,asist))
+
+                if(tur){
+                    if(!betweenTime(asis->fecha,tur->horarioInicio,tur->horarioFin) || /*dayOfWeek(asis->fecha)*/asis->fecha.tm_wday != tur->dia)
+                        err=3;
+                }
             }
             else
                 err=3;
