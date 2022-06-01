@@ -1,20 +1,22 @@
 #pragma once
 #include "../tpstructs.h"
+// raiz del arbol binario
 ABClientes *root = NULL;
 ABClientes *eliminar(ABClientes *raiz, ABClientes *nodo);
 ABClientes *insert(ABClientes *raiz, ABClientes **nodo);
 ABClientes *borrar(ABClientes *borrar);
 ABClientes *borrarArbol(ABClientes *raiz);
 ABClientes *GetAB(char *nombre, char *apellido, ABClientes *raiz);
+void cargarEnABB();
 
 ABClientes *insert(ABClientes *raiz, ABClientes **nodo)
 {
     if (raiz)
     {
-        if (strcmp(strcat((*nodo)->nombre, (*nodo)->apellido), strcat(raiz->nombre, raiz->apellido)) < 0)
-            raiz->izq = insert(raiz->izq, nodo);
+        if (strcmp((*nodo)->nombre, raiz->nombre) < 0 && strcmp((*nodo)->apellido, raiz->apellido) < 0)
+            raiz->izq = insert(raiz->izq, &*nodo);
         else
-            raiz->der = insert(raiz->der, nodo);
+            raiz->der = insert(raiz->der, &*nodo);
     }
     else
     {
@@ -22,12 +24,35 @@ ABClientes *insert(ABClientes *raiz, ABClientes **nodo)
     }
     return raiz;
 }
+void cargarEnABB()
+{
+    ClientesPagos *pg = pagos;
+    Clientes *cli = NULL;
+    ABClientes *aux = NULL;
+    while (pg)
+    {
+        cli = FindClient(pg->actturn, clientes);
+        if (!pg->fechaPago.tm_mon && !cli->fechaBaja.tm_mon)//verificar esta condicion para las personas que no estan en baja y no pagaron
+        {
+
+            aux = (ABClientes *)malloc(sizeof(ABClientes));
+            aux->dni = pg->actturn;
+            strcpy(aux->apellido, cli->apellido);
+            strcpy(aux->nombre, cli->nombre);
+            strcpy(aux->telefono, cli->telefono);
+            aux->der = NULL;
+            aux->izq = NULL;
+            root = insert(root, &aux);
+        }
+        pg = pg->next;
+    }
+}
 ABClientes *eliminar(ABClientes *raiz, ABClientes *nodo)
 {
     short int sel;
     if (!raiz)
         return NULL;
-    if (sel = strcmp(strcat(nodo->nombre, nodo->apellido), strcat(raiz->nombre, raiz->apellido)))
+    if (sel = (strcmp((nodo)->nombre, raiz->nombre)+strcmp((nodo)->apellido, raiz->apellido)))
     {
         if (sel > 0)
             raiz->izq = eliminar(raiz->izq, nodo);

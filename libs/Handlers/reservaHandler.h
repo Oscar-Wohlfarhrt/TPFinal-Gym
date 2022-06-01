@@ -1,6 +1,7 @@
 #pragma once
 #include "../tpstructs.h"
-
+//Apunta a la lista de reservas
+Reservas *reserva =NULL;
 
 Reservas *getbyDNI(long dni, Reservas **list);
 Reservas *FindReservas(long dni, char *actividad, Reservas *list);

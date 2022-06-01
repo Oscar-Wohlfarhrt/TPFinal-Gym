@@ -18,7 +18,7 @@ Clientes *clientes = NULL;
 // manejo de la lista
 void InsertClient(Clientes **node, Clientes **list);
 Clientes *FindLastClient(Clientes node, Clientes *list);
-Clientes *FindClient(int dni, Clientes *list);
+Clientes *FindClient(long dni, Clientes *list);
 Clientes *GetClient(int index, Clientes *list);
 int BorrarCliente(Clientes value, Clientes **list);
 void BuscarBorrarCliente(Clientes value, Clientes **bor, Clientes **ant);
@@ -72,7 +72,7 @@ Clientes *FindLastClient(Clientes node, Clientes *list)
 
     return last;
 }
-Clientes *FindClient(int dni, Clientes *list)
+Clientes *FindClient(long dni, Clientes *list)
 {
     Clientes *fNode = NULL;
 

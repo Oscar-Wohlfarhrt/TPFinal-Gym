@@ -7,7 +7,6 @@
 #include "libs/List/Listas.h"
 #include "libs/interfaces/interfaces.h"
 
-
 //#include "libs/Handlers/actHandler.h"
 //#include "libs/interfaces/actInterface.h"
 //#include "libs/Handlers/turHandler.h"
@@ -30,13 +29,13 @@ int Replace([tipo] value,[struct] *new,[struct] **list)
 
 */
 
-char *title="_________  _____      ______  ___  ___ ___    ___    ___\n"
-            "|__   __|  |  _ \\     |  __|  | |  |  \\| |   / _ \\   | |\n"
-            "   | |     | |_| |    | |_    | |  | \\ \\ |  / /_\\ \\  | |\n"
-            "   | |     |  __/     |  _|   | |  | |\\  |  | ___ |  | |__\n"
-            "   |_|     |_|        |_|     |_|  |_| \\_|  |_| |_|  |____|\n";
+char *title = "_________  _____      ______  ___  ___ ___    ___    ___\n"
+              "|__   __|  |  _ \\     |  __|  | |  |  \\| |   / _ \\   | |\n"
+              "   | |     | |_| |    | |_    | |  | \\ \\ |  / /_\\ \\  | |\n"
+              "   | |     |  __/     |  _|   | |  | |\\  |  | ___ |  | |__\n"
+              "   |_|     |_|        |_|     |_|  |_| \\_|  |_| |_|  |____|\n";
 
-char *menus[]={
+char *menus[] = {
     "\e[1m\e[4m\e[38;5;15mTP Final\e[0m\n\n"
     "<o>ABMs</o>\n"
     "<o>Asistencia</o>\n"
@@ -56,7 +55,8 @@ char *menus[]={
     "<o>Clientes por Actividad</o>\n"
     "<o>Clientes por Turno</o>\n|\n"
     "<o>Turnos por Actividad</o>\n"
-    "<o>Turnos por Sede</o>\n|\n"
+    "<o>Turnos por Sede</o>\n"
+    "<o>Lista de deudores</o>\n|\n"
     "<o>Salir</o>\n",
 };
 
@@ -65,8 +65,8 @@ char *menus[]={
 void ABMs();
 void Listas();
 
-//Funcion para opciones no implementadas
-void EmptyFunction(){}
+// Funcion para opciones no implementadas
+void EmptyFunction() {}
 
 #pragma endregion
 
@@ -77,36 +77,37 @@ void SaveAllFiles();
 
 #pragma endregion
 
-void forcedExit(){
+void forcedExit()
+{
     SaveAllFiles();
     printf("\e[0mSalida Forzada");
 }
 
 int main(int argc, char **args)
 {
-    getKeyCode(); //debug
+    //getKeyCode(); // debug
 
-    signal(SIGINT,forcedExit);
+    signal(SIGINT, forcedExit);
     LoadAllFiles();
 
-    //actualiza la fecha de baja de los clientes de ser necesario
+    // actualiza la fecha de baja de los clientes de ser necesario
     UpdateClientBaja(clientes);
 
     setAdvMenus(menus);
-    setAdvFormats("| ","\e[1m\e[38;5;136m|-< ",
-                  ""," > \e[0m");
-    
-    void (*mainMenu[])(void)={
+    setAdvFormats("| ", "\e[1m\e[38;5;136m|-< ",
+                  "", " > \e[0m");
+
+    void (*mainMenu[])(void) = {
         ABMs,
         AsistPrintList,
         PagosPrintList,
-        EmptyFunction,
+        ReservaPrintList,
         Listas,
     };
 
-    advMenu(0,mainMenu,5);
+    advMenu(0, mainMenu, 5);
 
-    //printf("%s",title);
+    // printf("%s",title);
 
     /*Actividades *s=NULL;
     ActiPrintList(&s);
@@ -125,8 +126,9 @@ int main(int argc, char **args)
 
 #pragma region SubMenus
 
-void ABMs(){
-    void (*ABMsMenu[])(void)={
+void ABMs()
+{
+    void (*ABMsMenu[])(void) = {
         ClientesPrintList,
         ProfPrintList,
         ActiPrintListVoid,
@@ -134,26 +136,28 @@ void ABMs(){
         ActTurnsPrintList,
     };
 
-    advMenu(1,ABMsMenu,5);
+    advMenu(1, ABMsMenu, 5);
 }
-void Listas(){
-    void (*ListasMenu[])(void)={
+void Listas()
+{
+    void (*ListasMenu[])(void) = {
         SedePrintList,
         EmptyFunction,
         TurnPrintList,
         EmptyFunction,
         EmptyFunction,
+        deudoresPrintList,
     };
 
-    advMenu(2,ListasMenu,5);
+    advMenu(2, ListasMenu, 6);
 }
 
 #pragma endregion
 
-
 #pragma region Archivos
 
-void LoadAllFiles(){
+void LoadAllFiles()
+{
     LoadClientes(&clientes);
     LoadProf(&profes);
     load_actividades(&acti);
@@ -161,8 +165,10 @@ void LoadAllFiles(){
     load_ActTurn(&acturn);
     LoadPagos(&pagos);
     LoadAsist(&asist);
+    load_Reservas(&reserva);
 }
-void SaveAllFiles(){
+void SaveAllFiles()
+{
     SaveClientes(clientes);
     SaveProf(profes);
     save_actividades(acti);
@@ -170,6 +176,7 @@ void SaveAllFiles(){
     save_ActTurn(acturn);
     SavePagos(pagos);
     SaveAsist(asist);
+    save_espera(reserva);
 }
 
 #pragma endregion

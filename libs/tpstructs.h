@@ -95,9 +95,6 @@ struct ABClientes{
     char apellido[50];
     long dni;
     char telefono[20];
-    struct tm fechaNacimiento;
-    struct tm ultimaActividad;
-    struct tm fechaBaja;
     struct ABClientes *izq;
     struct ABClientes *der;
 };
