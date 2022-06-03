@@ -8,6 +8,7 @@ void InsertPago(ClientesPagos **node, ClientesPagos **list);
 ClientesPagos *FindLastPago(ClientesPagos *list);
 ClientesPagos *FindPago(long act,struct tm time, ClientesPagos *list);
 ClientesPagos *GetPago(int index, ClientesPagos *list);
+ClientesPagos *GetPagobyACTT(long actt, ClientesPagos *list);
 int BorrarPago(int index, ClientesPagos **list);
 void BuscarBorrarPago(int index, ClientesPagos **bor, ClientesPagos **ant);
 void BorrarListaPago(ClientesPagos **list);
@@ -149,4 +150,17 @@ void SavePagos(ClientesPagos *list)
         }
         fclose(f);
     }
+}
+ClientesPagos *GetPagobyACTT(long actt, ClientesPagos *list)
+{
+    if (actt >= 0 && !actt)
+    {
+        while (list)
+        {
+            if(list->actturn == actt)
+                return list;
+            list = list->next;
+        }
+    }
+    return NULL;
 }

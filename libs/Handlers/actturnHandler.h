@@ -12,6 +12,7 @@ int BorrarActTurn(int index, ActTurno **list);
 ActTurno *get_ActTurn(int index, ActTurno **list);
 ActTurno *find_ActTurn(int turno, ActTurno **list);
 ActTurno *FindLastActTurno(ActTurno *list);
+ActTurno *getbyActTurnoDNI(long dni, ActTurno *list);
 void BuscarBorrarActTurn(int index, ActTurno **bor, ActTurno **ant);
 void borrarListaActTurn(ActTurno **list);
 int sizeIndex(ActTurno *list);
@@ -203,5 +204,15 @@ int sizeIndex(ActTurno *list){
         list = list ->next;
     } 
     return cont;
+}
+ActTurno *getbyActTurnoDNI(long dni, ActTurno *list)
+{
+    while (list && dni)
+    {
+        if (dni == list->dni)
+            return list;
+        list = list->next;
+    }
+    return NULL;
 }
 #pragma endregion

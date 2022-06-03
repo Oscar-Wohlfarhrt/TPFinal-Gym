@@ -27,24 +27,28 @@ ABClientes *insert(ABClientes *raiz, ABClientes **nodo)
 void cargarEnABB()
 {
     ClientesPagos *pg = pagos;
-    Clientes *cli = NULL;
+    Clientes *cli = clientes;
     ABClientes *aux = NULL;
-    while (pg)
+    ActTurno *turn = NULL;
+    while (cli)
     {
-        cli = FindClient(pg->actturn, clientes);
-        if (!pg->fechaPago.tm_mon && !cli->fechaBaja.tm_mon)//verificar esta condicion para las personas que no estan en baja y no pagaron
+        turn = getbyActTurnoDNI(cli->dni, acturn);
+        if (turn)
         {
-
-            aux = (ABClientes *)malloc(sizeof(ABClientes));
-            aux->dni = pg->actturn;
-            strcpy(aux->apellido, cli->apellido);
-            strcpy(aux->nombre, cli->nombre);
-            strcpy(aux->telefono, cli->telefono);
-            aux->der = NULL;
-            aux->izq = NULL;
-            root = insert(root, &aux);
+            pg = GetPagobyACTT(turn->turno, pagos);
+            if (!pg)
+            {
+                aux = (ABClientes *)malloc(sizeof(ABClientes));
+                aux->dni = cli->dni;
+                strcpy(aux->apellido, cli->apellido);
+                strcpy(aux->nombre, cli->nombre);
+                strcpy(aux->telefono, cli->telefono);
+                aux->der = NULL;
+                aux->izq = NULL;
+                root = insert(root, &aux);
+            }
         }
-        pg = pg->next;
+        cli = cli->next;
     }
 }
 ABClientes *eliminar(ABClientes *raiz, ABClientes *nodo)
