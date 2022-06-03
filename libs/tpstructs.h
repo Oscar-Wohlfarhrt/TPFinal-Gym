@@ -80,7 +80,7 @@ struct ClientesPagos{
 
 struct Reservas{
     long dni;
-    char actividad[50];
+    int turno;
     struct Reservas *next;
 };
 

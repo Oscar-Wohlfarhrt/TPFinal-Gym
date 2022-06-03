@@ -1,36 +1,35 @@
 #pragma once
 
-#include "../Handlers/turHandler.h"
+#include "../Handlers/reservaHandler.h"
+#include "../Handlers/cliHandler.h"
 
 // interfaz
-Turnos TurnPrompt(Turnos *client, int *errout);
-void TurnPromptRestore(int index, Turnos *client);
-void TurnsPrintList();
+Reservas ReservaPrompt(Reservas *ActTurn, int *errout);
+void ReservaPromptRestore(int index, Reservas *ActTurn);
+void ReservaPrintList();
 
-Turnos TurnPrompt(Turnos *turn, int *errout)
+Reservas ReservaPrompt(Reservas *res, int *errout)
 {
     system(cls);
     int err = 1;
 
-    Turnos cli;
+    Reservas actt;
 
     char op = '\0';
     int index = 0;
 
     // opciones para el menu
     char *options[] = {
-        "Actividad",
-        "Dia",
-        "Hora de Inicio",
-        "Hora de Fin",
-        "DNI Profesor",
-        "Cupo Maximo",
+        "DNI",
+        "TURNO",
+        "NOMBRE",
+        "APELLIDO",
     };
 
     // se muestra la interfaz
     printf("\e[48;5;237m");
-    printf("Turnos:\e[K\n\e[K\n");
-    for (int i = 0; i < 6; i++)
+    printf("Reservas:\e[K\n\e[K\n");
+    for (int i = 0; i < 4; i++)
     {
         if (i % 2)
             printf("\e[48;5;236m");
@@ -38,17 +37,17 @@ Turnos TurnPrompt(Turnos *turn, int *errout)
             printf("\e[48;5;235m");
 
         printf("%i. %25s: ", i + 1, options[i]);
-        if (turn)
-            TurnPromptRestore(i, turn);
+        if (res)
+            ReservaPromptRestore(i, res);
         printf("\e[K\e[0m\n");
     }
     printf("\e[48;5;237mcancelar edicion - c | finalizar edicion - e\e[K\e[0m\n");
     printf("\e[s"); // se guarda el cursor
 
-    if (turn)
-        cli = *turn;
+    if (res)
+        actt = *res;
     else
-        turn = &cli;
+        res = &actt;
 
     printf("\e[u"); // se resetea el cursor
 
@@ -66,15 +65,14 @@ Turnos TurnPrompt(Turnos *turn, int *errout)
         }
         else if (op == 'c')
         {
-            *turn = cli;
+            *res = actt;
             err = 0;
             if (errout)
                 *errout = 0;
         }
-        else if (op >= '1' && op <= '6')
+        else if (op >= '1' && op <= '2')
         {
             index = op - '1';
-
             SetCurPos(30, index + 2);
             if (index % 2)
                 printf("\e[48;5;236m");
@@ -87,55 +85,35 @@ Turnos TurnPrompt(Turnos *turn, int *errout)
             fseek(stdin, 0, SEEK_END); // se limpia el buffer de entrada
             *strchr(input, '\n') = '\0';
 
-            struct tm tm;
-
             if (strcmp(input, "c"))
             {
-                if (index == 2 || index == 3)
-                {
-                    char *hour = strtok(input, ":");
-                    char *min = strtok(NULL, ":");
-
-                    if (!TryToInt32(hour, &tm.tm_hour))
-                        err = 2;
-                    if (!TryToInt32(min, &tm.tm_min))
-                        err = 2;
-                }
-
                 if (err == 1)
                 {
                     switch (index)
                     {
                     case 0:
-                        TryToInt64(input, &turn->actividad);
+                        TryToInt64(input, &res->dni);
                         break;
                     case 1:
-                        TryToInt32(input, &turn->dia);
-                        break;
-                    case 2:
-                        turn->horarioInicio = tm;
-                        break;
-                    case 3:
-                        turn->horarioFin = tm;
-                        break;
-                    case 4:
-                        TryToInt64(input, &turn->prof);
-                        break;
-                    case 5:
-                        TryToInt32(input, &turn->cupo);
+                        TryToInt32(input, &res->turno);
                         break;
                     }
                 }
             }
-            TurnPromptRestore(index, turn);
+            ReservaPromptRestore(index, res);
+            if (index == 0)
+            {
+                ReservaPromptRestore(2, res);
+                ReservaPromptRestore(3, res);
+            }
             printf("\e[u\e[0m\e[J");
         }
     }
-
-    return *turn;
+    return *res;
 }
-void TurnPromptRestore(int index, Turnos *turn)
+void ReservaPromptRestore(int index, Reservas *res)
 {
+    Clientes *client = FindClient(res->dni, clientes);
     SetCurPos(30, index + 2);
     if (index % 2)
         printf("\e[48;5;236m");
@@ -145,26 +123,20 @@ void TurnPromptRestore(int index, Turnos *turn)
     switch (index)
     {
     case 0:
-        printf("%i", turn->actividad);
+        printf("%ld", res->dni);
         break;
     case 1:
-        printf("%i", turn->dia);
+        printf("%i", res->turno);
         break;
     case 2:
-        printf("%2i:%02i", turn->horarioInicio.tm_hour, turn->horarioInicio.tm_min);
+        printf("%s", client ? client->nombre : "NULL");
         break;
     case 3:
-        printf("%2i:%02i", turn->horarioFin.tm_hour, turn->horarioFin.tm_min);
-        break;
-    case 4:
-        printf("%i", turn->prof);
-        break;
-    case 5:
-        printf("%i", turn->cupo);
+        printf("%s", client ? client->apellido : "NULL");
         break;
     }
 }
-void TurnsPrintList()
+void ReservaPrintList()
 {
     const int entries = 10; // entradas por pagina
 
@@ -183,19 +155,13 @@ void TurnsPrintList()
         err = 1;
 
         // se obtiene el primer turno de la lista
-        Turnos *turn = GetTurn(page * entries, turnos);
-
-    /*  "Actividad",
-        "Dia",
-        "Hora de inicio",
-        "hora de fin",
-        "DNI Profesor",
-        "Cupo Maximo",*/
+        Reservas *res = GetRes(page * entries, reservaOutput);
+        Clientes *client = NULL;
 
         printf("\e[48;5;237m");
-        printf("Turnos: Pagina %i\e[K\n", page + 1);
-        printf("%-5s | %-50s | %-50s | %-20s | %-20s\e[K\n", "Index", "ACTIVIDAD", "PROFESOR", "DIA", "HORA INICIO");
-        printf("%-5s | %-50s | %-50s | %-20s | %-20s\e[K\n\e[0m", "SEDE", "", "", "CUPO", "HORA FIN");
+        printf("Reservas: Pagina %i\e[K\n", page + 1);
+        printf("%-5s | %-10s | %-5s | %-50s | \e[K\n", "Index", "DNI", "TURNO", "NOMBRE");
+        printf("%-5s | %-10s | %-5s | %-50s | \e[K\e[0m\n", "", "", "", "APELLIDO");
         for (int i = 0; i < entries; i++)
         {
             int index = i + 1 + (page * entries);
@@ -204,24 +170,19 @@ void TurnsPrintList()
             else
                 printf("\e[48;5;235m");
 
-            if (turn)
+            if (res)
             {
-                // se genera la fecha de nacimiento
-                char date1[17], date2[17];
-                sprintf(date1,"%2i:%02i", turn->horarioInicio.tm_hour, turn->horarioInicio.tm_min);
-                sprintf(date2,"%2i:%02i", turn->horarioFin.tm_hour, turn->horarioFin.tm_min);
-
-                Profesores *prof = FindProf(turn->prof,profes);
-                Actividades *act = GetActividad(turn->actividad, acti);
+                client = FindClient(res->dni, clientes);
                 // se imprime la fila
-                printf("%5i | %-50i | %-50i | %-20i | %-20s\e[K\n", index, turn->actividad, turn->prof, turn->dia, date1);
-                printf("%5i | %-50s | %-50s | %-20i | %-20s\e[K\e[0m\n", act?act->sucursal:-1 , act?act->nombre:"NULL",prof?prof->nombre:"NULL",turn->cupo, date2);
-
-                turn = turn->next;
+                // printf("%-5s | %-20s | %-5s | %-50s | %-50s  \e[K\e[0m\n", "Index","DNI", "TURNO","NOMBRE", "APELLIDO");
+                printf("%5i | %-10li | %-5i | %-50s |\e[K\n", index, res->dni, res->turno, client ? client->nombre : "NULL");
+                printf("%5s | %-10s | %-5s | %-50s | \e[K\e[0m\n", "", "", "", client ? client->apellido : "NULL");
+                res = res->next;
             }
             else // si no existen mas registros
             {
-                printf("%5i\e[K\n\e[K\e[0m\n", index);
+                printf("%5i | %-10s | %-5s | %-50s |\e[K\n", index, "", "", "");
+                printf("%5s | %-10s | %-5s | %-50s | \e[K\e[0m\n", "", "", "","");
                 err = 2;
             }
         }
@@ -258,12 +219,12 @@ void TurnsPrintList()
         else if (!strncmp(op, "w", 1)) // anadir
         {
             int errout = 0;
-            Turnos data = TurnPrompt(NULL, &errout);
+            Reservas data = ReservaPrompt(NULL, &errout);
             if (errout)
             {
-                Turnos *newTurn = (Turnos *)malloc(sizeof(Turnos));
-                *newTurn = data;
-                InsertTurn(&newTurn, &turnos);
+                Reservas *newRes = (Reservas *)malloc(sizeof(Reservas));
+                *newRes = data;
+                ResEnqueue(&newRes, &reservaInput,&reservaOutput);
             }
         }
         else if (!strncmp(op, "e", 1)) // editar
@@ -274,10 +235,9 @@ void TurnsPrintList()
             // se intenta convertir el indice a entero
             if (TryToInt32(ind, &editIndex))
             {
-                Turnos *editTurn = NULL;
-                // se verifica que el turno no sea NULL
-                if (editTurn = GetTurn(editIndex - 1, turnos))
-                    TurnPrompt(editTurn, NULL);
+                Reservas *editActTurn = NULL;
+                if (editActTurn = GetRes(editIndex - 1, reservaOutput))
+                    ReservaPrompt(editActTurn, NULL);
             }
         }
         else if (!strncmp(op, "x", 1)) // eliminar
@@ -288,12 +248,9 @@ void TurnsPrintList()
             // se intenta convertir el indice a entero
             if (TryToInt32(ind, &editIndex))
             {
-                //Turnos *editTurn = NULL;
-                // se verifica que el turno no sea NULL
-                //if (editTurn = GetTurn(editIndex - 1, turnos))
-                
-                BorrarTurn(editIndex - 1, &turnos);
+                ResRemove(editIndex - 1, &reservaInput , &reservaOutput);
             }
         }
     }
 }
+#pragma endregion

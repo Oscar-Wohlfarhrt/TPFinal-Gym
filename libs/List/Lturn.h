@@ -25,7 +25,7 @@ void TurnPrintList()
 
         printf("\e[48;5;237m");
         printf("Clientes por Sede:\e[K\n");
-        printf("%-5s | %-5s | %-15s | %-5s | %-30s | %-5s    %-30s %-30s | %-5s\e[K\n", "Index","TURNO", "SEDE","ACTIVIDAD","PROFESOR", "CLIENTE:","NOMBRE","APELLIDO","DEUDA");
+        printf("%-5s | %-5s | %-5s | %-15s | %-30s | %-5s    %-30s %-30s | %-5s\e[K\n", "Index","TURNO", "SEDE","ACTIVIDAD","PROFESOR", "CLIENTE:","NOMBRE","APELLIDO","DEUDA");
         
         if((sizeIndex(acturn))>0)
             FindPrintTurn();
