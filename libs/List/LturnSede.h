@@ -34,7 +34,7 @@ void TurnSedePrintList()
             for(int i =0;i<10;i++){
                 if (i % 2)              //formato
                 printf("\e[48;5;236m"); //*
-                else                        //*
+                else                    //*
                 printf("\e[48;5;235m"); //formato
                 
                 printf("%-5i\e[K\n\e[K\e[0m\n",i);

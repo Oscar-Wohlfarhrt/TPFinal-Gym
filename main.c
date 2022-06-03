@@ -144,8 +144,8 @@ void Listas()
         SedePrintList,
         LActividadPrintList,
         TurnPrintList,
-        EmptyFunction,
-        EmptyFunction,
+        TurnsActList,
+        TurnSedePrintList,
         deudoresPrintList,
     };
 

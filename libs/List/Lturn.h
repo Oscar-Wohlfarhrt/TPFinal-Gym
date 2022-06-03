@@ -60,7 +60,7 @@ int FindPrintTurn(){
         int index = 1;//formato
 
         int sindex = sizeIndex(acturn);
-        int maxturnos = MaxTurns(turnos);//maximo de sucurdales
+        int maxturnos = MaximumTurns(turnos);//maximo de sucurdales
         
         for(int m=0; m<=maxturnos;  m++){
             
