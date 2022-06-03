@@ -22,7 +22,7 @@ void ReservaPrintList()
         err = 1;
 
         // se obtiene el primer turno de la lista
-        Reservas *wait = GetRes(page * entries, reserva);
+        Reservas *wait = GetRes(page * entries, reservaOutput);
         // Clientes *cli = GetClient(wait->dni, clientes);
         // ActTurno *act = GetActTurno(page *entries, actT);
 
@@ -45,7 +45,7 @@ void ReservaPrintList()
                 sprintf(date1,"%2i:%02i", turn->horarioInicio.tm_hour, turn->horarioInicio.tm_min);
                 sprintf(date2,"%2i:%02i", turn->horarioFin.tm_hour, turn->horarioFin.tm_min);*/
                 // se imprime la fila
-                printf("%-5i | %-10li | %-50s\e[K\n", index, wait->dni, wait->actividad);
+                printf("%-5i | %-10li | %-10i\e[K\n", index, wait->dni, wait->turno);
                 wait = wait->next;
                 // cli = cli->next;
                 // act = act->next;
