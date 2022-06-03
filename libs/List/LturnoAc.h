@@ -117,3 +117,4 @@ int MaxTurns(Turnos*list){
         } 
         return cont;
     }
+//lk

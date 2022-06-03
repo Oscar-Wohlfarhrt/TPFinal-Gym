@@ -32,7 +32,7 @@ void cargarEnABB()
         turn = getbyActTurnoDNI(cli->dni, acturn);
         if (turn)
         {
-            pg = GetPagobyACTT(turn->turno+1, pagos);
+            pg = GetPagobyACTT(turn->turno, pagos);
             if (!pg)
             {
                 aux = (ABClientes *)malloc(sizeof(ABClientes));

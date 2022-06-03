@@ -153,7 +153,7 @@ void SavePagos(ClientesPagos *list)
 }
 ClientesPagos *GetPagobyACTT(long actt, ClientesPagos *list)
 {
-    if (actt >= 0 && !actt)
+    if (!actt)
     {
         while (list)
         {
