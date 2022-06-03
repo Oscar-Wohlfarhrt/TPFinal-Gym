@@ -108,6 +108,8 @@ Turnos TurnPrompt(Turnos *turn, int *errout)
                     {
                     case 0:
                         TryToInt64(input, &turn->actividad);
+                        if (turn->actividad > 0)
+                            turn->actividad--;
                         break;
                     case 1:
                         TryToInt32(input, &turn->dia);
@@ -136,8 +138,8 @@ Turnos TurnPrompt(Turnos *turn, int *errout)
 }
 void TurnPromptRestore(int index, Turnos *turn)
 {
-    //ActTurno *nomact = NULL;
-    //nomact = find_ActTurn(turn->actividad,&acturn);
+    // ActTurno *nomact = NULL;
+    // nomact = find_ActTurn(turn->actividad,&acturn);
     Actividades *nombreActividad = NULL;
     nombreActividad = GetActividad(turn->actividad, acti);
     SetCurPos(30, index + 2);
@@ -149,7 +151,7 @@ void TurnPromptRestore(int index, Turnos *turn)
     switch (index)
     {
     case 0:
-        if (turn->actividad > 0 && nombreActividad)
+        if (turn->actividad >= 0 && nombreActividad)
             printf("%-50s", nombreActividad->nombre);
         else
             printf("INGRESO NO VALIDO");

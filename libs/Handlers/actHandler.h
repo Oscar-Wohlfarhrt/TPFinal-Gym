@@ -96,7 +96,7 @@ Actividades *GetActividad(long index, Actividades *list)
 {
     if (!list)
             return NULL;
-    for (long i = 1; i <= index; i++)
+    for (long i = 0; i <= index; i++)
     {
         if (i == index)
         {

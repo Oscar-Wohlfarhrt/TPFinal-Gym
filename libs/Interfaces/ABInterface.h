@@ -4,7 +4,7 @@
 void mostrarINORDEN(ABClientes *raiz);
 int leerTec();
 void deudoresPrintList();
-int j = 0, page = 0;
+int j = 0, paginas = 0;
 
 void deudoresPrintList()
 {
@@ -29,10 +29,10 @@ void deudoresPrintList()
         }
         printf("\n\n\e[48;5;236m/\\ - ARRIBA\e[0m|\e[48;5;236m\\/ - ABAJO\e[0m\n");
         status = leerTec();
-        if (page > (acum - 10))
-            page = acum - 10;
-        if (page < 0)
-            page = 0;
+        if (paginas > (acum - 10))
+            paginas = acum - 10;
+        if (paginas < 0)
+            paginas = 0;
         j = 0;
     }
     root = borrarArbol(root);
@@ -48,10 +48,10 @@ int leerTec()
     c = getch();
     if (c == KEY_DWN)
     {
-        page++;
+        paginas++;
     }
     else if (c == KEY_UP)
-        page--;
+        paginas--;
     else if (c == 27)
         i = -1;
     return i;
@@ -62,9 +62,13 @@ void mostrarINORDEN(ABClientes *raiz)
         return;
     mostrarINORDEN(raiz->izq);
     j++;
-    if (j > (page) && j <= (page + 10))
+    if (j > (paginas) && j <= (paginas + 10))
     {
         (j % 2) ? printf("\e[48;5;236m") : printf("\e[48;5;235m");
+        if(raiz->nombre[0]>=97 && raiz->nombre[0]<=122)
+            raiz->nombre[0] -= 32;
+        if(raiz->apellido[0]>=97 && raiz->apellido[0]<=122)
+        raiz->apellido[0] -= 32;
         printf("\n%-5i | %-20li | %-50s | %-20s |", j, raiz->dni, raiz->nombre, "");
         printf("\n%-5s | %-20s | %-50s | %-20s |\e[K\e[0m", "", "", raiz->apellido, raiz->telefono);
         printf("\e[K\e[0m");

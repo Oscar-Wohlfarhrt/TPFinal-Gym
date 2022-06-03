@@ -3,25 +3,22 @@
 // raiz del arbol binario
 ABClientes *root = NULL;
 ABClientes *eliminar(ABClientes *raiz, ABClientes *nodo);
-ABClientes *insert(ABClientes *raiz, ABClientes **nodo);
+ABClientes *insert(ABClientes *raiz, ABClientes *nodo);
 ABClientes *borrar(ABClientes *borrar);
 ABClientes *borrarArbol(ABClientes *raiz);
 ABClientes *GetAB(char *nombre, char *apellido, ABClientes *raiz);
 void cargarEnABB();
 
-ABClientes *insert(ABClientes *raiz, ABClientes **nodo)
+ABClientes *insert(ABClientes *raiz, ABClientes *nodo)
 {
-    if (raiz)
-    {
-        if (strcmp((*nodo)->nombre, raiz->nombre) < 0 && strcmp((*nodo)->apellido, raiz->apellido) < 0)
-            raiz->izq = insert(raiz->izq, &*nodo);
-        else
-            raiz->der = insert(raiz->der, &*nodo);
-    }
-    else
-    {
-        raiz = *nodo;
-    }
+    if (!raiz)
+        return nodo;
+    if (strcmp(nodo->nombre,raiz->nombre) <= 0 && strcmp(nodo->apellido,raiz->apellido) < 0)
+        raiz->izq = insert(raiz->izq, nodo);
+    else if (strcmp(nodo->nombre,raiz->nombre) > 0 && strcmp(nodo->apellido,raiz->apellido) > 0)
+        raiz->der = insert(raiz->der, nodo);
+    else 
+        raiz->izq = insert(raiz->izq, nodo);
     return raiz;
 }
 void cargarEnABB()
@@ -35,7 +32,7 @@ void cargarEnABB()
         turn = getbyActTurnoDNI(cli->dni, acturn);
         if (turn)
         {
-            pg = GetPagobyACTT(turn->turno, pagos);
+            pg = GetPagobyACTT(turn->turno+1, pagos);
             if (!pg)
             {
                 aux = (ABClientes *)malloc(sizeof(ABClientes));
@@ -45,7 +42,9 @@ void cargarEnABB()
                 strcpy(aux->telefono, cli->telefono);
                 aux->der = NULL;
                 aux->izq = NULL;
-                root = insert(root, &aux);
+                strlwr(aux->nombre);
+                strlwr(aux->apellido);
+                root = insert(root, aux);
             }
         }
         cli = cli->next;
@@ -56,7 +55,7 @@ ABClientes *eliminar(ABClientes *raiz, ABClientes *nodo)
     short int sel;
     if (!raiz)
         return NULL;
-    if (sel = (strcmp((nodo)->nombre, raiz->nombre)+strcmp((nodo)->apellido, raiz->apellido)))
+    if (sel = (strcmp((nodo)->nombre, raiz->nombre) + strcmp((nodo)->apellido, raiz->apellido)))
     {
         if (sel > 0)
             raiz->izq = eliminar(raiz->izq, nodo);
@@ -93,6 +92,7 @@ ABClientes *borrar(ABClientes *borrar)
     free(borrar);
     return (r);
 }
+/*
 int cargarABClientes(ABClientes *raiz)
 {
     ABClientes *nodo;
@@ -111,7 +111,7 @@ int cargarABClientes(ABClientes *raiz)
         }
     }
     return true;
-}
+}*/
 ABClientes *borrarArbol(ABClientes *raiz)
 {
     if (raiz)
