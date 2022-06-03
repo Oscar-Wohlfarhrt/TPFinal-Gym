@@ -225,7 +225,7 @@ void ProfPrintList()
         else
             printf("\e[48;5;52m");
 
-        printf("d ->\e[0m "); // se limpia el formato
+        printf("d ->\e[0m $"); // se limpia el formato
 
         fgets(op, 20, stdin);      // se lee la opcion
         *strchr(op, '\n') = '\0';  // se elimina el salto de linea

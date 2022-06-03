@@ -142,7 +142,7 @@ void Listas()
 {
     void (*ListasMenu[])(void) = {
         SedePrintList,
-        EmptyFunction,
+        LActividadPrintList,
         TurnPrintList,
         EmptyFunction,
         EmptyFunction,

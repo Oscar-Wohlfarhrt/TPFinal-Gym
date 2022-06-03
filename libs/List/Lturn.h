@@ -24,8 +24,8 @@ void TurnPrintList()
         // se obtiene el primer cliente de la lista  (sizeIndex(acturn))
 
         printf("\e[48;5;237m");
-        printf("Clientes por Sede:\e[K\n");
-        printf("%-5s | %-5s | %-15s | %-5s | %-30s | %-5s    %-30s %-30s | %-5s\e[K\n", "Index","TURNO", "SEDE","ACTIVIDAD","PROFESOR", "CLIENTE:","NOMBRE","APELLIDO","DEUDA");
+        printf("Clientes por Turno:\e[K\n");
+        printf("%-5s | %-5s | %-5s | %-15s | %-30s | %-5s       %-30s %-30s | %-5s\e[K\n", "Index","TURNO", "SEDE","ACTIVIDAD","PROFESOR", "CLIENTE:","NOMBRE","APELLIDO","DEUDA");
         
         if((sizeIndex(acturn))>0)
             FindPrintTurn();
@@ -78,7 +78,7 @@ int FindPrintTurn(){
                     else                        //*
                         printf("\e[48;5;235m"); //formato
 
-                    printf("%-5i | %-5i | %-5i | %-15s | %-30s |  %-5s       %-30s %-30s| %-5s\e[K\n", index,(temp->turno)+1,actividad ->sucursal, actividad ->nombre,profesor ->apellido,"", cliente->nombre,cliente->apellido,".");
+                    printf("%-5i | %-5i | %-5i | %-15s | %-30s | %-5s         %-30s  %-30s | %-5s\e[K\n", index,(temp->turno)+1,actividad ->sucursal, actividad ->nombre,profesor ->apellido,"", cliente->nombre,cliente->apellido,".");
                     
                     index++;//formato
                 }
