@@ -7,6 +7,7 @@ void TurnsActList();
 int PrintTurnActL(int indice);
 void printTurnActMenu();
 int maxTActi(Actividades *list);
+int MaxTurns(Turnos*list);
 
 //void CopyList(AuxActividades * ini);
 

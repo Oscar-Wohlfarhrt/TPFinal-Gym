@@ -5,7 +5,7 @@
 // interfaz
 void TurnPrintList();
 int FindPrintTurn();
-int MaxTurns(Turnos*ini);
+int MaximumTurns(Turnos*list);
 
 void TurnPrintList()
 {
@@ -87,7 +87,7 @@ int FindPrintTurn(){
 
     }
 
-    int MaxTurns(Turnos*list){
+    int MaximumTurns(Turnos*list){
         int cont = -1;
         while (list != NULL){
             cont++;

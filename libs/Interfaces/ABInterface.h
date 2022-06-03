@@ -18,7 +18,7 @@ void deudoresPrintList()
         printf("\n\e[48;5;233m%-5s | %-20s | %-50s | %-20s \e[K\e[0m|", "", "", "Apellido", "Telefono");
         mostrarINORDEN(root);
         acum = j;
-        j ++;
+        j++;
         while (j < 10)
         {
             (j % 2) ? printf("\e[48;5;236m") : printf("\e[48;5;235m");
@@ -39,21 +39,20 @@ void deudoresPrintList()
 }
 int leerTec()
 {
-    short int KEY_DWN = 80;
-    short int KEY_UP = 72;
+    int key = getKeyCode();
     int i = 0;
-    char c = '\0';
-    fflush(stdin);
-    printf("\n");
-    c = getch();
-    if (c == KEY_DWN)
+    if (key == key_down)
     {
         paginas++;
     }
-    else if (c == KEY_UP)
+    else if (key == key_up)
+    {
         paginas--;
-    else if (c == 27)
+    }
+    else if (key == key_escape)
+    {
         i = -1;
+    }
     return i;
 }
 void mostrarINORDEN(ABClientes *raiz)
@@ -65,10 +64,10 @@ void mostrarINORDEN(ABClientes *raiz)
     if (j > (paginas) && j <= (paginas + 10))
     {
         (j % 2) ? printf("\e[48;5;236m") : printf("\e[48;5;235m");
-        if(raiz->nombre[0]>=97 && raiz->nombre[0]<=122)
+        if (raiz->nombre[0] >= 97 && raiz->nombre[0] <= 122)
             raiz->nombre[0] -= 32;
-        if(raiz->apellido[0]>=97 && raiz->apellido[0]<=122)
-        raiz->apellido[0] -= 32;
+        if (raiz->apellido[0] >= 97 && raiz->apellido[0] <= 122)
+            raiz->apellido[0] -= 32;
         printf("\n%-5i | %-20li | %-50s | %-20s |", j, raiz->dni, raiz->nombre, "");
         printf("\n%-5s | %-20s | %-50s | %-20s |\e[K\e[0m", "", "", raiz->apellido, raiz->telefono);
         printf("\e[K\e[0m");
