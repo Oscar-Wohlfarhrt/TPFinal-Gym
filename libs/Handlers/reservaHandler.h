@@ -1,125 +1,128 @@
 #pragma once
 #include "../tpstructs.h"
 //Apunta a la lista de reservas
-Reservas *reserva =NULL;
+Reservas *reservaInput =NULL,*reservaOutput=NULL;
 
+void ResEnqueue(Reservas **node,Reservas **input,Reservas **output);
+void ResDequeue(Reservas **node,Reservas **input,Reservas **output);
+void borrarListaReservas(Reservas **input,Reservas **output);
+void load_Reservas(Reservas **input,Reservas **output);
+void save_espera(Reservas **input,Reservas **output);
 Reservas *getbyDNI(long dni, Reservas **list);
 Reservas *FindReservas(long dni, char *actividad, Reservas *list);
-Reservas *GetRes(int index, Reservas *list);
-_Bool remove_espera(Reservas **dato, Reservas **list);
-_Bool remove_espera(Reservas **dato, Reservas **list);
+Reservas *GetRes(long index, Reservas *list);
 
-void insertReservas(Reservas **list, Reservas *new){
-    Reservas *aux = *list;
-    if(!aux){
-        *list = new;
-        return;
-    }
-    while(aux->next){
-        aux = aux->next;
-    }
-    new->next = NULL;
-    aux->next = new;
+int remove_espera(Reservas **dato, Reservas **list);
+
+void ResEnqueue(Reservas **node,Reservas **input,Reservas **output){
+    (*node)->next=NULL;
+    if(!*input)
+        *output = *node;
+    else
+        (*input)->next = *node;
+
+    *input=*node;
+    *node=NULL;
 }
-void load_Reservas(Reservas **list)
+void ResDequeue(Reservas **node,Reservas **input,Reservas **output){
+    *node=*output;
+    *output=(*output)->next;
+    if(!*output)
+        *input=NULL;
+    (*node)->next=NULL;
+}
+void load_Reservas(Reservas **input,Reservas **output)
 {
     FILE *f = fopen("espera.bin", "rb");
     if (!f)
         return;
+        
+    Reservas *nuevo = (Reservas *)malloc(sizeof(Reservas));
+    fread(nuevo, sizeof(Reservas), 1, f);
     while (!feof(f))
     {
+        ResEnqueue(&nuevo, input,output);
         Reservas *nuevo = (Reservas *)malloc(sizeof(Reservas));
         fread(nuevo, sizeof(Reservas), 1, f);
-        insertReservas(&(*list), nuevo);
     }
+    free(nuevo);
     fclose(f);
 }
-void save_espera(Reservas *list)
+void save_espera(Reservas **input,Reservas **output)
 {
     FILE *fichero;
-    fichero = fopen("espera.bin", "wb");
-    if (!fichero || !list)
+    Reservas *node;
+
+    if (fichero = fopen("espera.bin", "wb"))
     {
+        while (*output)
+        {
+            ResDequeue(&node,input,output);
+            fwrite(node, sizeof(Actividades), 1, fichero);
+        }
         fclose(fichero);
-        return;
     }
-    while (list)
-    {
-        fwrite(list, sizeof(Actividades), 1, fichero);
-        list = list->next;
-    }
-    fclose(fichero);
 }
-Reservas *getbyDNI(long dni, Reservas **list)
+/*Reservas *GetRes(long index, Reservas **input,Reservas **output)
 {
-    Reservas *p = *list;
-    while (p)
+    Reservas *node,*binput,*boutput,*aux=NULL;
+    while (*output && (index+1))
     {
-        if (p->dni == dni)
-            return p;
-        p = p->next;
-    }
-    return NULL;
-}
-Reservas *FindReservas(long dni, char *actividad, Reservas *list)
-{
-    Reservas *Nodo = NULL;
-    while (list)
-    {
-        if(list->dni == dni && !(strcmp(list->actividad, actividad))){
-            Nodo = list;
-            break;
+        ResDequeue(&node,input,output);
+        if(!index){
+            aux=node;
         }
-        else
-            list = list->next;
+        ResEnqueue(&node,&binput,&boutput);
+        index--;
     }
-    return Nodo;
-}
-_Bool remove_espera(Reservas **dato, Reservas **list)
+    while(*output){
+        ResDequeue(&node,input,output);
+        ResEnqueue(&node,&binput,&boutput);
+    }
+    while(boutput){
+        ResDequeue(&node,&binput,&boutput);
+        ResEnqueue(&node,input,output);
+    }
+    return aux;
+}*/
+Reservas *GetRes(long index, Reservas *output)
 {
-    Reservas *aux = *list;
-    if (!(*dato))
-        return false;
-    if ((*dato) == (*list))
+    if (index >= 0)
     {
-        (*list) = (*list)->next;
-        free(aux);
-        return true;
-    }
-    while (aux)
-    {
-        if (*dato == aux->next)
+        while (output && index > 0)
         {
-            aux->next = aux->next->next;
-            free(*dato);
-            return true;
+            output = output->next;
+            index--;
         }
-        aux = aux->next;
     }
+    else
+        output = NULL;
+
+    return output;
 }
-Reservas *GetRes(int index, Reservas *list)
+int ResRemove(long index, Reservas **input,Reservas **output)
 {
-    for (int i = 0; i <= index; i++)
+    Reservas *node,*binput,*boutput,*aux=NULL;
+    while (*output)
     {
-        if (!list)
-            return NULL;
-        if (i == index)
-        {
-            return list;
-        }
-        list = list->next;
+        ResDequeue(&node,input,output);
+        if(!index)
+            ResEnqueue(&node,&binput,&boutput);
+        index--;
     }
-    return NULL;
+    while(boutput){
+        ResDequeue(&node,&binput,&boutput);
+        ResEnqueue(&node,input,output);
+    }
+    return 0;
 }
-void borrarListaReservas(Reservas **list)
+void borrarListaReservas(Reservas **input,Reservas **output)
 {
-    Reservas *aux = NULL;
-    while (list)
+    Reservas *node;
+    while (*output)
     {
-        aux = *list;
-        *list = (*list)->next;
-        aux->next = NULL;
-        free(aux);
+        ResDequeue(&node,input,output);
+        free(node);
     }
 }
 #pragma endregion
