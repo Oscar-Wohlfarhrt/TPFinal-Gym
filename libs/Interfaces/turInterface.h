@@ -136,6 +136,10 @@ Turnos TurnPrompt(Turnos *turn, int *errout)
 }
 void TurnPromptRestore(int index, Turnos *turn)
 {
+    //ActTurno *nomact = NULL;
+    //nomact = find_ActTurn(turn->actividad,&acturn);
+    Actividades *nombreActividad = NULL;
+    nombreActividad = GetActividad(turn->actividad, acti);
     SetCurPos(30, index + 2);
     if (index % 2)
         printf("\e[48;5;236m");
@@ -145,7 +149,10 @@ void TurnPromptRestore(int index, Turnos *turn)
     switch (index)
     {
     case 0:
-        printf("%i", turn->actividad);
+        if (turn->actividad > 0 && nombreActividad)
+            printf("%-50s", nombreActividad->nombre);
+        else
+            printf("INGRESO NO VALIDO");
         break;
     case 1:
         printf("%i", turn->dia);
@@ -185,17 +192,17 @@ void TurnsPrintList()
         // se obtiene el primer turno de la lista
         Turnos *turn = GetTurn(page * entries, turnos);
 
-    /*  "Actividad",
-        "Dia",
-        "Hora de inicio",
-        "hora de fin",
-        "DNI Profesor",
-        "Cupo Maximo",*/
+        /*  "Actividad",
+            "Dia",
+            "Hora de inicio",
+            "hora de fin",
+            "DNI Profesor",
+            "Cupo Maximo",*/
 
         printf("\e[48;5;237m");
         printf("Turnos: Pagina %i\e[K\n", page + 1);
-        printf("%-5s | %-50s | %-50s | %-20s | %-20s\e[K\n", "Index", "ACTIVIDAD", "PROFESOR", "DIA", "HORA INICIO");
-        printf("%-5s | %-50s | %-50s | %-20s | %-20s\e[K\n\e[0m", "SEDE", "", "", "CUPO", "HORA FIN");
+        printf("%-5s | %-50s | %-50s | %-5s | %-10s\e[K\n", "Index", "ACTIVIDAD", "PROFESOR", "DIA", "HORA INICIO");
+        printf("%-5s | %-50s | %-50s | %-5s | %-10s\e[K\n\e[0m", "SEDE", "", "", "CUPO", "HORA FIN");
         for (int i = 0; i < entries; i++)
         {
             int index = i + 1 + (page * entries);
@@ -208,14 +215,14 @@ void TurnsPrintList()
             {
                 // se genera la fecha de nacimiento
                 char date1[17], date2[17];
-                sprintf(date1,"%2i:%02i", turn->horarioInicio.tm_hour, turn->horarioInicio.tm_min);
-                sprintf(date2,"%2i:%02i", turn->horarioFin.tm_hour, turn->horarioFin.tm_min);
+                sprintf(date1, "%2i:%02i", turn->horarioInicio.tm_hour, turn->horarioInicio.tm_min);
+                sprintf(date2, "%2i:%02i", turn->horarioFin.tm_hour, turn->horarioFin.tm_min);
 
-                Profesores *prof = FindProf(turn->prof,profes);
+                Profesores *prof = FindProf(turn->prof, profes);
                 Actividades *act = GetActividad(turn->actividad, acti);
                 // se imprime la fila
-                printf("%5i | %-50i | %-50i | %-20i | %-20s\e[K\n", index, turn->actividad, turn->prof, turn->dia, date1);
-                printf("%5i | %-50s | %-50s | %-20i | %-20s\e[K\e[0m\n", act?act->sucursal:-1 , act?act->nombre:"NULL",prof?prof->nombre:"NULL",turn->cupo, date2);
+                printf("%5i | %-50i | %-50i | %-5i | %-10s\e[K\n", index, turn->actividad, turn->prof, turn->dia, date1);
+                printf("%5i | %-50s | %-50s | %-5i | %-10s\e[K\e[0m\n", act ? act->sucursal : -1, act ? act->nombre : "NULL", prof ? prof->nombre : "NULL", turn->cupo, date2);
 
                 turn = turn->next;
             }
@@ -288,10 +295,10 @@ void TurnsPrintList()
             // se intenta convertir el indice a entero
             if (TryToInt32(ind, &editIndex))
             {
-                //Turnos *editTurn = NULL;
-                // se verifica que el turno no sea NULL
-                //if (editTurn = GetTurn(editIndex - 1, turnos))
-                
+                // Turnos *editTurn = NULL;
+                //  se verifica que el turno no sea NULL
+                // if (editTurn = GetTurn(editIndex - 1, turnos))
+
                 BorrarTurn(editIndex - 1, &turnos);
             }
         }

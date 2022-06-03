@@ -5,9 +5,13 @@ Reservas *reservaInput =NULL,*reservaOutput=NULL;
 
 void ResEnqueue(Reservas **node,Reservas **input,Reservas **output);
 void ResDequeue(Reservas **node,Reservas **input,Reservas **output);
+void borrarListaReservas(Reservas **input,Reservas **output);
+void load_Reservas(Reservas **input,Reservas **output);
+void save_espera(Reservas **input,Reservas **output);
 Reservas *getbyDNI(long dni, Reservas **list);
 Reservas *FindReservas(long dni, char *actividad, Reservas *list);
-Reservas *GetRes(int index, Reservas *list);
+Reservas *GetRes(long index, Reservas *list);
+
 int remove_espera(Reservas **dato, Reservas **list);
 
 void ResEnqueue(Reservas **node,Reservas **input,Reservas **output){

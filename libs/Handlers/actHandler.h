@@ -7,7 +7,7 @@ bool remove_actividad(Actividades **dato, Actividades **s);
 bool BorrarAct(int index, Actividades **list);
 bool ReplaceAct(int index,Actividades **node,Actividades **list);
 Actividades *FindActividad(char *nombre, int suc, Actividades *list);
-Actividades *GetActividad(int index, Actividades *list);
+Actividades *GetActividad(long index, Actividades *list);
 Actividades *FindLastAct(Actividades *list);
 void InsertActividad(Actividades **node, Actividades **list);
 void load_actividades(Actividades **list);
@@ -92,12 +92,12 @@ Actividades *FindActividad(char *nombre, int suc, Actividades *list)
     }
     return NULL;
 }
-Actividades *GetActividad(int index, Actividades *list)
+Actividades *GetActividad(long index, Actividades *list)
 {
-    for (int i = 0; i <= index; i++)
-    {
-        if (!list)
+    if (!list)
             return NULL;
+    for (long i = 1; i <= index; i++)
+    {
         if (i == index)
         {
             return list;
