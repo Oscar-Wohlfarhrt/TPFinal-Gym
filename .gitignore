@@ -2,3 +2,5 @@
 joaTest/
 oscar/
 .vscode/
+*.exe
+*.bin
