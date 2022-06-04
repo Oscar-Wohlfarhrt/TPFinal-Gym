@@ -3,7 +3,7 @@
 #include "../Handlers/reservaHandler.h"
 void ResevPrintList();
 
-void ReservaPrintList()
+void ReservPrintList()
 {
     const int entries = 10; // entradas por pagina
 

@@ -79,17 +79,17 @@ void SaveAllFiles();
 
 void forcedExit()
 {
-    SaveAllFiles();
+    //SaveAllFiles();
     printf("\e[0mSalida Forzada");
 }
 
 int main(int argc, char **args)
 {
     //getKeyCode(); // debug
-
+    
     signal(SIGINT, forcedExit);
     LoadAllFiles();
-
+    
     // actualiza la fecha de baja de los clientes de ser necesario
     UpdateClientBaja(clientes);
 
@@ -101,7 +101,7 @@ int main(int argc, char **args)
         ABMs,
         AsistPrintList,
         PagosPrintList,
-        EmptyFunction,//ReservaPrintList,
+        ReservaPrintList,
         Listas,
     };
 
@@ -165,7 +165,7 @@ void LoadAllFiles()
     load_ActTurn(&acturn);
     LoadPagos(&pagos);
     LoadAsist(&asist);
-    //load_Reservas(&reserva);
+    load_Reservas(&reservaInput,&reservaOutput);
 }
 void SaveAllFiles()
 {
@@ -176,7 +176,7 @@ void SaveAllFiles()
     save_ActTurn(acturn);
     SavePagos(pagos);
     SaveAsist(asist);
-    //save_espera(reserva);
+    save_espera(&reservaInput,&reservaOutput);
 }
 
 #pragma endregion

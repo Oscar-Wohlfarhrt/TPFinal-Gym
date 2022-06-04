@@ -33,20 +33,21 @@ void ResDequeue(Reservas **node,Reservas **input,Reservas **output){
 }
 void load_Reservas(Reservas **input,Reservas **output)
 {
-    FILE *f = fopen("espera.bin", "rb");
-    if (!f)
-        return;
-        
-    Reservas *nuevo = (Reservas *)malloc(sizeof(Reservas));
-    fread(nuevo, sizeof(Reservas), 1, f);
-    while (!feof(f))
-    {
-        ResEnqueue(&nuevo, input,output);
-        Reservas *nuevo = (Reservas *)malloc(sizeof(Reservas));
+    FILE *f;
+    Reservas *nuevo;
+    if (f = fopen("espera.bin", "rb")){
+        nuevo = (Reservas *)malloc(sizeof(Reservas));
         fread(nuevo, sizeof(Reservas), 1, f);
+        while (!feof(f))
+        {
+            printf("load\n");
+            ResEnqueue(&nuevo, input,output);
+            nuevo = (Reservas *)malloc(sizeof(Reservas));
+            fread(nuevo, sizeof(Reservas), 1, f);
+        }
+        free(nuevo);
+        fclose(f);
     }
-    free(nuevo);
-    fclose(f);
 }
 void save_espera(Reservas **input,Reservas **output)
 {
@@ -58,7 +59,8 @@ void save_espera(Reservas **input,Reservas **output)
         while (*output)
         {
             ResDequeue(&node,input,output);
-            fwrite(node, sizeof(Actividades), 1, fichero);
+            fwrite(node, sizeof(Reservas), 1, fichero);
+            free(node);
         }
         fclose(fichero);
     }
@@ -106,7 +108,7 @@ int ResRemove(long index, Reservas **input,Reservas **output)
     while (*output)
     {
         ResDequeue(&node,input,output);
-        if(!index)
+        if(index)
             ResEnqueue(&node,&binput,&boutput);
         index--;
     }
