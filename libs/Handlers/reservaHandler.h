@@ -137,7 +137,7 @@ void borrarListaReservas(Reservas **input, Reservas **output)
 
 void AddReservasToActTurn()
 {
-    Reservas *node, *binput, *boutput, *aux = NULL;
+    Reservas *node, *binput=NULL, *boutput=NULL;
     while (reservaOutput)
     {
         ResDequeue(&node, &reservaInput, &reservaOutput);

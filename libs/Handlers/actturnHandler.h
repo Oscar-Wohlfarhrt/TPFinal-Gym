@@ -6,8 +6,8 @@ ActTurno *acturn = NULL;
 void load_ActTurn(ActTurno **list);
 void save_ActTurn(ActTurno *list);
 void insert_ActTurno(ActTurno **dato, ActTurno **list);
-_Bool remove_ActTurn(int turno, ActTurno **list);
-_Bool replace_ActTurn(int turno, ActTurno *newe , ActTurno **list);
+int remove_ActTurn(int turno, ActTurno **list);
+int replace_ActTurn(int turno, ActTurno *newe , ActTurno **list);
 int BorrarActTurn(int index, ActTurno **list);
 ActTurno *get_ActTurn(int index, ActTurno **list);
 ActTurno *find_ActTurn(long turno, ActTurno **list);
@@ -16,7 +16,7 @@ ActTurno *getbyActTurnoDNI(long dni, ActTurno *list);
 void BuscarBorrarActTurn(int index, ActTurno **bor, ActTurno **ant);
 void borrarListaActTurn(ActTurno **list);
 int sizeIndex(ActTurno *list);
-int countCupo(long turnIndex,ActTurno *list);
+int countCupo(int turnIndex,ActTurno *list);
 
 void load_ActTurn(ActTurno **list)
 {
@@ -80,7 +80,7 @@ ActTurno *FindLastActTurno(ActTurno *list)
         last = last->next;
     return last;
 }
-_Bool remove_ActTurn(int turno, ActTurno **list)
+int remove_ActTurn(int turno, ActTurno **list)
 {
     ActTurno *aux = *list, *ant = NULL;
     while (aux)
@@ -103,7 +103,7 @@ _Bool remove_ActTurn(int turno, ActTurno **list)
     }
     return false;
 }
-_Bool replace_ActTurn(int turno, ActTurno *newe, ActTurno **list)
+int replace_ActTurn(int turno, ActTurno *newe, ActTurno **list)
 {
     ActTurno *aux = *list, *ant = NULL;
     while (aux)
@@ -217,7 +217,7 @@ ActTurno *getbyActTurnoDNI(long dni, ActTurno *list)
     return NULL;
 }
 
-int countCupo(long turnIndex,ActTurno *list){
+int countCupo(int turnIndex,ActTurno *list){
     int count=-1;
     
     if(list)

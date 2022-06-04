@@ -52,20 +52,24 @@ ActTurno ActTurnPrompt(ActTurno *ActTurn, int *errout)
 
     while (err)
     {
-        Turnos *turn=GetTurn(ActTurn->turno,turnos);
-        int cCount=countCupo(ActTurn->turno,acturn);
-        if(turn && cCount>0){
-            if(turn->cupo>cCount){
-                printf("Cupos restantes: %i\n",turn->cupo-cCount);
+        Turnos *turn = GetTurn(ActTurn->turno, turnos);
+        int cCount = countCupo(ActTurn->turno, acturn);
+        //printf("%i | %i | %p\n",ActTurn->turno,cCount,turn);
+        if (turn && cCount >= 0)
+        {
+            if (turn->cupo > cCount)
+            {
+                printf("Cupos restantes: %i\n", turn->cupo - cCount);
             }
-            else{
+            else
+            {
                 printf("No hay cupos, se anadira a lista de espera\n");
             }
         }
-        else{
+        else
+        {
             printf("No existe el turno\n");
         }
-
 
         err = 1;
         scanf("%c", &op);          // se lee la opcion
@@ -196,7 +200,7 @@ void ActTurnsPrintList()
             else // si no existen mas registros
             {
                 printf("%5i | %-10s | %-5s | %-50s |\e[K\n", index, "", "", "");
-                printf("%5s | %-10s | %-5s | %-50s | \e[K\e[0m\n", "", "", "","");
+                printf("%5s | %-10s | %-5s | %-50s | \e[K\e[0m\n", "", "", "", "");
                 err = 2;
             }
         }
@@ -236,15 +240,17 @@ void ActTurnsPrintList()
             ActTurno data = ActTurnPrompt(NULL, &errout);
             if (errout)
             {
-                Turnos *turn=GetTurn(ActTurn->turno,turnos);
-                int cCount=countCupo(ActTurn->turno,acturn);
-                if(turn && turn->cupo<=cCount){
+                Turnos *turn = GetTurn(data.turno, turnos);
+                int cCount = countCupo(data.turno, acturn);
+                if (turn && turn->cupo <= cCount)
+                {
                     Reservas *newReserva = (Reservas *)malloc(sizeof(Reservas));
                     newReserva->dni = data.dni;
                     newReserva->turno = data.turno;
                     ResEnqueue(&newReserva, &reservaInput, &reservaOutput);
                 }
-                else{
+                else
+                {
                     ActTurno *newActTurn = (ActTurno *)malloc(sizeof(ActTurno));
                     *newActTurn = data;
                     insert_ActTurno(&newActTurn, &acturn);

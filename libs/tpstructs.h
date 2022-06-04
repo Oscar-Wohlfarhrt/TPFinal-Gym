@@ -65,7 +65,7 @@ struct Actividades{
 };
 
 struct ActTurno{
-    long dni;   
+    long dni;
     int turno;
     struct ActTurno *next;
 };
