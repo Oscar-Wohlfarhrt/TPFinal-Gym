@@ -40,8 +40,9 @@ char *menus[] = {
     "<o>ABMs</o>\n"
     "<o>Asistencia</o>\n"
     "<o>Cuotas</o>\n"
-    "<o>Reservas</o>\n"
     "<o>Listas</o>\n|\n"
+    "<o>Reservas</o>\n"
+    "<o>Verificar Reservas</o>\n|\n"
     "<o>Salir</o>\n",
     "--- ABMs ---\n\n"
     "<o>Clientes</o>\n"
@@ -89,7 +90,7 @@ int main(int argc, char **args)
     
     signal(SIGINT, forcedExit);
     LoadAllFiles();
-    
+
     // actualiza la fecha de baja de los clientes de ser necesario
     UpdateClientBaja(clientes);
 
@@ -101,11 +102,12 @@ int main(int argc, char **args)
         ABMs,
         AsistPrintList,
         PagosPrintList,
-        ReservaPrintList,
         Listas,
+        ReservaPrintList,
+        AddReservasToActTurn,
     };
 
-    advMenu(0, mainMenu, 5);
+    advMenu(0, mainMenu, 6);
 
     // printf("%s",title);
 

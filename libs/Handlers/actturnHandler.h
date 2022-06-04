@@ -16,6 +16,7 @@ ActTurno *getbyActTurnoDNI(long dni, ActTurno *list);
 void BuscarBorrarActTurn(int index, ActTurno **bor, ActTurno **ant);
 void borrarListaActTurn(ActTurno **list);
 int sizeIndex(ActTurno *list);
+int countCupo(long turnIndex,ActTurno *list);
 
 void load_ActTurn(ActTurno **list)
 {
@@ -214,5 +215,21 @@ ActTurno *getbyActTurnoDNI(long dni, ActTurno *list)
         list = list->next;
     }
     return NULL;
+}
+
+int countCupo(long turnIndex,ActTurno *list){
+    int count=-1;
+    
+    if(list)
+        count=0;
+
+    while(list){
+        if(list->turno==turnIndex)
+            count++;
+
+        list=list->next;
+    }
+
+    return count;
 }
 #pragma endregion

@@ -39,7 +39,6 @@ void ReservPrintList()
 
             if (wait)
             {
-
                 // se genera la fecha de nacimiento
                 /*char date1[17], date2[17];
                 sprintf(date1,"%2i:%02i", turn->horarioInicio.tm_hour, turn->horarioInicio.tm_min);

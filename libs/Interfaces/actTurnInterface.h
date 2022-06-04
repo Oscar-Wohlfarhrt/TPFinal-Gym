@@ -52,6 +52,21 @@ ActTurno ActTurnPrompt(ActTurno *ActTurn, int *errout)
 
     while (err)
     {
+        Turnos *turn=GetTurn(ActTurn->turno,turnos);
+        int cCount=countCupo(ActTurn->turno,acturn);
+        if(turn && cCount>0){
+            if(turn->cupo>cCount){
+                printf("Cupos restantes: %i\n",turn->cupo-cCount);
+            }
+            else{
+                printf("No hay cupos, se anadira a lista de espera\n");
+            }
+        }
+        else{
+            printf("No existe el turno\n");
+        }
+
+
         err = 1;
         scanf("%c", &op);          // se lee la opcion
         fseek(stdin, 0, SEEK_END); // se limpia el buffer de entrada
@@ -221,9 +236,19 @@ void ActTurnsPrintList()
             ActTurno data = ActTurnPrompt(NULL, &errout);
             if (errout)
             {
-                ActTurno *newActTurn = (ActTurno *)malloc(sizeof(ActTurno));
-                *newActTurn = data;
-                insert_ActTurno(&newActTurn, &acturn);
+                Turnos *turn=GetTurn(ActTurn->turno,turnos);
+                int cCount=countCupo(ActTurn->turno,acturn);
+                if(turn && turn->cupo<=cCount){
+                    Reservas *newReserva = (Reservas *)malloc(sizeof(Reservas));
+                    newReserva->dni = data.dni;
+                    newReserva->turno = data.turno;
+                    ResEnqueue(&newReserva, &reservaInput, &reservaOutput);
+                }
+                else{
+                    ActTurno *newActTurn = (ActTurno *)malloc(sizeof(ActTurno));
+                    *newActTurn = data;
+                    insert_ActTurno(&newActTurn, &acturn);
+                }
             }
         }
         else if (!strncmp(op, "e", 1)) // editar
