@@ -5,31 +5,29 @@ Actividades *acti;
 
 bool remove_actividad(Actividades **dato, Actividades **s);
 bool BorrarAct(int index, Actividades **list);
-bool ReplaceAct(int index,Actividades **node,Actividades **list);
+bool existeActividad(char *nombre, int sede);
+bool ReplaceAct(int index, Actividades **node, Actividades **list);
 Actividades *FindActividad(char *nombre, int suc, Actividades *list);
 Actividades *GetActividad(long index, Actividades *list);
 Actividades *FindLastAct(Actividades *list);
 void InsertActividad(Actividades **node, Actividades **list);
 void load_actividades(Actividades **list);
 void save_actividades(Actividades *list);
-void BuscarBorrarAct(int index,Actividades **bor,Actividades **ant);
+void BuscarBorrarAct(int index, Actividades **bor, Actividades **ant);
 void borrarListaActividades(Actividades **list);
 
 void InsertActividad(Actividades **node, Actividades **list)
 {
+    //bool status = false;
     (*node)->next = NULL;
     if (*list)
     {
         Actividades *last = FindLastAct(*list);
-        if (last)
+        //status = existeActividad((*node)->nombre, (*node)->sucursal);
+        if (last) //&& !status)
         {
             (*node)->next = last->next;
             last->next = *node;
-        }
-        else
-        {
-            (*node)->next = *list;
-            *list = *node;
         }
     }
     else
@@ -95,7 +93,7 @@ Actividades *FindActividad(char *nombre, int suc, Actividades *list)
 Actividades *GetActividad(long index, Actividades *list)
 {
     if (!list)
-            return NULL;
+        return NULL;
     for (long i = 0; i <= index; i++)
     {
         if (i == index)
@@ -160,9 +158,11 @@ void BuscarBorrarAct(int index, Actividades **bor, Actividades **ant)
         index--;
     }
 }
-bool ReplaceAct(int index,Actividades **node,Actividades **list){
-	Actividades *aux = *list;
-    if (!index || !*node || !*list) return false;
+bool ReplaceAct(int index, Actividades **node, Actividades **list)
+{
+    Actividades *aux = *list;
+    if (!index || !*node || !*list)
+        return false;
     for (int i = 0; i < index; i++)
     {
         if (!aux)
@@ -185,5 +185,21 @@ void borrarListaActividades(Actividades **list)
         free(aux);
         aux = *list;
     }
+}
+bool existeActividad(char *nombre, int sede)
+{
+    if (acti && nombre && sede)
+    {
+        Actividades *lista = acti;
+        while (lista)
+        {
+            if(strcmp(nombre,lista->nombre) == 0 &&
+            lista->sucursal == sede){
+                return true;
+            }
+            lista = lista->next;
+        }
+    }
+    return false;
 }
 #pragma endregion

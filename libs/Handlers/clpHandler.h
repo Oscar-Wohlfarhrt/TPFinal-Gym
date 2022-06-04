@@ -1,12 +1,11 @@
 #pragma once
 #include "../tpstructs.h"
 
-
-ClientesPagos *pagos;
+ClientesPagos *pagos = NULL;
 
 void InsertPago(ClientesPagos **node, ClientesPagos **list);
 ClientesPagos *FindLastPago(ClientesPagos *list);
-ClientesPagos *FindPago(long act,struct tm time, ClientesPagos *list);
+void FindINPago(int year, int mes);
 ClientesPagos *GetPago(int index, ClientesPagos *list);
 ClientesPagos *GetPagobyACTT(long actt, ClientesPagos *list);
 int BorrarPago(int index, ClientesPagos **list);
@@ -72,7 +71,8 @@ ClientesPagos *GetPago(int index, ClientesPagos *list)
 int BorrarPago(int index, ClientesPagos **list)
 {
     int err = 1;
-    if(index>=0){
+    if (index >= 0)
+    {
         ClientesPagos *ant = NULL, *bor = *list;
         BuscarBorrarPago(index, &bor, &ant);
 
@@ -96,7 +96,7 @@ int BorrarPago(int index, ClientesPagos **list)
 void BuscarBorrarPago(int index, ClientesPagos **bor, ClientesPagos **ant)
 {
     int found = 0;
-    while (*bor && index>0)
+    while (*bor && index > 0)
     {
         *ant = *bor;
         *bor = (*bor)->next;
@@ -115,8 +115,8 @@ void BorrarListaPago(ClientesPagos **list)
     }
 }
 
-void ReindexPagos(int index, ClientesPagos *list){
-    
+void ReindexPagos(int index, ClientesPagos *list)
+{
 }
 
 void LoadPagos(ClientesPagos **list)
@@ -125,12 +125,12 @@ void LoadPagos(ClientesPagos **list)
 
     if (f = fopen("pagos.bin", "rb"))
     {
-        ClientesPagos *node = (ClientesPagos*)malloc(sizeof(ClientesPagos));
+        ClientesPagos *node = (ClientesPagos *)malloc(sizeof(ClientesPagos));
         fread(node, sizeof(ClientesPagos), 1, f);
         while (!feof(f))
         {
             InsertPago(&node, list);
-            node = (ClientesPagos*)malloc(sizeof(ClientesPagos));
+            node = (ClientesPagos *)malloc(sizeof(ClientesPagos));
             fread(node, sizeof(ClientesPagos), 1, f);
         }
         free(node);
@@ -157,10 +157,27 @@ ClientesPagos *GetPagobyACTT(long actt, ClientesPagos *list)
     {
         while (list)
         {
-            if(list->actturn == actt)
+            if (list->actturn == actt)
                 return list;
             list = list->next;
         }
     }
     return NULL;
+}
+void FindINPago(int year, int mes)
+{
+    ClientesPagos *list = pagos;
+    ActTurno *actividad_turno = NULL;
+    Clientes *cliente = NULL;
+    while (list)
+    {
+        if(list->fechaEmision.tm_mon == mes && list->fechaEmision.tm_year == year && 
+        (list->fechaPago.tm_mon != mes && list->fechaPago.tm_year != year)){
+            actividad_turno = get_ActTurn((int)list->actturn - 1,&acturn);
+            cliente = FindClient(actividad_turno->dni,clientes);
+            cargarEnABB(cliente);
+            break;
+        }
+        list = list->next;
+    }
 }
