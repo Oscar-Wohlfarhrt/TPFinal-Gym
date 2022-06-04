@@ -4,7 +4,7 @@
 
 // interfaz
 void LActividadPrintList();
-int PrintActL(int indice);
+int PrintActL(long indice);
 void printActMenu();
 int maxActi(Actividades *list);
 
@@ -45,19 +45,22 @@ void LActividadPrintList()
         *strchr(op, '\n') = '\0';  // se elimina el salto de linea
         fseek(stdin, 0, SEEK_END); // se limpia el buffer de entrada
         strlwr(op);
-        int option = atoi(op);
-
+        int option;
         if (!strncmp(op, "s", 1))
-             err = 0;// salir 
-        else if(option<=maxActi(acti) && option>=0){
-            if(PrintActL(option)!=0){
-                system(cls);
-                PrintActL(option);
-            }else
-                printf("No hay clientes registrados para la actividad");
-            option = -1;
-            system("pause");
-        }       
+                err = 0;// salir 
+
+        if(TryToInt64(op,&option)!= 0) {
+             if(option<=maxActi(acti)+1 && option>=1){
+                if(PrintActL(option)!=0){
+                    system(cls);
+                    PrintActL(option-1);
+                }else
+                    printf("No hay clientes registrados para la actividad");
+                system("pause");
+                option = -1;
+            } 
+        }else
+            printf("");      
     }
 }
 
@@ -73,12 +76,12 @@ void printActMenu(){
             printf("\e[48;5;235m"); //formato
 
         Actividades *print= GetActividad(i,acti);
-        printf("%-5i  %-5s\e[K\n",i,print->nombre);
+        printf("%-5i  %-5s\e[K\n",i+1,print->nombre);
         index++;//formato
     }
 }
 
-int PrintActL(int indice){
+int PrintActL(long indice){
     int index = 1;//formato
     int flag = 0;
     int sindex = sizeIndex(acturn);//cantidad de act turns
