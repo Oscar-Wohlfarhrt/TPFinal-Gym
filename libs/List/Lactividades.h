@@ -49,7 +49,7 @@ void LActividadPrintList()
         if (!strncmp(op, "s", 1))
                 err = 0;// salir 
 
-        if(TryToInt64(op,&option)!= 0) {
+        if(TryToInt32(op,&option)!= 0) {
              if(option<=maxActi(acti)+1 && option>=1){
                 if(PrintActL(option)!=0){
                     system(cls);

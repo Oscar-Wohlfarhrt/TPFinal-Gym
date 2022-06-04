@@ -1,5 +1,7 @@
 #pragma once
 #include "../tpstructs.h"
+#include "ABBHandler.h"
+#include "../Interfaces/interfaces.h"
 
 ClientesPagos *pagos = NULL;
 
