@@ -42,19 +42,23 @@ void TurnsActList()
         *strchr(op, '\n') = '\0';  // se elimina el salto de linea
         fseek(stdin, 0, SEEK_END); // se limpia el buffer de entrada
         strlwr(op);
-        int option = atoi(op);      //convierte char a int
+        int option;      //convierte char a int
 
         if (!strncmp(op, "s", 1))
              err = 0;// salir 
-        else if(option<=maxTActi(acti) && option>=0){
-            if(PrintTurnActL(option)!=0){
-                system(cls);
-                PrintTurnActL(option);
-            }else
-                printf("No hay turnos registrados para la actividad");
-            option = -1;
-            system("pause");
-        }       
+        
+        if(TryToInt64(op,&option)!= 0) {
+             if(option<=maxActi(acti)+1 && option>=1){
+                if(PrintActL(option)!=0){
+                    system(cls);
+                    PrintTurnActL(option-1);
+                }else
+                    printf("No hay turnos registrados para la actividad");
+                system("pause");
+                option = -1;
+            } 
+        }else
+            printf("");  
     }
 }
 
@@ -70,7 +74,7 @@ void printTurnActMenu(){
             printf("\e[48;5;235m"); //formato
 
         Actividades *print= GetActividad(i,acti);
-        printf("%-5i  %-5s\e[K\n",i,print->nombre);
+        printf("%-5i  %-5s\e[K\n",i+1,print->nombre);
         index++;//formato
     }
 }

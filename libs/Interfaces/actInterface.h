@@ -7,7 +7,8 @@ void ActiPrintList(Actividades **list);
 Actividades ActPrompt(Actividades *s, int *errout);
 void ActPromptRestore(int index, Actividades *p);
 
-void ActiPrintListVoid(){
+void ActiPrintListVoid()
+{
     ActiPrintList(&acti);
 }
 void ActiPrintList(Actividades **list)
@@ -29,7 +30,7 @@ void ActiPrintList(Actividades **list)
 
         // se obtiene la primera actividad de la lista
         Actividades *act = GetActividad(page * entries, *list);
-        
+
         printf("\e[48;5;237m");
         printf("ACTIVIDADES: Pagina %i\e[K\n", page + 1);
         printf("%-5s | %-50s | %-20s\e[K\e[0m\n", "Index", "ACTIVIDAD", "SUCURSAL");
@@ -105,8 +106,9 @@ void ActiPrintList(Actividades **list)
             {
                 Actividades *editAct = NULL, data;
                 // se verifica que el turno no sea NULL
-                if (editAct = GetActividad(editIndex - 1, *list)){
-                    ActPrompt(editAct, NULL);            
+                if (editAct = GetActividad(editIndex - 1, *list))
+                {
+                    ActPrompt(editAct, NULL);
                 }
             }
         }
@@ -169,16 +171,22 @@ Actividades ActPrompt(Actividades *s, int *errout)
         err = 1;
         scanf("%c", &op);          // se lee la opcion
         fseek(stdin, 0, SEEK_END); // se limpia el buffer de entrada
-
-        if (op == 'e')
+        bool status = existeActividad(act.nombre, act.sucursal);
+        if (op == 'e' && !status)
         {
             err = 0;
             if (errout)
                 *errout = 1;
         }
-        else if (op == 'c')
+        else if (op == 'c' || op == 'e' && status)
         {
-            memcpy(&act, s, sizeof(Actividades));
+            //memcpy(&act, s, sizeof(Actividades));
+            if(status){
+                SetCurPos(30, 0);
+                printf("\a");
+                printf("\e[48;5;52m     ERROR! ACTIVIDAD EXISTENTE      \e[0m\e[u");
+                system("pause");
+            }
             err = 0;
             if (errout)
                 *errout = 0;
@@ -211,7 +219,7 @@ Actividades ActPrompt(Actividades *s, int *errout)
                         break;
                     case 1:
                         TryToInt32(input, &s->sucursal);
-                        break; 
+                        break;
                     }
                 }
             }

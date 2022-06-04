@@ -7,48 +7,32 @@ ABClientes *insert(ABClientes *raiz, ABClientes *nodo);
 ABClientes *borrar(ABClientes *borrar);
 ABClientes *borrarArbol(ABClientes *raiz);
 ABClientes *GetAB(char *nombre, char *apellido, ABClientes *raiz);
-void cargarEnABB();
+void cargarEnABB(Clientes *cli);
 
 ABClientes *insert(ABClientes *raiz, ABClientes *nodo)
 {
     if (!raiz)
         return nodo;
-    if (strcmp(nodo->nombre,raiz->nombre) <= 0 && strcmp(nodo->apellido,raiz->apellido) < 0)
+    if (strcmp(nodo->nombre, raiz->nombre) <= 0 && strcmp(nodo->apellido, raiz->apellido) < 0)
         raiz->izq = insert(raiz->izq, nodo);
-    else if (strcmp(nodo->nombre,raiz->nombre) > 0 && strcmp(nodo->apellido,raiz->apellido) > 0)
+    else if (strcmp(nodo->nombre, raiz->nombre) > 0 && strcmp(nodo->apellido, raiz->apellido) > 0)
         raiz->der = insert(raiz->der, nodo);
-    else 
+    else
         raiz->izq = insert(raiz->izq, nodo);
     return raiz;
 }
-void cargarEnABB()
+void cargarEnABB(Clientes *cli)
 {
-    ClientesPagos *pg = pagos;
-    Clientes *cli = clientes;
-    ABClientes *aux = NULL;
-    ActTurno *turn = NULL;
-    while (cli)
-    {
-        turn = getbyActTurnoDNI(cli->dni, acturn);
-        if (turn)
-        {
-            pg = GetPagobyACTT(turn->turno, pagos);
-            if (!pg)
-            {
-                aux = (ABClientes *)malloc(sizeof(ABClientes));
-                aux->dni = cli->dni;
-                strcpy(aux->apellido, cli->apellido);
-                strcpy(aux->nombre, cli->nombre);
-                strcpy(aux->telefono, cli->telefono);
-                aux->der = NULL;
-                aux->izq = NULL;
-                strlwr(aux->nombre);
-                strlwr(aux->apellido);
-                root = insert(root, aux);
-            }
-        }
-        cli = cli->next;
-    }
+    ABClientes *aux = (ABClientes *)malloc(sizeof(ABClientes));
+    aux->dni = cli->dni;
+    strcpy(aux->apellido, cli->apellido);
+    strcpy(aux->nombre, cli->nombre);
+    strcpy(aux->telefono, cli->telefono);
+    aux->der = NULL;
+    aux->izq = NULL;
+    strlwr(aux->nombre);
+    strlwr(aux->apellido);
+    root = insert(root, aux);
 }
 ABClientes *eliminar(ABClientes *raiz, ABClientes *nodo)
 {
