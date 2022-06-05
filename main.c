@@ -56,7 +56,8 @@ char *menus[] = {
     "<o>Clientes por Actividad</o>\n"
     "<o>Clientes por Turno</o>\n|\n"
     "<o>Turnos por Actividad</o>\n"
-    "<o>Turnos por Sede</o>\n"
+    "<o>Turnos por Sede</o>\n|\n"
+    "<o>Reserva por Actividad</o>\n|\n"
     "<o>Lista de deudores</o>\n|\n"
     "<o>Salir</o>\n",
 };
@@ -148,10 +149,11 @@ void Listas()
         TurnPrintList,
         TurnsActList,
         TurnSedePrintList,
+        PrintReservaList,
         deudoresPrintList,
     };
 
-    advMenu(2, ListasMenu, 6);
+    advMenu(2, ListasMenu, 7);
 }
 
 #pragma endregion

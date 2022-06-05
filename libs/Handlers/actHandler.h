@@ -15,6 +15,7 @@ void load_actividades(Actividades **list);
 void save_actividades(Actividades *list);
 void BuscarBorrarAct(int index, Actividades **bor, Actividades **ant);
 void borrarListaActividades(Actividades **list);
+int maxActi(Actividades *list);
 
 void InsertActividad(Actividades **node, Actividades **list)
 {
@@ -202,4 +203,13 @@ bool existeActividad(char *nombre, int sede)
     }
     return false;
 }
+
+int maxActi(Actividades *list){
+            int cont = -1;
+            while (list != NULL){
+                cont++;
+                list = list ->next;
+            } 
+            return cont;
+        }
 #pragma endregion

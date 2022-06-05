@@ -3,13 +3,15 @@
 #include "../Interfaces/interfaces.h"
 
 // interfaz
-void LActividadPrintList();
-int PrintActL(long indice);
-void printActMenu();
+void PrintReservaList();
+int PrintEntriReserva(long indice);
+void printReservaMenu();
 
+//aux function
+int maxReserva(Reservas *list);
 //void CopyList(AuxActividades * ini);
 
-void LActividadPrintList()
+void PrintReservaList()
 {
     // variables auxiliares
     int err = 1;
@@ -28,10 +30,7 @@ void LActividadPrintList()
         printf("\e[48;5;237m");
         printf("Seleccione la actividad:\e[K\n");
         
-        printActMenu();//lista de actividades disponible
-
-        //printf("Clientes por Actividad:\e[K\n");
-        //PrintActL();
+        printReservaMenu();//lista de actividades 
 
         printf("\e[48;5;237m\e[K\e[0m\n");
         // boton salir
@@ -50,9 +49,11 @@ void LActividadPrintList()
 
         if(TryToInt32(op,&option)!= 0) {
              if(option<=maxActi(acti)+1 && option>=1){
-                if(PrintActL(option-1)!=0){
+                if(PrintEntriReserva(option-1)!=0){
                     system(cls);
-                    PrintActL(option-1);
+                    printf("\e[48;5;237m");                
+                    printf("%-5s | %-15s | %-5s | %-5s | %-30s | %-5s    %-30s %-30s\e[K\n", "Index", "ACTIVIDAD","SEDE","TURNO","PROFESOR", "CLIENTE:","NOMBRE","APELLIDO");
+                    PrintEntriReserva(option-1);
                 }else
                     printf("No hay clientes registrados para la actividad");
                 system("pause");
@@ -63,7 +64,7 @@ void LActividadPrintList()
     }
 }
 
-void printActMenu(){
+void printReservaMenu(){
     int maxacti = maxActi(acti);
     int index = 1;
     printf("%-5s  %-5s\e[K\n","Index","Actividad");
@@ -80,15 +81,13 @@ void printActMenu(){
     }
 }
 
-int PrintActL(long indice){
+int PrintEntriReserva(long indice){
     int index = 1;//formato
     int flag = 0;
-    int sindex = sizeIndex(acturn);//cantidad de act turns
+    int sindex = maxReserva(reservaInput);//cantidad de reservas
 
-    printf("\e[48;5;237m");                
-    printf("%-5s | %-15s | %-5s | %-5s | %-30s | %-5s    %-30s %-30s | %-5s\e[K\n", "Index", "ACTIVIDAD","SEDE","TURNO","PROFESOR", "CLIENTE:","NOMBRE","APELLIDO","DEUDA");
-        for(int i =0;i<sindex;i++){
-            ActTurno *temp = get_ActTurn(i,&acturn);
+        for(int i =sindex;i>=0;i--){
+            Reservas *temp = GetRes(i,reservaOutput);
             Turnos *turno = GetTurn(temp->turno,turnos);
                 
             if(indice == turno ->actividad){
@@ -102,7 +101,7 @@ int PrintActL(long indice){
                 else                        //*
                     printf("\e[48;5;235m"); //formato
 
-                printf("%-5i | %-15s | %-5i | %-5i | %-30s |  %-5s       %-30s %-30s| %-5s\e[K\n", index, actividad ->nombre,actividad ->sucursal,(temp->turno)+1,profesor ->apellido,"", cliente->nombre,cliente->apellido,".");
+                printf("%-5i | %-15s | %-5i | %-5i | %-30s |  %-5s       %-30s %-30s\e[K\n", index, actividad ->nombre,actividad ->sucursal,(temp->turno)+1,profesor ->apellido,"", cliente->nombre,cliente->apellido);
                 
                 flag = 1;
                 index++;//formato
@@ -110,11 +109,13 @@ int PrintActL(long indice){
         }
     return flag;
 }
-/*void CopyList(AuxActividades * ini,Actividades * list){
-    while (list != NULL){
-        ini = (AuxActividades*)malloc(sizeof(AuxActividades));
-        
-    }
-}
-    */
+
+int maxReserva(Reservas *list){
+            int cont = -1;
+            while (list != NULL){
+                cont++;
+                list = list ->next;
+            } 
+            return cont;
+        }
 #pragma endregion

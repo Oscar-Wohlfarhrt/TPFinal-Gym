@@ -6,7 +6,7 @@
 void TurnsActList();
 int PrintTurnActL(int indice);
 void printTurnActMenu();
-int maxTActi(Actividades *list);
+
 int MaxTurns(Turnos*list);
 
 //void CopyList(AuxActividades * ini);
@@ -49,8 +49,9 @@ void TurnsActList()
         
         if(TryToInt32(op,&option)!= 0) {
              if(option<=maxActi(acti)+1 && option>=1){
-                if(PrintActL(option)!=0){
+                if(PrintActL(option-1)!=0){
                     system(cls);
+                    printf("%-5s | %-15s | %-5s | %-5s \e[K\n", "Index", "ACTIVIDAD","TURNO","CUPO");
                     PrintTurnActL(option-1);
                 }else
                     printf("No hay turnos registrados para la actividad");
@@ -63,7 +64,7 @@ void TurnsActList()
 }
 
 void printTurnActMenu(){
-    int maxacti = maxTActi(acti);
+    int maxacti = maxActi(acti);
     int index = 1;
     printf("%-5s  %-5s\e[K\n","Index","Actividad");
     for(int i = 0;i<=maxacti;i++){
@@ -85,7 +86,6 @@ int PrintTurnActL(int indice){
     int sindex = MaxTurns(turnos);//cantidad de TURNS
 
     printf("\e[48;5;237m");                
-    printf("%-5s | %-15s | %-5s | %-5s \e[K\n", "Index", "ACTIVIDAD","TURNO","CUPO");
         for(int i =0;i<sindex;i++){
             Turnos *turno = GetTurn(i,turnos);
                 
@@ -106,14 +106,7 @@ int PrintTurnActL(int indice){
     return flag;
 }
 
-    int maxTActi(Actividades *list){
-            int cont = -1;
-            while (list != NULL){
-                cont++;
-                list = list ->next;
-            } 
-            return cont;
-        }
+
 int MaxTurns(Turnos*list){
         int cont = -1;
         while (list != NULL){
