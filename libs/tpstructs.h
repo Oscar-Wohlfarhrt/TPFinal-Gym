@@ -67,6 +67,7 @@ struct Actividades{
 struct ActTurno{
     long dni;
     int turno;
+    struct tm fechaInscripcion;
     struct ActTurno *next;
 };
 
