@@ -5,8 +5,10 @@
 int validDate(struct tm time)
 {
     int err = 1;
+    if (time.tm_mday == 0 && time.tm_mon == -1 && time.tm_year == -1900)
+        return 1;
     if (time.tm_mday > 0 && time.tm_mday <= 31 && time.tm_mon >= 0 &&
-        time.tm_mon <= 11 && time.tm_year >= 0 && time.tm_year <= 122)//122 corresponde a este año
+        time.tm_mon <= 11 && time.tm_year >= 0 && time.tm_year <= 122) // 122 corresponde a este año
     {
         err = 1;
         if ((time.tm_mon == 1 && time.tm_mday > 28 && time.tm_year % 4 != 0) ||
@@ -31,7 +33,8 @@ int validDate(struct tm time)
     }
     return err;
 }
-int dayDifftime(struct tm t1,struct tm t2){
+int dayDifftime(struct tm t1, struct tm t2)
+{
     time_t timeA, timeB;
     struct tm tA, tB, *tptr;
     double diff;
@@ -51,9 +54,10 @@ int dayDifftime(struct tm t1,struct tm t2){
     tB.tm_mon = t2.tm_mon;
     tB.tm_year = t2.tm_year;
 
-    return (int)(difftime(mktime(&tA), mktime(&tB))/86400);
+    return (int)(difftime(mktime(&tA), mktime(&tB)) / 86400);
 }
-double minDifftime(struct tm t1,struct tm t2){
+double minDifftime(struct tm t1, struct tm t2)
+{
     time_t timeA, timeB;
     struct tm tA, tB, *tptr;
     double diff;
@@ -79,24 +83,28 @@ double minDifftime(struct tm t1,struct tm t2){
     tB.tm_min = t2.tm_min;
     tB.tm_sec = 0;
 
-    return difftime(mktime(&tA), mktime(&tB))/60;
+    return difftime(mktime(&tA), mktime(&tB)) / 60;
 }
 
-int betweenTime(struct tm time, struct tm min, struct tm max){
-    int err=0;
-    if(minDifftime(time,min)>=0 && minDifftime(max,time)>=0){
-        err=1;
+int betweenTime(struct tm time, struct tm min, struct tm max)
+{
+    int err = 0;
+    if (minDifftime(time, min) >= 0 && minDifftime(max, time) >= 0)
+    {
+        err = 1;
     }
     return err;
 }
 
-int dayOfWeek(struct tm time){
-    int day=time.tm_mday;
-    int mon=time.tm_mon+1;
-    long year=time.tm_year+1900;
+int dayOfWeek(struct tm time)
+{
+    int day = time.tm_mday;
+    int mon = time.tm_mon + 1;
+    long year = time.tm_year + 1900;
 
-    return ((day += mon<3?year--:year-2),(23*mon/9+day+4+year/4-year/100+year/400))%7;
+    return ((day += mon < 3 ? year-- : year - 2), (23 * mon / 9 + day + 4 + year / 4 - year / 100 + year / 400)) % 7;
 }
-int weekOfYear(struct tm time){
-    return (time.tm_yday+6-time.tm_wday)/7;
+int weekOfYear(struct tm time)
+{
+    return (time.tm_yday + 6 - time.tm_wday) / 7;
 }
