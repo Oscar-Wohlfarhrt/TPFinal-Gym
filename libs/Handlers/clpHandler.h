@@ -175,10 +175,9 @@ void FindINPago(int year, int mes)
     {
         if(list->fechaEmision.tm_mon == mes && list->fechaEmision.tm_year == year && 
         (list->fechaPago.tm_mon != mes && list->fechaPago.tm_year != year)){
-            actividad_turno = get_ActTurn((int)list->actturn - 1,&acturn);
+            actividad_turno = get_ActTurn((int)list->actturn-1,&acturn);
             cliente = FindClient(actividad_turno->dni,clientes);
             cargarEnABB(cliente);
-            break;
         }
         list = list->next;
     }

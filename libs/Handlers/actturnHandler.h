@@ -1,13 +1,13 @@
 #pragma once
 #include "../tpstructs.h"
-//puntero a la lista de actturn
+// puntero a la lista de actturn
 ActTurno *acturn = NULL;
 
 void load_ActTurn(ActTurno **list);
 void save_ActTurn(ActTurno *list);
 void insert_ActTurno(ActTurno **dato, ActTurno **list);
 int remove_ActTurn(int turno, ActTurno **list);
-int replace_ActTurn(int turno, ActTurno *newe , ActTurno **list);
+int replace_ActTurn(int turno, ActTurno *newe, ActTurno **list);
 int BorrarActTurn(int index, ActTurno **list);
 ActTurno *get_ActTurn(int index, ActTurno **list);
 ActTurno *find_ActTurn(long turno, ActTurno **list);
@@ -16,7 +16,7 @@ ActTurno *getbyActTurnoDNI(long dni, ActTurno *list);
 void BuscarBorrarActTurn(int index, ActTurno **bor, ActTurno **ant);
 void borrarListaActTurn(ActTurno **list);
 int sizeIndex(ActTurno *list);
-int countCupo(int turnIndex,ActTurno *list);
+int countCupo(int turnIndex, ActTurno *list);
 
 void load_ActTurn(ActTurno **list)
 {
@@ -96,12 +96,12 @@ int remove_ActTurn(int turno, ActTurno **list)
                 ant->next = aux->next;
             }
             free(aux);
-            return true;
+            return 1;
         }
         ant = aux;
         aux = aux->next;
     }
-    return false;
+    return 0;
 }
 int replace_ActTurn(int turno, ActTurno *newe, ActTurno **list)
 {
@@ -180,7 +180,6 @@ int BorrarActTurn(int index, ActTurno **list)
 }
 void BuscarBorrarActTurn(int index, ActTurno **bor, ActTurno **ant)
 {
-    int found = 0;
     while (*bor && index > 0)
     {
         *ant = *bor;
@@ -198,12 +197,14 @@ void borrarListaActTurn(ActTurno **list)
         aux = *list;
     }
 }
-int sizeIndex(ActTurno *list){
+int sizeIndex(ActTurno *list)
+{
     int cont = 0;
-    while (list != NULL){
+    while (list != NULL)
+    {
         cont++;
-        list = list ->next;
-    } 
+        list = list->next;
+    }
     return cont;
 }
 ActTurno *getbyActTurnoDNI(long dni, ActTurno *list)
@@ -217,17 +218,19 @@ ActTurno *getbyActTurnoDNI(long dni, ActTurno *list)
     return NULL;
 }
 
-int countCupo(int turnIndex,ActTurno *list){
-    int count=-1;
-    
-    if(list)
-        count=0;
+int countCupo(int turnIndex, ActTurno *list)
+{
+    int count = -1;
 
-    while(list){
-        if(list->turno==turnIndex)
+    if (list)
+        count = 0;
+
+    while (list)
+    {
+        if (list->turno == turnIndex)
             count++;
 
-        list=list->next;
+        list = list->next;
     }
 
     return count;

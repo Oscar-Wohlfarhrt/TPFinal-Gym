@@ -49,21 +49,48 @@ ClientesPagos PagosPrompt(ClientesPagos *client, int *errout)
         client = &cli;
 
     printf("\e[u"); // se resetea el cursor
+    struct tm tm;
+    struct tm tmaux;
 
     while (err)
     {
         err = 1;
         scanf("%c", &op);          // se lee la opcion
         fseek(stdin, 0, SEEK_END); // se limpia el buffer de entrada
-
-        if (op == 'e')
+        int status = 1;
+        if (cli.actturn > sizeIndex(acturn) || cli.actturn < 0)
+            status = 0;
+        
+        tmaux=cli.fechaEmision;
+        if (op == 'e' && status && validDate(tmaux))
         {
             err = 0;
             if (errout)
                 *errout = 1;
         }
-        else if (op == 'c')
+        else if (op == 'c' || (op == 'e' && !validDate(tmaux)))
         {
+            if (!validDate(tmaux) && op == 'e')
+            {
+                SetCurPos(30, 0);
+                printf("\a");
+                printf("\e[48;5;52m     ERROR! "
+                       "Fecha incorrecta      \e[0m\e[u");
+                system("pause");
+            }
+            *client = cli;
+            err = 0;
+            if (errout)
+                *errout = 0;
+        }
+        else if (!status && op == 'e')
+        {
+            SetCurPos(30, 0);
+            printf("\a");
+            printf("\e[48;5;52m     ERROR! "
+                   "1"
+                   ". Fuera de rango      \e[0m\e[u");
+            system("pause");
             *client = cli;
             err = 0;
             if (errout)
@@ -84,8 +111,6 @@ ClientesPagos PagosPrompt(ClientesPagos *client, int *errout)
             fgets(input, 50, stdin);
             fseek(stdin, 0, SEEK_END); // se limpia el buffer de entrada
             *strchr(input, '\n') = '\0';
-
-            struct tm tm;
 
             if (strcmp(input, "c"))
             {
@@ -178,17 +203,17 @@ void PagosPrintList()
         // se obtiene el primer elemento de la lista
         ClientesPagos *client = GetPago(page * entries, pagos);
 
-    /*  "Actividad",
-        "Dia",
-        "Hora de inicio",
-        "hora de fin",
-        "DNI Profesor",
-        "Cupo Maximo",*/
+        /*  "Actividad",
+            "Dia",
+            "Hora de inicio",
+            "hora de fin",
+            "DNI Profesor",
+            "Cupo Maximo",*/
 
         printf("\e[48;5;237m");
         printf("Pagos: Pagina %i\e[K\n", page + 1);
-        printf("%-5s | %-50s | %-20s | %-20s\e[K\n", "Index", "ACT-TURNO","MONTO", "EMISION");
-        printf("%-5s | %-50s | %-20s | %-20s\e[K\n\e[0m", "", "","RECARGO", "PAGO");
+        printf("%-5s | %-50s | %-20s | %-20s\e[K\n", "Index", "ACT-TURNO", "MONTO", "EMISION");
+        printf("%-5s | %-50s | %-20s | %-20s\e[K\n\e[0m", "", "", "RECARGO", "PAGO");
         for (int i = 0; i < entries; i++)
         {
             int index = i + 1 + (page * entries);
@@ -200,17 +225,17 @@ void PagosPrintList()
             if (client)
             {
                 // se genera la fecha de nacimiento
-                char date1[17],date2[17];
+                char date1[17], date2[17];
                 sprintf(date1, "%02i/%02i/%04i", client->fechaEmision.tm_mday, client->fechaEmision.tm_mon + 1, client->fechaEmision.tm_year + 1900);
                 sprintf(date2, "%02i/%02i/%04i", client->fechaPago.tm_mday, client->fechaPago.tm_mon + 1, client->fechaPago.tm_year + 1900);
-                
-                float monto=client->monto;
-                if(((client->fechaPago.tm_mon>=client->fechaEmision.tm_mon)||(client->fechaPago.tm_year>=client->fechaEmision.tm_year))&&client->fechaPago.tm_mday>10)
-                    monto*=1.1;
+
+                float monto = client->monto;
+                if (((client->fechaPago.tm_mon >= client->fechaEmision.tm_mon) || (client->fechaPago.tm_year >= client->fechaEmision.tm_year)) && client->fechaPago.tm_mday > 10)
+                    monto *= 1.1;
 
                 // se imprime la fila
-                printf("%5i | %-50i | $%-19.02f | %-20s\e[K\n", index, client->actturn,monto, date1);
-                printf("%5s | %-50s | %-20s | %-20s\e[K\e[0m\n", "" , "", monto>client->monto?"Si":"No", date2);
+                printf("%5i | %-50i | $%-19.02f | %-20s\e[K\n", index, client->actturn, monto, date1);
+                printf("%5s | %-50s | %-20s | %-20s\e[K\e[0m\n", "", "", monto > client->monto ? "Si" : "No", date2);
 
                 client = client->next;
             }
@@ -283,10 +308,10 @@ void PagosPrintList()
             // se intenta convertir el indice a entero
             if (TryToInt32(ind, &editIndex))
             {
-                //ClientesPagos *editTurn = NULL;
-                // se verifica que el turno no sea NULL
-                //if (editTurn = GetTurn(editIndex - 1, turnos))
-                
+                // ClientesPagos *editTurn = NULL;
+                //  se verifica que el turno no sea NULL
+                // if (editTurn = GetTurn(editIndex - 1, turnos))
+
                 BorrarPago(editIndex - 1, &pagos);
             }
         }

@@ -184,7 +184,7 @@ Actividades ActPrompt(Actividades *s, int *errout)
             if(status){
                 SetCurPos(30, 0);
                 printf("\a");
-                printf("\e[48;5;52m     ERROR! ACTIVIDAD EXISTENTE      \e[0m\e[u");
+                printf("\e[48;5;52m     ERROR! actividad existente      \e[0m\e[u");
                 system("pause");
             }
             err = 0;

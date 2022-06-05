@@ -2,6 +2,35 @@
 
 #include <time.h>
 
+int validDate(struct tm time)
+{
+    int err = 1;
+    if (time.tm_mday > 0 && time.tm_mday <= 31 && time.tm_mon >= 0 &&
+        time.tm_mon <= 11 && time.tm_year >= 0 && time.tm_year <= 122)//122 corresponde a este año
+    {
+        err = 1;
+        if ((time.tm_mon == 1 && time.tm_mday > 28 && time.tm_year % 4 != 0) ||
+            (time.tm_mon == 1 && time.tm_mday > 29 && time.tm_year % 4 == 0))
+        {
+            err = 0;
+        }
+        if (time.tm_mon >= 0 && time.tm_mon <= 6 &&
+            time.tm_mon % 2 && time.tm_mday == 31)
+        {
+            err = 0;
+        }
+        else if (time.tm_mon > 6 && time.tm_mon <= 11 &&
+                 !(time.tm_mon % 2) && time.tm_mday == 31)
+        {
+            err = 0;
+        }
+    }
+    else
+    {
+        err = 0;
+    }
+    return err;
+}
 int dayDifftime(struct tm t1,struct tm t2){
     time_t timeA, timeB;
     struct tm tA, tB, *tptr;

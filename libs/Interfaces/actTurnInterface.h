@@ -54,7 +54,7 @@ ActTurno ActTurnPrompt(ActTurno *ActTurn, int *errout)
     {
         Turnos *turn = GetTurn(ActTurn->turno, turnos);
         int cCount = countCupo(ActTurn->turno, acturn);
-        //printf("%i | %i | %p\n",ActTurn->turno,cCount,turn);
+        // printf("%i | %i | %p\n",ActTurn->turno,cCount,turn);
         if (turn && cCount >= 0)
         {
             if (turn->cupo > cCount)
@@ -74,15 +74,22 @@ ActTurno ActTurnPrompt(ActTurno *ActTurn, int *errout)
         err = 1;
         scanf("%c", &op);          // se lee la opcion
         fseek(stdin, 0, SEEK_END); // se limpia el buffer de entrada
-
-        if (op == 'e')
+        Clientes *client = FindClient(ActTurn->dni, clientes);
+        if (op == 'e' && client)
         {
             err = 0;
             if (errout)
                 *errout = 1;
         }
-        else if (op == 'c')
+        else if (op == 'c' || op == 'e' && !client)
         {
+            if (!client)
+            {
+                SetCurPos(30, 0);
+                printf("\a");
+                printf("\e[48;5;52m     ERROR! cliente no existe      \e[0m\e[u");
+                system("pause");
+            }
             *ActTurn = actt;
             err = 0;
             if (errout)
@@ -156,6 +163,7 @@ void ActTurnPromptRestore(int index, ActTurno *ActTurn)
 }
 void ActTurnsPrintList()
 {
+    ReindexActTurnos();
     const int entries = 10; // entradas por pagina
 
     // variables auxiliares
@@ -191,9 +199,10 @@ void ActTurnsPrintList()
             if (ActTurn)
             {
                 client = FindClient(ActTurn->dni, clientes);
+
                 // se imprime la fila
                 // printf("%-5s | %-20s | %-5s | %-50s | %-50s  \e[K\e[0m\n", "Index","DNI", "TURNO","NOMBRE", "APELLIDO");
-                printf("%5i | %-10li | %-5i | %-50s |\e[K\n", index, ActTurn->dni, ActTurn->turno, client ? client->nombre : "NULL");
+                printf("%5i | %-10li | %-5i | %-50s |\e[K\n", index, ActTurn->dni, (int)ActTurn->turno, client ? client->nombre : "NULL");
                 printf("%5s | %-10s | %-5s | %-50s | \e[K\e[0m\n", "", "", "", client ? client->apellido : "NULL");
                 ActTurn = ActTurn->next;
             }

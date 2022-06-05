@@ -25,6 +25,7 @@ void BuscarBorrarCliente(Clientes value, Clientes **bor, Clientes **ant);
 int ReplaceClient(int dni, Clientes *newClient, Clientes *list);
 void BorrarListaClientes(Clientes **list);
 void UpdateClientBaja(Clientes *list);
+void ReindexActTurnos();
 
 // escritura y lecura del archivo
 void LoadClientes(Clientes **list);
@@ -205,5 +206,24 @@ void SaveClientes(Clientes *list)
             list = list->next;
         }
         fclose(f);
+    }
+}
+void ReindexActTurnos()
+{
+    ActTurno *list = acturn ? acturn : NULL;
+    Clientes *cli = NULL;
+    int index = 0;
+    while (list)
+    {
+        cli = FindClient(list->dni, clientes);
+        if (!cli)
+        {
+            if (BorrarActTurn(index, &acturn))
+            {
+                index--;
+            }
+        }
+        index++;
+        list = list->next;
     }
 }

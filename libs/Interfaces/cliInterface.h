@@ -11,9 +11,8 @@ Clientes ClientesPrompt(Clientes *client, int *errout)
 {
     system(cls);
     int err = 1;
-
+    struct tm tm;
     Clientes cli;
-
 
     char op = '\0';
     int index = 0;
@@ -59,15 +58,21 @@ Clientes ClientesPrompt(Clientes *client, int *errout)
         err = 1;
         scanf("%c", &op);          // se lee la opcion
         fseek(stdin, 0, SEEK_END); // se limpia el buffer de entrada
-
-        if (op == 'e')
+        if (op == 'e' && validDate(tm))
         {
             err = 0;
             if (errout)
                 *errout = 1;
         }
-        else if (op == 'c')
+        else if (op == 'c' || (op == 'e' && !validDate(tm)))
         {
+            if (!validDate(tm))
+            {
+                SetCurPos(30, 0);
+                printf("\a");
+                printf("\e[48;5;52m     ERROR! fecha invalida      \e[0m\e[u");
+                system("pause");
+            }
             *client = cli;
             err = 0;
             if (errout)
@@ -88,8 +93,6 @@ Clientes ClientesPrompt(Clientes *client, int *errout)
             fgets(input, 50, stdin);
             fseek(stdin, 0, SEEK_END); // se limpia el buffer de entrada
             *strchr(input, '\n') = '\0';
-
-            struct tm tm;
 
             if (strcmp(input, "c"))
             {
