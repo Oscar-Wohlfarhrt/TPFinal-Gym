@@ -247,4 +247,3 @@ void ActPromptRestore(int index, Actividades *p)
         break;
     }
 }
-#pragma endregion

@@ -58,7 +58,7 @@ Clientes ClientesPrompt(Clientes *client, int *errout)
         err = 1;
         scanf("%c", &op);          // se lee la opcion
         fseek(stdin, 0, SEEK_END); // se limpia el buffer de entrada
-        if (op == 'e' && validDate(tm))
+        if (op == 'e' && (validDate(tm)))
         {
             err = 0;
             if (errout)
@@ -299,8 +299,10 @@ void ClientesPrintList()
             {
                 Clientes *editCli = NULL;
                 // se verifica que el cliente no sea NULL
-                if (editCli = GetClient(editIndex - 1, clientes))
+                if (editCli = GetClient(editIndex - 1, clientes)){
                     BorrarCliente(*editCli, &clientes);
+                    ReindexActTurnos();
+                }
             }
         }
     }

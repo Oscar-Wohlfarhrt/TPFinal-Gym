@@ -137,7 +137,7 @@ ActTurno *get_ActTurn(int index, ActTurno **list)
         if (i == index)
             return aux;
         if (i <= index && !aux)
-            return NULL;
+            break;
         aux = aux->next;
     }
     return NULL;
@@ -173,6 +173,7 @@ int BorrarActTurn(int index, ActTurno **list)
             }
             bor->next = NULL;
             free(bor);
+            ReindexPagos(index);
             err = 0;
         }
     }
@@ -235,4 +236,3 @@ int countCupo(int turnIndex, ActTurno *list)
 
     return count;
 }
-#pragma endregion

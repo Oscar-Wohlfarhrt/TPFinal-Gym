@@ -208,7 +208,7 @@ void SaveClientes(Clientes *list)
         fclose(f);
     }
 }
-void ReindexActTurnos()
+void ReindexActTurnos()//actualiza los pagos y el acturn cuando se elimina un usuario
 {
     ActTurno *list = acturn ? acturn : NULL;
     Clientes *cli = NULL;
@@ -218,8 +218,9 @@ void ReindexActTurnos()
         cli = FindClient(list->dni, clientes);
         if (!cli)
         {
-            if (BorrarActTurn(index, &acturn))
+            if (!BorrarActTurn(index, &acturn))
             {
+                //ReindexPagos(index);
                 index--;
             }
         }

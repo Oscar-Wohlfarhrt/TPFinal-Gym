@@ -5,11 +5,11 @@ void mostrarINORDEN(ABClientes *raiz);
 int leerTec();
 void deudoresPrintList();
 int j = 0, paginas = 0, year = 0, month = -2; // si el mes es -2 no se muestra nada
-ClientesPagos *encontrarPorfecha(int year, int mes);
 char entrada[50] = "";
 
 void deudoresPrintList()
 {
+    //ReindexActTurnos();
     FindINPago(122,5);
     int acum = 0, status = 0;
     char c; //, *date1,*date2;
@@ -68,6 +68,7 @@ void deudoresPrintList()
         root = borrarArbol(root);
         FindINPago(year,month);
     }
+    month = -2;
     root = borrarArbol(root);
 }
 int leerTec()
@@ -114,4 +115,3 @@ void mostrarINORDEN(ABClientes *raiz)
     }
     mostrarINORDEN(raiz->der);
 }
-#pragma endregion

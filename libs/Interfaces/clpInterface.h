@@ -184,6 +184,7 @@ void PagosPromptRestore(int index, ClientesPagos *client)
 }
 void PagosPrintList()
 {
+    //ReindexActTurnos();
     const int entries = 10; // entradas por pagina
 
     // variables auxiliares
@@ -241,7 +242,8 @@ void PagosPrintList()
             }
             else // si no existen mas registros
             {
-                printf("%5i\e[K\n\e[K\e[0m\n", index);
+                printf("%5i | %-50s |  %-20s| %-20s\e[K\n", index, "", "", "");
+                printf("%5s | %-50s | %-20s | %-20s\e[K\e[0m\n", "", "", "", "");
                 err = 2;
             }
         }

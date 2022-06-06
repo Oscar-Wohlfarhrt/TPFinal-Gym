@@ -81,9 +81,9 @@ ActTurno ActTurnPrompt(ActTurno *ActTurn, int *errout)
             if (errout)
                 *errout = 1;
         }
-        else if (op == 'c' || op == 'e' && !client)
+        else if (op == 'c' || (op == 'e' && !client))
         {
-            if (!client)
+            if (op == 'e' && !client)
             {
                 SetCurPos(30, 0);
                 printf("\a");
@@ -163,7 +163,13 @@ void ActTurnPromptRestore(int index, ActTurno *ActTurn)
 }
 void ActTurnsPrintList()
 {
-    ReindexActTurnos();
+
+ActTurno *act = acturn;
+    while(act){
+        printf("\n%li | %li |\n",act->turno,act->dni);
+        act = act->next;
+    }
+    system("pause");
     const int entries = 10; // entradas por pagina
 
     // variables auxiliares
@@ -292,4 +298,3 @@ void ActTurnsPrintList()
         }
     }
 }
-#pragma endregion
