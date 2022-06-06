@@ -33,7 +33,7 @@ int CountAsist(Asistencia value,Asistencia *list){
 
         if(ata && at && act &&
            at->dni==ata->dni && act->sucursal==0 &&
-           weekOfYear(list->fecha)== weekOfYear(value.fecha))
+           weekOfYear(list->fecha) == weekOfYear(value.fecha))
             count++;
 
         list=list->next;

@@ -47,6 +47,7 @@ void TurnsActList()
         if (!strncmp(op, "s", 1))
              err = 0;// salir 
         
+
         if(TryToInt32(op,&option)!= 0) {
              if(option<=maxActi(acti)+1 && option>=1){
                 if(PrintTurnActL(option-1)!=0){
@@ -89,7 +90,7 @@ int PrintTurnActL(int indice){
         for(int i =0;i<sindex;i++){
             Turnos *turno = GetTurn(i,turnos);
                 
-            if(indice == turno ->actividad){
+            if(indice == turno->actividad){
                     
                 Actividades *actividad = GetActividad(turno->actividad,acti); 
                 if (index % 2)              //formato
@@ -108,7 +109,7 @@ int PrintTurnActL(int indice){
 
 
 int MaxTurns(Turnos*list){
-        int cont = -1;
+        int cont = 0;
         while (list != NULL){
             cont++;
             list = list ->next;
