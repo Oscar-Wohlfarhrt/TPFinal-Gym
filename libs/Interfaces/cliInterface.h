@@ -299,9 +299,13 @@ void ClientesPrintList()
             {
                 Clientes *editCli = NULL;
                 // se verifica que el cliente no sea NULL
-                if (editCli = GetClient(editIndex - 1, clientes)){
+                if (editCli = GetClient(editIndex - 1, clientes))
+                {
                     BorrarCliente(*editCli, &clientes);
-                    ReindexActTurnos();
+                    for (int j = 0; j < sizeIndex(acturn); j++)
+                    {
+                        ReindexActTurnos();
+                    }
                 }
             }
         }

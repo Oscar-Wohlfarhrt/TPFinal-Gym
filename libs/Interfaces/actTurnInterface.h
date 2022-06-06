@@ -163,6 +163,7 @@ void ActTurnPromptRestore(int index, ActTurno *ActTurn)
 }
 void ActTurnsPrintList()
 {
+    ReindexActTurnos();
     const int entries = 10; // entradas por pagina
 
     // variables auxiliares
