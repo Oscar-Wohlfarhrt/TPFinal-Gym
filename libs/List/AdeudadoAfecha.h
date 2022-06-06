@@ -12,17 +12,16 @@ float Deuda(int now,int mont,int day,ClientesPagos * ini){
         if((long)now == ini->actturn){
             if(ini->fechaPago.tm_mday == 0){// pago o no
                 if(ini->fechaEmision.tm_mon<mont){ //mes pasado
-                    adedudado = adedudado + 110;
+                    adedudado += (ini->monto*1.1);
                 }else if(ini->fechaEmision.tm_mon=mont){// mes actual
                     if(ini->fechaEmision.tm_mday<=10)
-                        adedudado = adedudado + 100;
+                        adedudado += (ini->monto);
                     else 
-                         adedudado = adedudado + 110;
+                        adedudado += (ini->monto*1.1);
                 }
             }
         }
         ini= ini->next;
     }
-
     return adedudado;
 }

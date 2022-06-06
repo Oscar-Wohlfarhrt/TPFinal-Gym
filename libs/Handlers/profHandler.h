@@ -19,6 +19,7 @@ void PrintList(Profesores*ini);//aux text
 //functions
 void SaveProf(Profesores *ini);
 void LoadProf(Profesores **ini);
+void BorrarListaProfesores(Profesores **list);
 Profesores *FindProf(long node,Profesores *ini);//R
 Profesores InsertP(Profesores**node,Profesores**ini);//R
 int ReplaceP(Profesores **node,Profesores **ini);
@@ -135,4 +136,15 @@ Profesores *GetProf(int index, Profesores *ini){
     else ini = NULL;
 
     return ini;
+}
+void BorrarListaProfesores(Profesores **list)
+{
+    Profesores *aux = NULL;
+    while (list)
+    {
+        aux = *list;
+        *list = (*list)->next;
+        aux->next = NULL;
+        free(aux);
+    }
 }
