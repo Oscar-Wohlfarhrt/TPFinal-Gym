@@ -192,12 +192,13 @@ void BuscarBorrarActTurn(int index, ActTurno **bor, ActTurno **ant)
 }
 void borrarListaActTurn(ActTurno **list)
 {
-    ActTurno *aux = *list;
-    while (aux)
+    ActTurno *aux = NULL;
+    while (*list)
     {
-        *list = (*list)->next;
-        free(aux);
         aux = *list;
+        *list = (*list)->next;
+        aux->next = NULL;
+        free(aux);
     }
 }
 int sizeIndex(ActTurno *list)

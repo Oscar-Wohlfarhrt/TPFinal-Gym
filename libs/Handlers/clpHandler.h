@@ -107,7 +107,7 @@ void BuscarBorrarPago(int index, ClientesPagos **bor, ClientesPagos **ant)
 void BorrarListaPago(ClientesPagos **list)
 {
     ClientesPagos *aux = NULL;
-    while (list)
+    while (*list)
     {
         aux = *list;
         *list = (*list)->next;

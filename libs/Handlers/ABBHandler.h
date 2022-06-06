@@ -11,15 +11,15 @@ ABClientes *insert(ABClientes *raiz, ABClientes *nodo)
     if (!raiz)
         return nodo;
     if((strcmp(nodo->nombre, raiz->nombre)<0 && strcmp(nodo->apellido, raiz->apellido)<0)
-    ||(strcmp(nodo->nombre, raiz->nombre)>0 && strcmp(nodo->apellido, raiz->apellido)<0)
-    ||(strcmp(nodo->nombre, raiz->nombre)==0 && strcmp(nodo->apellido, raiz->apellido)<0)
-    ||(strcmp(nodo->nombre, raiz->nombre)<0 && strcmp(nodo->apellido, raiz->apellido)==0)){
+     ||(strcmp(nodo->nombre, raiz->nombre)>0 && strcmp(nodo->apellido, raiz->apellido)<0)
+     ||(strcmp(nodo->nombre, raiz->nombre)==0 && strcmp(nodo->apellido, raiz->apellido)<0)
+     ||(strcmp(nodo->nombre, raiz->nombre)<0 && strcmp(nodo->apellido, raiz->apellido)==0)){
         raiz->izq = insert(raiz->izq, nodo);
     }
     else if((strcmp(nodo->nombre, raiz->nombre)>0 && strcmp(nodo->apellido, raiz->apellido)>0)
-    ||(strcmp(nodo->nombre, raiz->nombre)<0 && strcmp(nodo->apellido, raiz->apellido)>0)
-    ||(strcmp(nodo->nombre, raiz->nombre)==0 && strcmp(nodo->apellido, raiz->apellido)>0)
-    ||(strcmp(nodo->nombre, raiz->nombre)>0 && strcmp(nodo->apellido, raiz->apellido)==0)){
+          ||(strcmp(nodo->nombre, raiz->nombre)<0 && strcmp(nodo->apellido, raiz->apellido)>0)
+          ||(strcmp(nodo->nombre, raiz->nombre)==0 && strcmp(nodo->apellido, raiz->apellido)>0)
+          ||(strcmp(nodo->nombre, raiz->nombre)>0 && strcmp(nodo->apellido, raiz->apellido)==0)){
         raiz->der = insert(raiz->der, nodo);
     }
     return raiz;

@@ -157,7 +157,7 @@ int ReplaceClient(int dni, Clientes *newClient, Clientes *list)
 void BorrarListaClientes(Clientes **list)
 {
     Clientes *aux = NULL;
-    while (list)
+    while (*list)
     {
         aux = *list;
         *list = (*list)->next;

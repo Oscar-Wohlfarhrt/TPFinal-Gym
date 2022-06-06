@@ -79,6 +79,7 @@ void EmptyFunction() {}
 
 void LoadAllFiles();
 void SaveAllFiles();
+void DeleteAll();
 
 #pragma endregion
 
@@ -126,6 +127,7 @@ int main(int argc, char **args)
         s=s->next;
     }*/
     SaveAllFiles();
+    DeleteAll();
 
     return 0;
 }
@@ -185,5 +187,16 @@ void SaveAllFiles()
     SaveAsist(asist);
     save_espera(&reservaInput,&reservaOutput);
 }
-
+void DeleteAll()
+{
+    root=borrarArbol(root);
+    borrarListaActividades(&acti);
+    borrarListaActTurn(&acturn);
+    BorrarListaClientes(&clientes);
+    BorrarListaPago(&pagos);
+    BorrarListaTurnos(&turnos);
+    BorrarListaAsist(&asist);
+    BorrarListaProfesores(&profes);
+    BorrarColaReservas(&reservaInput,&reservaOutput);
+}
 #pragma endregion

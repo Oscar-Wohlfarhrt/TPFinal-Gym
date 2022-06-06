@@ -140,7 +140,7 @@ Profesores *GetProf(int index, Profesores *ini){
 void BorrarListaProfesores(Profesores **list)
 {
     Profesores *aux = NULL;
-    while (list)
+    while (*list)
     {
         aux = *list;
         *list = (*list)->next;

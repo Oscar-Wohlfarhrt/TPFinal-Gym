@@ -122,7 +122,7 @@ void BuscarBorrarTurn(int index, Turnos **bor, Turnos **ant)
 void BorrarListaTurnos(Turnos **list)
 {
     Turnos *aux = NULL;
-    while (list)
+    while (*list)
     {
         aux = *list;
         *list = (*list)->next;

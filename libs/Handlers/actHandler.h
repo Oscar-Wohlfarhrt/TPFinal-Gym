@@ -179,12 +179,13 @@ bool ReplaceAct(int index, Actividades **node, Actividades **list)
 }
 void borrarListaActividades(Actividades **list)
 {
-    Actividades *aux = *list;
-    while (aux)
+    Actividades *aux = NULL;
+    while (*list)
     {
-        *list = (*list)->next;
-        free(aux);
         aux = *list;
+        *list = (*list)->next;
+        aux->next = NULL;
+        free(aux);
     }
 }
 bool existeActividad(char *nombre, int sede)

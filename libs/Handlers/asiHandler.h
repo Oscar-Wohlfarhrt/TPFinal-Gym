@@ -106,7 +106,7 @@ void BuscarBorrarAsist(int index, Asistencia **bor, Asistencia **ant)
 void BorrarListaAsist(Asistencia **list)
 {
     Asistencia *aux = NULL;
-    while (list)
+    while (*list)
     {
         aux = *list;
         *list = (*list)->next;

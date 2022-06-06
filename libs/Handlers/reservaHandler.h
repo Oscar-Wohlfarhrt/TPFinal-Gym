@@ -164,6 +164,14 @@ void AddReservasToActTurn()
     }
 }
 
+void BorrarColaReservas(Reservas **input,Reservas **output){
+    Reservas *node;
+    while (*output){
+        ResDequeue(&node,input,output);
+        free(node);
+    }
+}
+
 int maxReserva(Reservas *list){
             int cont = -1;
             while (list != NULL){
