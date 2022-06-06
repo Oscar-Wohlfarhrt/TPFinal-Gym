@@ -98,12 +98,25 @@ Asistencia AsistPrompt(Asistencia *asis, int *errout)
             Actividades *act = tur ? GetActividad(tur->actividad, acti) : NULL;
 
             if(act){
-                if(CountActTurn(*at,acturn)<=CountAsist(*asis,asist))
+                if(act->sucursal==0 && CountActTurn(*at,acturn)<=CountAsist(*asis,asist))
+                // El error de asistencias en la presentacion era que faltaba añadir las siguientes 3 lineas
+                {
+                    err=3;
+                }
 
                 if(tur){
-                    if(!betweenTime(asis->fecha,tur->horarioInicio,tur->horarioFin) || /*dayOfWeek(asis->fecha)*/asis->fecha.tm_wday != tur->dia)
+                    if(!betweenTime(asis->fecha,tur->horarioInicio,tur->horarioFin) || asis->fecha.tm_wday != tur->dia)
                         err=3;
                 }
+
+                /* Codigo anterior con error
+                if(act->sucursal==0 && CountActTurn(*at,acturn)<=CountAsist(*asis,asist))
+
+                if(tur){
+                    if(!betweenTime(asis->fecha,tur->horarioInicio,tur->horarioFin) || asis->fecha.tm_wday != tur->dia)
+                        err=3;
+                }
+                */
             }
             else
                 err=3;
