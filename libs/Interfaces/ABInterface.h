@@ -31,7 +31,7 @@ void deudoresPrintList()
         }
         printf("\n>Filtrar(mm/yyyy): ");
         printf("\n\n|\e[48;5;22m ^ - Arriba \e[0m|\e[48;5;22m ESC/S - Salir \e[0m|\e[48;5;22m C - Cancelar \e[0m|\e[48;5;52m v - Abajo \e[0m|");
-        SetCurPos(18,21);
+        (month == -2)?SetCurPos(18,21):SetCurPos(18,23);;
         status = leerTec();
         if (paginas > (acum - 10))
             paginas = acum - 10;
