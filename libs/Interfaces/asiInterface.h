@@ -98,6 +98,7 @@ Asistencia AsistPrompt(Asistencia *asis, int *errout)
             Actividades *act = tur ? GetActividad(tur->actividad, acti) : NULL;
 
             if(act){
+                //sucursal == 0 significa que es una actividad complemento
                 if(act->sucursal==0 && CountActTurn(*at,acturn)<=CountAsist(*asis,asist))
                 // El error de asistencias en la presentacion era que faltaba añadir las siguientes 3 lineas
                 {
