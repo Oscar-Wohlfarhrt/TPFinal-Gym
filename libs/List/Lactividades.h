@@ -4,7 +4,7 @@
 
 // interfaz
 void LActividadPrintList();
-int PrintActL(long indice);
+int PrintActL(long indice,int day,int mont);
 void printActMenu();
 
 //void CopyList(AuxActividades * ini);
@@ -14,7 +14,8 @@ void LActividadPrintList()
     // variables auxiliares
     int err = 1;
     char op[20] = "";
-
+    int day,month;
+    int flag =0;
     /*
      * err=0 salir
      */
@@ -27,39 +28,49 @@ void LActividadPrintList()
 
         printf("\e[48;5;237m");
         printf("Seleccione la actividad:\e[K\n");
-        
-        printActMenu();//lista de actividades disponible
+        if(flag == 0){
+            printf("\e[0m "); // se limpia el formato
+            printf("|\e[48;5;22m Ingrese una fecha (dd / mm)\e[0m| $");
+            printf("\e[0m "); // se limpia el formato
+            scanf("%i",&day);
+            printf(" / ");
+            scanf("%i",&month);
+            month--;
+            flag = 1;
+        }else{ 
+            printActMenu();//lista de actividades disponible
 
-        //printf("Clientes por Actividad:\e[K\n");
-        //PrintActL();
+            //printf("Clientes por Actividad:\e[K\n");
+            //PrintActL();
 
-        printf("\e[48;5;237m\e[K\e[0m\n");
-        // boton salir
-        printf("|\e[48;5;22m salir - s \e[0m| $");
+            printf("\e[48;5;237m\e[K\e[0m\n");
+            // boton salir
+            printf("|\e[48;5;22m salir - s \e[0m| $");
 
-        printf("\e[0m "); // se limpia el formato
-        //printf("\nHOLA ESTO ES UN TEST");
+            printf("\e[0m "); // se limpia el formato
+            //printf("\nHOLA ESTO ES UN TEST");
 
-        fgets(op, 20, stdin);      // se lee la opcion
-        *strchr(op, '\n') = '\0';  // se elimina el salto de linea
-        fseek(stdin, 0, SEEK_END); // se limpia el buffer de entrada
-        strlwr(op);
-        int option;
-        if (!strncmp(op, "s", 1))
-                err = 0;// salir 
+            fgets(op, 20, stdin);      // se lee la opcion
+            *strchr(op, '\n') = '\0';  // se elimina el salto de linea
+            fseek(stdin, 0, SEEK_END); // se limpia el buffer de entrada
+            strlwr(op);
+            int option;
+            if (!strncmp(op, "s", 1))
+                    err = 0;// salir 
 
-        if(TryToInt32(op,&option)!= 0) {
-             if(option<=maxActi(acti)+1 && option>=1){
-                if(PrintActL(option-1)!=0){
-                    system(cls);
-                    PrintActL(option-1);
-                }else
-                    printf("No hay clientes registrados para la actividad");
-                system("pause");
-                option = -1;
-            } 
-        }else
-            printf("");      
+            if(TryToInt32(op,&option)!= 0) {
+                if(option<=maxActi(acti)+1 && option>=1){
+                    if(PrintActL(option-1,day,month)!=0){
+                        system(cls);
+                        PrintActL(option-1,day,month);
+                    }else
+                        printf("No hay clientes registrados para la actividad");
+                    system("pause");
+                    option = -1;
+                } 
+            }else
+                printf("");
+        }      
     }
 }
 
@@ -80,7 +91,7 @@ void printActMenu(){
     }
 }
 
-int PrintActL(long indice){
+int PrintActL(long indice,int day,int mont){
     int index = 1;//formato
     int flag = 0;
     int sindex = sizeIndex(acturn);//cantidad de act turns
@@ -96,13 +107,13 @@ int PrintActL(long indice){
                 Actividades *actividad = GetActividad(turno->actividad,acti);
                 Profesores *profesor = FindProf(turno->prof,profes);
                 Clientes *cliente = FindClient(temp->dni,clientes);
-                    
+                float dedudor = Deuda(i,mont,day,pagos);    
                 if (index % 2)              //formato
                     printf("\e[48;5;236m"); //*
                 else                        //*
                     printf("\e[48;5;235m"); //formato
 
-                printf("%-5i | %-15s | %-5i | %-5i | %-30s |  %-5s       %-30s %-30s| %-5s\e[K\n", index, actividad ->nombre,actividad ->sucursal,(temp->turno)+1,profesor ->apellido,"", cliente->nombre,cliente->apellido,".");
+                printf("%-5i | %-15s | %-5i | %-5i | %-30s |  %-5s       %-30s %-30s| %-5.2f\e[K\n", index, actividad ->nombre,actividad ->sucursal,(temp->turno)+1,profesor ->apellido,"", cliente->nombre,cliente->apellido,dedudor);
                 
                 flag = 1;
                 index++;//formato

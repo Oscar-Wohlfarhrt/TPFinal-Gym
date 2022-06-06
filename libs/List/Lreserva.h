@@ -7,8 +7,6 @@ void PrintReservaList();
 int PrintEntriReserva(long indice);
 void printReservaMenu();
 
-//aux function
-int maxReserva(Reservas *list);
 //void CopyList(AuxActividades * ini);
 
 void PrintReservaList()
@@ -110,12 +108,5 @@ int PrintEntriReserva(long indice){
     return flag;
 }
 
-int maxReserva(Reservas *list){
-            int cont = -1;
-            while (list != NULL){
-                cont++;
-                list = list ->next;
-            } 
-            return cont;
-        }
+
 #pragma endregion

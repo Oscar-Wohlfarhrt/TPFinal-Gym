@@ -14,6 +14,7 @@ Reservas *getbyDNI(long dni, Reservas **list);
 Reservas *FindReservas(long dni, char *actividad, Reservas *list);
 Reservas *GetRes(long index, Reservas *list);
 void AddReservasToActTurn();
+int maxReserva(Reservas *list);
 
 int remove_espera(Reservas **dato, Reservas **list);
 
@@ -162,4 +163,13 @@ void AddReservasToActTurn()
         ResEnqueue(&node, &reservaInput, &reservaOutput);
     }
 }
+
+int maxReserva(Reservas *list){
+            int cont = -1;
+            while (list != NULL){
+                cont++;
+                list = list ->next;
+            } 
+            return cont;
+        }
 #pragma endregion

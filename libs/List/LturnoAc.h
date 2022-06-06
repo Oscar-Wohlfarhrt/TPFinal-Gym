@@ -49,7 +49,7 @@ void TurnsActList()
         
         if(TryToInt32(op,&option)!= 0) {
              if(option<=maxActi(acti)+1 && option>=1){
-                if(PrintActL(option-1)!=0){
+                if(PrintTurnActL(option-1)!=0){
                     system(cls);
                     printf("%-5s | %-15s | %-5s | %-5s \e[K\n", "Index", "ACTIVIDAD","TURNO","CUPO");
                     PrintTurnActL(option-1);
