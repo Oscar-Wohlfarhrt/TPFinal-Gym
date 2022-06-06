@@ -90,7 +90,7 @@ void forcedExit()
 
 int main(int argc, char **args)
 {
-    getKeyCode(); // debug
+    //getKeyCode(); // debug
     
     signal(SIGINT, forcedExit);
     LoadAllFiles();

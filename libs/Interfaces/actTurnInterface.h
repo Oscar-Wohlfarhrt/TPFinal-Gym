@@ -163,13 +163,6 @@ void ActTurnPromptRestore(int index, ActTurno *ActTurn)
 }
 void ActTurnsPrintList()
 {
-
-ActTurno *act = acturn;
-    while(act){
-        printf("\n%li | %li |\n",act->turno,act->dni);
-        act = act->next;
-    }
-    system("pause");
     const int entries = 10; // entradas por pagina
 
     // variables auxiliares

@@ -235,7 +235,10 @@ void PagosPrintList()
                     monto *= 1.1;
 
                 // se imprime la fila
-                printf("%5i | %-50i | $%-19.02f | %-20s\e[K\n", index, client->actturn, monto, date1);
+                if(client->actturn == - 1)
+                    printf("%5i | %-50s | $%-19.02f | %-20s\e[K\n", index, "N/N", monto, date1);
+                else
+                    printf("%5i | %-50li | $%-19.02f | %-20s\e[K\n", index, client->actturn, monto, date1);
                 printf("%5s | %-50s | %-20s | %-20s\e[K\e[0m\n", "", "", monto > client->monto ? "Si" : "No", date2);
 
                 client = client->next;
