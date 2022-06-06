@@ -1,8 +1,11 @@
+//libs lines: 5281
+
 #include <stdio.h>
 #include <stdlib.h>
 #include "libs/advmenu.h"
 #include <signal.h>
 #include "libs/tpstructs.h"
+#include "libs/Handlers/Handlers.h"
 
 #include "libs/List/Listas.h"
 #include "libs/interfaces/interfaces.h"

@@ -1,5 +1,7 @@
 #pragma once
 #include "../tpstructs.h"
+#include "handlersUtils.h"
+#include "Handlers.h"
 // puntero a la lista de actturn
 ActTurno *acturn = NULL;
 
@@ -173,7 +175,7 @@ int BorrarActTurn(int index, ActTurno **list)
             }
             bor->next = NULL;
             free(bor);
-            ReindexPagos(index);
+            ReindexPagos(index,pagos);
             err = 0;
         }
     }

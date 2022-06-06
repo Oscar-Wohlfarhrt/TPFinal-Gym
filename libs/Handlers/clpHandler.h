@@ -1,9 +1,9 @@
 #pragma once
 #include "../tpstructs.h"
 #include "ABBHandler.h"
-#include "../Interfaces/interfaces.h"
+#include "Handlers.h"
+//#include "../Interfaces/interfaces.h"
 
-ClientesPagos *pagos = NULL;
 
 void InsertPago(ClientesPagos **node, ClientesPagos **list);
 ClientesPagos *FindLastPago(ClientesPagos *list);
@@ -13,7 +13,6 @@ ClientesPagos *GetPagobyACTT(long actt, ClientesPagos *list);
 int BorrarPago(int index, ClientesPagos **list);
 void BuscarBorrarPago(int index, ClientesPagos **bor, ClientesPagos **ant);
 void BorrarListaPago(ClientesPagos **list);
-void ReindexPagos(int index);
 
 // escritura y lecura del archivo
 void LoadPagos(ClientesPagos **list);
@@ -117,22 +116,6 @@ void BorrarListaPago(ClientesPagos **list)
     }
 }
 
-void ReindexPagos(int index)
-{
-    ClientesPagos *pag = pagos;
-    while (pag)
-    {
-        if (pag->actturn == index)
-        {
-            pag->actturn = -1;
-        }
-        else if (pag->actturn > index)
-        {
-            pag->actturn = pag->actturn - 1;
-        }
-        pag = pag->next;
-    }
-}
 void LoadPagos(ClientesPagos **list)
 {
     FILE *f;
@@ -188,7 +171,7 @@ void FindINPago(int year, int mes)
         if (list->fechaEmision.tm_mon == mes && list->fechaEmision.tm_year == year &&
             (list->fechaPago.tm_mon != mes && list->fechaPago.tm_year != year))
         {
-            actividad_turno = get_ActTurn((int)list->actturn - 1, &acturn);
+            actividad_turno = get_ActTurn((int)list->actturn, &acturn);
             if (actividad_turno)
             {
                 cliente = FindClient(actividad_turno->dni, clientes);

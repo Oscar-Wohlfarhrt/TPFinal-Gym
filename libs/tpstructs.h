@@ -98,3 +98,5 @@ struct ABClientes{
     struct ABClientes *izq;
     struct ABClientes *der;
 };
+
+ClientesPagos *pagos = NULL;

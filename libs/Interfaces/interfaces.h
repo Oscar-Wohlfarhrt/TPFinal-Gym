@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../Handlers/Handlers.h"
 #include "actInterface.h"
 #include "asiInterface.h"
 #include "cliInterface.h"

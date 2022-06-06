@@ -210,7 +210,7 @@ void SaveClientes(Clientes *list)
 }
 void ReindexActTurnos()//actualiza los pagos y el acturn cuando se elimina un usuario
 {
-    ActTurno *list = acturn ? acturn : NULL;
+    ActTurno *list = acturn;
     Clientes *cli = NULL;
     int index = 0;
     while (list)
